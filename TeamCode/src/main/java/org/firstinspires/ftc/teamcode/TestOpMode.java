@@ -18,6 +18,7 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+
 @Autonomous
 public class TestOpMode extends LinearOpMode {
     @Override
@@ -41,11 +42,9 @@ public class TestOpMode extends LinearOpMode {
 
         if (isStopRequested()) return;
 
-        Action trajectoryActionChosen = tab1.build();
-
         Actions.runBlocking(
                 new SequentialAction(
-                        trajectoryActionChosen
+                        tab1.build()
                 )
         );
     }
