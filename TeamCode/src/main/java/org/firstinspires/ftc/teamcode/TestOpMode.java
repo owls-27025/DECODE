@@ -32,8 +32,10 @@ public class TestOpMode extends LinearOpMode {
                 .turn(Math.toRadians(180))
                 .strafeTo(new Vector2d(-30, 0))
                 .strafeTo(new Vector2d(0, 0))
-                .splineTo(new Vector2d(-30, 15), 0)
-                .splineTo(new Vector2d(0, 0), 0);
+                .setTangent(Math.toRadians(153))
+                .splineTo(new Vector2d(-30, 15), Math.toRadians(153))
+                .setTangent(Math.toRadians(-27))
+                .splineTo(new Vector2d(0, 0), Math.toRadians(-27));
 
         waitForStart();
 
