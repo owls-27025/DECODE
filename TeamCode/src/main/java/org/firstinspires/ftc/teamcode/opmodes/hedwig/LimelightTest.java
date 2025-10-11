@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmodes;
+package org.firstinspires.ftc.teamcode.opmodes.hedwig;
 
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
@@ -9,11 +9,10 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-
-import org.firstinspires.ftc.teamcode.helpers.MecanumDrive;
+import org.firstinspires.ftc.teamcode.helpers.roadrunner.MecanumDrive;
 
 @Autonomous
-public class LimelightTestOpMode extends LinearOpMode {
+public class LimelightTest extends LinearOpMode {
 
     private Limelight3A limelight;
 
@@ -30,9 +29,6 @@ public class LimelightTestOpMode extends LinearOpMode {
 
         Pose2d initialPose = new Pose2d(0, 0, Math.toRadians(90));
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
-
-        telemetry.addLine("Ready");
-        telemetry.update();
 
         waitForStart();
         if (isStopRequested()) return;
@@ -67,7 +63,7 @@ public class LimelightTestOpMode extends LinearOpMode {
         drive.setDrivePowers(new PoseVelocity2d(new Vector2d(0, 0), 0));
 
         if (!found) {
-            telemetry.addLine("No targets found (timeout).");
+            telemetry.addLine("Timed out");
             telemetry.update();
             return;
         }

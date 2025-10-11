@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.tuning;
+package org.firstinspires.ftc.teamcode.opmodes.hedwig.tuning;
 
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
@@ -6,8 +6,8 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.helpers.MecanumDrive;
-import org.firstinspires.ftc.teamcode.helpers.TankDrive;
+import org.firstinspires.ftc.teamcode.helpers.roadrunner.MecanumDrive;
+import org.firstinspires.ftc.teamcode.helpers.roadrunner.TankDrive;
 @TeleOp
 public final class SplineTest extends LinearOpMode {
     @Override
