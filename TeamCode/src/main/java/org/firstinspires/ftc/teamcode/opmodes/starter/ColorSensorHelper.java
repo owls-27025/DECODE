@@ -14,7 +14,6 @@ public class ColorSensorHelper {
     private static final int   STABLE_N = 3; // frames required to confirm
 
     public static ColorSensor sensor1;
-    public static ColorSensor sensor2;
 
     private static int greenStreak = 0;
     private static int purpleStreak = 0;
@@ -23,38 +22,18 @@ public class ColorSensorHelper {
 
     public static void init(HardwareMap hw) {
         sensor1 = hw.get(ColorSensor.class, "sensor1");
-        sensor2 = hw.get(ColorSensor.class, "sensor2");
     }
 
     public static void init(HardwareMap hw, String name1, String name2) {
         sensor1 = hw.get(ColorSensor.class, name1);
-        sensor2 = hw.get(ColorSensor.class, name2);
     }
 
     public static String getColor() {
         Sample s1 = readSample(sensor1);
-        Sample s2 = readSample(sensor2);
-
-        boolean s1Good = s1.s >= MIN_SAT && s1.v >= MIN_VAL;
-        boolean s2Good = s2.s >= MIN_SAT && s2.v >= MIN_VAL;
 
         float h, s, v;
 
-        if (s1Good && s2Good) {
-            int avgR = (s1.r255 + s2.r255) / 2;
-            int avgG = (s1.g255 + s2.g255) / 2;
-            int avgB = (s1.b255 + s2.b255) / 2;
-            float[] hsv = new float[3];
-            Color.RGBToHSV(avgR, avgG, avgB, hsv);
-            h = hsv[0]; s = hsv[1]; v = hsv[2];
-        } else if (s1Good) {
-            h = s1.h; s = s1.s; v = s1.v;
-        } else if (s2Good) {
-            h = s2.h; s = s2.s; v = s2.v;
-        } else {
-            updateDebounce("Neither");
-            return stableColor;
-        }
+        h = s1.h; s = s1.s; v = s1.v;
 
         String guess;
         float dGreen  = hueDist(h, GREEN_HUE_CENTER);
@@ -139,6 +118,8 @@ public class ColorSensorHelper {
     public static final class Sample {
         int r, g, b, a;
         int r255, g255, b255;
-        float h, s, v;
+        public float h;
+        float s;
+        float v;
     }
 }
