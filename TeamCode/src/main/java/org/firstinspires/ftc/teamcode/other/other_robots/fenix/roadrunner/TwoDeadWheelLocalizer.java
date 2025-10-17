@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.other.roadrunner;
+package org.firstinspires.ftc.teamcode.other.other_robots.fenix.roadrunner;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.DualNum;
@@ -23,7 +23,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AngularVelocity;
 import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
-import org.firstinspires.ftc.teamcode.other.roadrunner.messages.TwoDeadWheelInputsMessage;
+import org.firstinspires.ftc.teamcode.other.other_robots.fenix.roadrunner.messages.TwoDeadWheelInputsMessage;
 
 @Config
 public final class TwoDeadWheelLocalizer implements Localizer {
