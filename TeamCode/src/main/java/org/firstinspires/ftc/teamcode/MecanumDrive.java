@@ -63,16 +63,16 @@ public final class MecanumDrive {
                 RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD;
 
         // drive model parameters
-        //public double inPerTick = 0.000388;
-        public double inPerTick = 0.00292226767097;
-        public double lateralInPerTick = 0.0021895062786825995;
-        public double trackWidthTicks = 4199.482351326046;
+        public double inPerTick = 0.0028003578235;
+        //public double inPerTick = 0.00292226767097;
+        public double lateralInPerTick = 0.002282130398382663;
+        public double trackWidthTicks = 4218.625644821668;
 
         // feedforward parameters (in tick units)
-        //public double kS = 0.6124792921469099;
-        public double kS = 0.7815975903443237;
-        //public double kV = 0.0004959045106511912;
-        public double kV = 0.0005877978037046695;
+        public double kS = 0.7590072084999271;
+        //public double kS = 0.7815975903443237;
+        public double kV = 0.00043034297460884166;
+        //public double kV = 0.0005877978037046695;
         public double kA = 0.0001;
         // path profile parameters (in inches)
         public double maxWheelVel = 50;
@@ -84,13 +84,13 @@ public final class MecanumDrive {
         public double maxAngAccel = Math.PI;
 
         // path controller gains
-        public double axialGain = 1;
-        public double lateralGain = 1;
-        public double headingGain = 1; // shared with turn
+        public double axialGain = 3;
+        public double lateralGain = 3;
+        public double headingGain = 3; // shared with turn
 
-        public double axialVelGain = 0.0;
-        public double lateralVelGain = 0.0;
-        public double headingVelGain = 0.0; // shared with turn
+        public double axialVelGain = 1.0;
+        public double lateralVelGain = 2.0;
+        public double headingVelGain = 3.0; // shared with turn
     }
 
     public static Params PARAMS = new Params();
@@ -249,8 +249,7 @@ public final class MecanumDrive {
 
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
 // TODO DON'T FORGET TO CHANGE IT BACK TO PINPOINT
-        //localizer = new PinpointLocalizer(hardwareMap, PARAMS.inPerTick, pose);
-        localizer = new ThreeDeadWheelLocalizer(hardwareMap, PARAMS.inPerTick, pose);
+        localizer = new PinpointLocalizer(hardwareMap, PARAMS.inPerTick, pose);
         FlightRecorder.write("MECANUM_PARAMS", PARAMS);
     }
 
