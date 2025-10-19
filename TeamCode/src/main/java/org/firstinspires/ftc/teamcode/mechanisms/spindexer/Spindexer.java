@@ -5,18 +5,15 @@ import org.firstinspires.ftc.teamcode.mechanisms.spindexer.colorSensor.ColorSens
 import org.firstinspires.ftc.teamcode.mechanisms.spindexer.shooter.ShooterHelper;
 
 public class Spindexer {
-    public static void shootMotifBall(int index) {
+    public static String[] shootMotifBall(int index) {
         String[] motif = new String[3];
         motif[0] = "Green";
         motif[1] = "Purple";
         motif[2] = "Purple"; // placeholder motif because no limelight yet
 
-        String[] colors = new String[3];
-        colors[0] = "Purple";
-        colors[1] = "Green";
-        colors[2] = "Purple"; // placeholder for positions of each ball because not implemented yet
+        String[] colors = SpindexerHelper.getColors();
 
-        ShooterHelper.shoot();
+        // ShooterHelper.shoot();
 
         int nextPosition = -1;
         String target = motif[index];
@@ -29,6 +26,8 @@ public class Spindexer {
         }
         SpindexerHelper.moveToPosition(nextPosition);
         // move spindexer servo to shoot ball
+
+        return colors;
     }
 
     public static void shootMotif() {

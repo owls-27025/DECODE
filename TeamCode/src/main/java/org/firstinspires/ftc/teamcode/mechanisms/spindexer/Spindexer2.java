@@ -3,16 +3,13 @@ package org.firstinspires.ftc.teamcode.mechanisms.spindexer;
 import org.firstinspires.ftc.teamcode.mechanisms.spindexer.shooter.ShooterHelper;
 
 public class Spindexer2 {
-    public static void shootMotifBall(int index) {
+    public static String[] shootMotifBall(int index) {
         String[] motifVar = new String[3];
         motifVar[0] = "Green";
         motifVar[1] = "Purple";
         motifVar[2] = "Purple"; // placeholder motif because no limelight yet
 
-        String[] spindexerVar = new String[3];
-        spindexerVar[0] = "Purple";
-        spindexerVar[1] = "Green";
-        spindexerVar[2] = "Purple"; // placeholder for positions of each ball because not implemented yet
+        String[] spindexerVar = SpindexerHelper.getColors();
 
 
         int y = 0;
@@ -38,6 +35,8 @@ public class Spindexer2 {
                 //ShooterHelper.shoot();
             }
         }
+
+        return spindexerVar;
     }
 
     public static void shootMotif() {
