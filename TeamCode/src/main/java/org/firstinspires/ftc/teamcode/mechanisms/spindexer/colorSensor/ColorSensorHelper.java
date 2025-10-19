@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.mechanisms.colorSensor;
+package org.firstinspires.ftc.teamcode.mechanisms.spindexer.colorSensor;
 
 import android.graphics.Color;
 
