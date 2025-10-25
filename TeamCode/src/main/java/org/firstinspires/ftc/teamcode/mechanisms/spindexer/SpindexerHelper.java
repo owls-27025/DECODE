@@ -94,7 +94,7 @@ public class SpindexerHelper {
 
         String[] result = colors.clone();
 
-        for (int i = 0; i < SLOTS; i++) colors[i] = "-";
+        Arrays.fill(colors, "-");
 
         return result;
     }
