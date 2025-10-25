@@ -1,23 +1,23 @@
 package org.firstinspires.ftc.teamcode.mechanisms.spindexer;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.mechanisms.spindexer.colorSensor.ColorSensorHelper;
 
+import java.util.Arrays;
+
 public class SpindexerHelper {
     public static DcMotor SpindexerMotor;
     public static Servo SpindexerServo;
-
+//TPR = ticks per rotation, SINGLE = ticks for a single position, SLOTS = three different positions
     private static final int TPR = 288;
     private static final int SLOTS = 3;
     private static final int SINGLE = TPR / SLOTS;
     private static final int ARRIVAL_TOL = 10;
     private static final long SETTLE_MS = 500;
 
-    public enum State { IDLE, MOVING, FINISHING, SAMPLING, AUTO, DONE }
-
+    public enum State { IDLE, MOVING, FINISHING, SAMPLING, DONE }
     private static State state = State.IDLE;
     private static String[] colors = new String[SLOTS];
     private static int samplesTaken = 0;
@@ -33,7 +33,7 @@ public class SpindexerHelper {
         SpindexerMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         SpindexerMotor.setPower(0.5);
 
-        for (int i = 0; i < SLOTS; i++) colors[i] = "-";
+        Arrays.fill(colors, "-");
         state = State.IDLE;
         samplesTaken = 0;
         arrivedAtMs = 0L;
@@ -45,13 +45,12 @@ public class SpindexerHelper {
         return Math.floorMod(idx, SLOTS);
     }
 
-    public static int moveToNextPosition() {
+    public static void moveToNextPosition() {
         int current = SpindexerMotor.getCurrentPosition();
         int target = current + SINGLE;
         SpindexerMotor.setTargetPosition(target);
         SpindexerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         SpindexerMotor.setPower(0.5);
-        return target;
     }
 
     public static void moveToPosition(int index) {

@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.mechanisms.spindexer;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.teamcode.mechanisms.spindexer.distanceSensor.DistanceSensorHelper;
 import org.firstinspires.ftc.teamcode.mechanisms.spindexer.intake.IntakeHelper;
 import org.firstinspires.ftc.teamcode.mechanisms.spindexer.colorSensor.ColorSensorHelper;
 import org.firstinspires.ftc.teamcode.mechanisms.spindexer.shooter.ShooterHelper;
@@ -9,12 +11,15 @@ import org.firstinspires.ftc.teamcode.mechanisms.spindexer.SpindexerHelper;
 public class Spindexer {
     static String[] motif = new String[3];
     static String[] colors = new String[3];
+    static enum State {SHOOTING, INTAKE, COLORSENSOR}
+    static State state = State.INTAKE;
 
     public static void init(HardwareMap hardwareMap) {
         SpindexerHelper.init(hardwareMap);
         ColorSensorHelper.init(hardwareMap);
         ShooterHelper.init(hardwareMap);
         IntakeHelper.init(hardwareMap);
+        DistanceSensorHelper.init(hardwareMap);
     }
     public static String[] shootMotifBall(int index) {
         motif[0] = "Green";
