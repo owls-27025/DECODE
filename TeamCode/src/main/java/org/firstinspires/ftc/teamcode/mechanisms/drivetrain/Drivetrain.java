@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Drivetrain {
-    private DcMotor FL, FR, BL, BR;
+    private static DcMotor FL, FR, BL, BR;
 
     public static void init(HardwareMap hwMap) {
         FR = hwMap.get(DcMotor.class, "FR");

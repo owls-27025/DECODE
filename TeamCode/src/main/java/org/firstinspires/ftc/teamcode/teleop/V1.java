@@ -24,6 +24,10 @@ public class V1 extends OpMode {
 
     }
 
+    public void drivetrain() {
+        
+    }
+
     public void shooter() {
         switch (state) {
             case AUTO: {
