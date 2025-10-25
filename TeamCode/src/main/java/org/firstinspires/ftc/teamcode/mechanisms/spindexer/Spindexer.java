@@ -114,7 +114,7 @@ public class Spindexer {
         IntakeHelper.start();
 
         for (int i = 0; i < 3; i++) {
-            SpindexerHelper.moveToPosition(0);
+            SpindexerHelper.moveToPosition(i);
             double currentTime = System.currentTimeMillis();
             while(System.currentTimeMillis() < currentTime + 1500) {
                 Spindexer.colors[i] = ColorSensorHelper.getColor();
