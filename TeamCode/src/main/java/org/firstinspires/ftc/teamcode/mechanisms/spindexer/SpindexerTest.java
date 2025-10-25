@@ -23,9 +23,7 @@ public class SpindexerTest extends OpMode {
         String[] motif3 = null;
         String[] motif4 = null;
         if (gamepad1.a) {
-            motif1 = Spindexer2.shootMotifBall(0);
-        } else if (gamepad1.b) {
-            motif3 = Spindexer.shootMotifBall(0);
+            Spindexer.shootMotifBall(0);
         }
 
         telemetry.addData("Target Position", SpindexerMotor.getTargetPosition());
