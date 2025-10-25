@@ -10,12 +10,14 @@ import org.firstinspires.ftc.teamcode.mechanisms.spindexer.Spindexer;
 public class V1 extends OpMode {
     public static enum State { AUTO, MANUALCOLOR, MANUALSHOOTER, MANUAL}
     private static V1.State state = V1.State.AUTO;
-    Drivetrain drivetrain = new Drivetrain();
-    Spindexer spindexer = new Spindexer();
+    int currentBall = 0;
+    String[] colors;
+    boolean hasColors = false;
+    String currentColor;
 
     @Override
     public void init() {
-        drivetrain.init(hardwareMap);
+        Drivetrain.init(hardwareMap);
         Spindexer.init(hardwareMap);
     }
     public void loop() {
@@ -26,7 +28,21 @@ public class V1 extends OpMode {
         switch (state) {
             case AUTO: {
                 if(gamepad1.a) {
-
+                    if(!hasColors) {
+                        colors = Spindexer.shootMotifBall(currentBall);
+                        hasColors = true;
+                        currentBall = (currentBall + 1) % 3;
+                    } else {
+                        Spindexer.shootMotifBall(currentBall, colors);
+                        currentBall = (currentBall + 1) % 3;
+                    }
+                } else if(gamepad1.b) {
+                    if(!hasColors) {
+                        colors = Spindexer.shootMotif(currentBall);
+                        hasColors = true;
+                    } else {
+                        Spindexer.shootMotif(currentBall, colors);
+                    }
                 }
                 break;
             }

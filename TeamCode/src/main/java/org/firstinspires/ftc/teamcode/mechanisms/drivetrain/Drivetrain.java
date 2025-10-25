@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class Drivetrain {
     private DcMotor FL, FR, BL, BR;
 
-    public void init(HardwareMap hwMap) {
+    public static void init(HardwareMap hwMap) {
         FR = hwMap.get(DcMotor.class, "FR");
         FL = hwMap.get(DcMotor.class, "FL");
         BR = hwMap.get(DcMotor.class, "BR");

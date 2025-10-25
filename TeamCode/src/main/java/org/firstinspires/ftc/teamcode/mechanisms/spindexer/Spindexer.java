@@ -16,7 +16,7 @@ public class Spindexer {
         ShooterHelper.init(hardwareMap);
         IntakeHelper.init(hardwareMap);
     }
-    public static void shootMotifBall(int index) {
+    public static String[] shootMotifBall(int index) {
         motif[0] = "Green";
         motif[1] = "Purple";
         motif[2] = "Purple"; // placeholder motif because no limelight yet
@@ -36,6 +36,8 @@ public class Spindexer {
         }
         SpindexerHelper.moveToPosition(nextPosition);
         // move spindexer servo to shoot ball
+
+        return colors;
     }
 
     public static void shootMotifBall(int index, String[] colors) {
@@ -59,16 +61,19 @@ public class Spindexer {
         // move spindexer servo to shoot ball
     }
 
-    public static void shootMotif() {
-        shootMotifBall(0);
-        shootMotifBall(1);
-        shootMotifBall(2);
+    public static String[] shootMotif(int currentBall) {
+        String[] colors;
+        colors = shootMotifBall(currentBall);
+        shootMotifBall(1 + currentBall, colors);
+        shootMotifBall(2 + currentBall, colors);
+
+        return colors;
     }
 
-    public static void shootMotif(String[] colors) {
-        shootMotifBall(0, colors);
-        shootMotifBall(1, colors);
-        shootMotifBall(2, colors);
+    public static void shootMotif(int currentBall, String[] colors) {
+        shootMotifBall(currentBall, colors);
+        shootMotifBall(1 + currentBall, colors);
+        shootMotifBall(2 + currentBall, colors);
     }
 
     public static void intake() {
