@@ -4,7 +4,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Drivetrain {
-    private static DcMotor FL, FR, BL, BR;
+    public static DcMotor FL;
+    public static DcMotor FR;
+    public static DcMotor BL;
+    public static DcMotor BR;
 
     public static void init(HardwareMap hwMap) {
         FR = hwMap.get(DcMotor.class, "FR");

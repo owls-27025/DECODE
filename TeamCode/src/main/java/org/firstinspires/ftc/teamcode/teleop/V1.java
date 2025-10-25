@@ -21,11 +21,25 @@ public class V1 extends OpMode {
         Spindexer.init(hardwareMap);
     }
     public void loop() {
+        drivetrain();
+        shooter();
 
+        if(gamepad2.right_bumper) {
+            state = State.MANUALCOLOR;
+        } else if(gamepad2.left_bumper) {
+            state = State.AUTO;
+        }
     }
 
     public void drivetrain() {
-        
+        double y = -gamepad1.left_stick_y;
+        double x = gamepad1.left_stick_x;
+        double rx = gamepad1.right_stick_x;
+
+        Drivetrain.FL.setPower(y + x + rx);
+        Drivetrain.BL.setPower(y - x + rx);
+        Drivetrain.FR.setPower(y - x - rx);
+        Drivetrain.BR.setPower(y + x - rx);
     }
 
     public void shooter() {
