@@ -14,6 +14,8 @@ public class V1 extends OpMode {
     String[] colors;
     boolean hasColors = false;
     String currentColor;
+    double currentSpeed = 1;
+    boolean isFieldCentric = false;
 
     @Override
     public void init() {
@@ -32,14 +34,39 @@ public class V1 extends OpMode {
     }
 
     public void drivetrain() {
+        if(gamepad1.left_bumper) {
+            currentSpeed = 0.35;
+        } else {
+            currentSpeed = 1;
+        }
+
+        if(gamepad1.guide) {
+            if(isFieldCentric) {
+                isFieldCentric = true;
+                return;
+            } else {
+                isFieldCentric = false;
+                return;
+            }
+        }
+
+        if(gamepad1.start) {
+            Drivetrain.resetIMU();
+        }
+
         double y = -gamepad1.left_stick_y;
         double x = gamepad1.left_stick_x;
         double rx = gamepad1.right_stick_x;
 
-        Drivetrain.FL.setPower(y + x + rx);
-        Drivetrain.BL.setPower(y - x + rx);
-        Drivetrain.FR.setPower(y - x - rx);
-        Drivetrain.BR.setPower(y + x - rx);
+        if(isFieldCentric) {
+            y = Drivetrain.fieldCentricDrive(x, y)[0];
+            x = Drivetrain.fieldCentricDrive(x, y)[1];
+        }
+
+        Drivetrain.FL.setPower((y + x + rx) * currentSpeed);
+        Drivetrain.BL.setPower((y - x + rx) * currentSpeed);
+        Drivetrain.FR.setPower((y - x - rx) * currentSpeed);
+        Drivetrain.BR.setPower((y + x - rx) * currentSpeed);
     }
 
     public void shooter() {
