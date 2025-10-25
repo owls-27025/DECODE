@@ -10,9 +10,9 @@ public class ShooterHelper {
     public static Servo shooterAngle;
 
     public static void init(HardwareMap hardwareMap) {
-        shooterMotor = hardwareMap.get(DcMotorEx.class, "Shooter");
+        shooterMotor = hardwareMap.get(DcMotorEx.class, "shooter");
         shooterMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        shooterAngle = hardwareMap.get(Servo.class, "Shooter Angle");
+        shooterAngle = hardwareMap.get(Servo.class, "shooter servo");
     }
 
     public static void shoot() {

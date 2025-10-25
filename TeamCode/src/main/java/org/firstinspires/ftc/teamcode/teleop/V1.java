@@ -18,7 +18,7 @@ public class V1 extends OpMode {
     @Override
     public void init() {
         Drivetrain.init(hardwareMap);
-        Spindexer.init(hardwareMap);
+//        Spindexer.init(hardwareMap);
     }
     public void loop() {
         drivetrain();

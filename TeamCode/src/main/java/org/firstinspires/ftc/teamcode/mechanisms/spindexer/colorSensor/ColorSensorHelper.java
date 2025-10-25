@@ -21,7 +21,7 @@ public class ColorSensorHelper {
     private static String stableColor = "…";
 
     public static void init(HardwareMap hw) {
-        sensor1 = hw.get(ColorSensor.class, "sensor1");
+        sensor1 = hw.get(ColorSensor.class, "color sensor");
     }
 
     public static void init(HardwareMap hw, String name1, String name2) {

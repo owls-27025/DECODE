@@ -24,8 +24,8 @@ public class SpindexerHelper {
     private static long arrivedAtMs = 0L;
 
     public static void init(HardwareMap hardwareMap) {
-        SpindexerMotor = hardwareMap.get(DcMotor.class, "spindexer motor");
-        // SpindexerServo = hardwareMap.get(Servo.class, "spindexer servo");
+        SpindexerMotor = hardwareMap.get(DcMotor.class, "spindexer");
+        SpindexerServo = hardwareMap.get(Servo.class, "spindexer servo");
 
         SpindexerMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         SpindexerMotor.setTargetPosition(0);
