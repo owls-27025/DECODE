@@ -10,7 +10,8 @@ import java.util.Arrays;
 public class SpindexerHelper {
     public static DcMotor SpindexerMotor;
     public static Servo SpindexerServo;
-//TPR = ticks per rotation, SINGLE = ticks for a single position, SLOTS = three different positions
+//hello
+    //TPR = ticks per rotation, SINGLE = ticks for a single position, SLOTS = three different positions
     private static final int TPR = 288;
     private static final int SLOTS = 3;
     private static final int SINGLE = TPR / SLOTS;
