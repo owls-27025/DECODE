@@ -22,7 +22,7 @@ public class V1 extends OpMode {
     }
     public void loop() {
         drivetrain();
-        shooter();
+//        shooter();
 
         if(gamepad2.right_bumper) {
             state = State.MANUALCOLOR;
