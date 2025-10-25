@@ -27,7 +27,7 @@ public class V1 extends OpMode {
     public void shooter() {
         switch (state) {
             case AUTO: {
-                if(gamepad1.a) {
+                if(gamepad2.a) {
                     if(!hasColors) {
                         colors = Spindexer.shootMotifBall(currentBall);
                         hasColors = true;
@@ -36,7 +36,7 @@ public class V1 extends OpMode {
                         Spindexer.shootMotifBall(currentBall, colors);
                         currentBall = (currentBall + 1) % 3;
                     }
-                } else if(gamepad1.b) {
+                } else if(gamepad2.b) {
                     if(!hasColors) {
                         colors = Spindexer.shootMotif(currentBall);
                         hasColors = true;
@@ -47,14 +47,29 @@ public class V1 extends OpMode {
                 break;
             }
             case MANUALCOLOR: {
-
+                if(gamepad2.dpad_left || gamepad2.dpad_up) {
+                    currentColor = "Green";
+                } else if(gamepad2.dpad_right || gamepad2.dpad_down) {
+                    currentColor = "Purple";
+                }
+                if(gamepad2.a) {
+                    if(!hasColors) {
+                        colors = Spindexer.shootMotifBall(currentColor);
+                        hasColors = true;
+                        currentBall = (currentBall + 1) % 3;
+                    } else {
+                        Spindexer.shootMotifBall(currentColor, colors);
+                        currentBall = (currentBall + 1) % 3;
+                    }
+                }
                 break;
             }
             case MANUALSHOOTER: {
-
+                // no shooter yet
                 break;
             }
             case MANUAL: {
+                // no shooter yet but more
                 break;
             }
         }

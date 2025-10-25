@@ -51,7 +51,7 @@ public class Spindexer {
         int nextPosition = -1;
         String target = motif[index];
 
-        for (int i = 0; i < colors.length; i++) {
+        for (int i = 0; i < 3; i++) {
             if (colors[i].equals(target)) {
                 nextPosition = i;
                 break;
@@ -59,6 +59,40 @@ public class Spindexer {
         }
         SpindexerHelper.moveToPosition(nextPosition);
         // move spindexer servo to shoot ball
+    }
+
+    public static void shootMotifBall(String color, String[] colors) {
+        int index = -1;
+
+        for (int i = 0; i < 3; i++) {
+            if (colors[i].equals(color)) {
+                index = i;
+                break;
+            }
+        }
+
+        // ShooterHelper.shoot();
+        SpindexerHelper.moveToPosition(index);
+        // move spindexer servo to shoot ball
+    }
+
+    public static String[] shootMotifBall(String color) {
+        int index = -1;
+
+        String[] colors = SpindexerHelper.getColors();
+
+        for (int i = 0; i < 3; i++) {
+            if (colors[i].equals(color)) {
+                index = i;
+                break;
+            }
+        }
+
+        // ShooterHelper.shoot();
+        SpindexerHelper.moveToPosition(index);
+        // move spindexer servo to shoot ball
+
+        return colors;
     }
 
     public static String[] shootMotif(int currentBall) {
