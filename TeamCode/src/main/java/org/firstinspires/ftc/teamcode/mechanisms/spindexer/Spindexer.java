@@ -11,8 +11,8 @@ import org.firstinspires.ftc.teamcode.mechanisms.spindexer.SpindexerHelper;
 public class Spindexer {
     static String[] motif = new String[3];
     static String[] colors = new String[3];
-    static enum State {SHOOTING, INTAKE, COLORSENSOR}
-    static State state = State.INTAKE;
+    public enum State {SHOOTING, INTAKE, COLORSENSOR}
+    public static State state = State.INTAKE;
 
     public static void init(HardwareMap hardwareMap) {
         SpindexerHelper.init(hardwareMap);
