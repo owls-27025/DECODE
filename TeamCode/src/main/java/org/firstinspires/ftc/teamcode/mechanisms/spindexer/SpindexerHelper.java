@@ -15,14 +15,10 @@ public class SpindexerHelper {
     private static final int TPR = 288;
     private static final int SLOTS = 3;
     private static final int SINGLE = TPR / SLOTS;
-    private static final int ARRIVAL_TOL = 10;
-    private static final long SETTLE_MS = 500;
-
-    public enum State { IDLE, MOVING, FINISHING, SAMPLING, DONE }
-    private static State state = State.IDLE;
+    private static final int INTAKE_OFFSET = 100; // tbd
+    private static final int SHOOTING_OFFSET = 100; // tbd
+    private static final int COLOR_SENSOR_OFFSET = 100; // tbd
     private static String[] colors = new String[SLOTS];
-    private static int samplesTaken = 0;
-    private static long arrivedAtMs = 0L;
 
     public static void init(HardwareMap hardwareMap) {
         SpindexerMotor = hardwareMap.get(DcMotor.class, "spindexer");
@@ -35,20 +31,31 @@ public class SpindexerHelper {
         SpindexerMotor.setPower(0.5);
 
         Arrays.fill(colors, "-");
-        state = State.IDLE;
-        samplesTaken = 0;
-        arrivedAtMs = 0L;
     }
 
     public static int findPosition() {
-        int ticks = SpindexerMotor.getCurrentPosition();
+        int ticks = 0;
+        if(Spindexer.state == Spindexer.State.INTAKE) {
+            ticks = SpindexerMotor.getCurrentPosition() + INTAKE_OFFSET;
+        } else if(Spindexer.state == Spindexer.State.SHOOTING) {
+            ticks = SpindexerMotor.getCurrentPosition() + SHOOTING_OFFSET;
+        } else if(Spindexer.state == Spindexer.State.COLORSENSOR) {
+            ticks = SpindexerMotor.getCurrentPosition() + COLOR_SENSOR_OFFSET;
+        }
         int idx = Math.round(ticks / (float) SINGLE);
         return Math.floorMod(idx, SLOTS);
     }
 
     public static void moveToNextPosition() {
         int current = SpindexerMotor.getCurrentPosition();
-        int target = current + SINGLE;
+        int target = 0;
+        if(Spindexer.state == Spindexer.State.INTAKE) {
+            target = current + SINGLE + INTAKE_OFFSET;
+        } else if(Spindexer.state == Spindexer.State.SHOOTING) {
+            target = current + SINGLE + SHOOTING_OFFSET;
+        } else if(Spindexer.state == Spindexer.State.COLORSENSOR) {
+            target = current + SINGLE + COLOR_SENSOR_OFFSET;
+        }
         SpindexerMotor.setTargetPosition(target);
         SpindexerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         SpindexerMotor.setPower(0.5);
@@ -58,7 +65,14 @@ public class SpindexerHelper {
         int currentTicks = SpindexerMotor.getCurrentPosition();
         int currentIndex = findPosition();
         int deltaSlots = Math.floorMod(index - currentIndex, SLOTS);
-        int target = currentTicks + deltaSlots * SINGLE;
+        int target = 0;
+        if(Spindexer.state == Spindexer.State.INTAKE) {
+            target = currentTicks + deltaSlots * SINGLE + INTAKE_OFFSET;
+        } else if(Spindexer.state == Spindexer.State.SHOOTING) {
+            target = currentTicks + deltaSlots * SINGLE + SHOOTING_OFFSET;
+        } else if(Spindexer.state == Spindexer.State.COLORSENSOR) {
+            target = currentTicks + deltaSlots * SINGLE + COLOR_SENSOR_OFFSET;
+        }
 
         SpindexerMotor.setTargetPosition(target);
         SpindexerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -71,53 +85,16 @@ public class SpindexerHelper {
     }
 
     public static String[] getColors() {
-        if (state == State.IDLE) {
-            for (int i = 0; i < SLOTS; i++) colors[i] = "-";
-            samplesTaken = 0;
-            state = State.MOVING;
-            moveToNextPosition();
-        }
+        Spindexer.state = Spindexer.State.COLORSENSOR;
 
-        while (state != State.DONE) {
-            switch (state) {
-                case MOVING: {
-                    int err = SpindexerMotor.getTargetPosition() - SpindexerMotor.getCurrentPosition();
-                    if (Math.abs(err) <= ARRIVAL_TOL) {
-                        arrivedAtMs = System.currentTimeMillis();
-                        state = State.FINISHING;
-                    }
-                    break;
-                }
-                case FINISHING: {
-                    if (System.currentTimeMillis() - arrivedAtMs >= SETTLE_MS) {
-                        state = State.SAMPLING;
-                    }
-                    break;
-                }
-                case SAMPLING: {
-                    int pos = findPosition();
-                    String c = ColorSensorHelper.getColor();
-                    colors[pos] = (c != null) ? c : "unknown";
-                    samplesTaken++;
-                    if (samplesTaken >= SLOTS) {
-                        state = State.DONE;
-                    } else {
-                        state = State.MOVING;
-                        moveToNextPosition();
-                    }
-                    break;
-                }
-                default:
-                    break;
-            }
+        for (int i = 0; i < 3; i++) {
+            moveToPosition(i);
+            colors[i] = ColorSensorHelper.getColor();
         }
 
         String[] result = colors.clone();
 
         for (int i = 0; i < SLOTS; i++) colors[i] = "-";
-        samplesTaken = 0;
-        state = State.IDLE;
-        arrivedAtMs = 0L;
 
         return result;
     }
