@@ -16,7 +16,7 @@ public class SpindexerHelper {
     private static final int ARRIVAL_TOL = 10;
     private static final long SETTLE_MS = 500;
 
-    public enum State { IDLE, MOVING, FINISHING, SAMPLING, DONE }
+    public enum State { IDLE, MOVING, FINISHING, SAMPLING, AUTO, DONE }
 
     private static State state = State.IDLE;
     private static String[] colors = new String[SLOTS];
