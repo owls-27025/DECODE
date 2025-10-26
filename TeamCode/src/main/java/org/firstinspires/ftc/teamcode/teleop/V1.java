@@ -5,11 +5,13 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.mechanisms.drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.mechanisms.spindexer.Spindexer;
+import org.firstinspires.ftc.teamcode.mechanisms.spindexer.SpindexerHelper;
+import org.firstinspires.ftc.teamcode.mechanisms.spindexer.colorSensor.ColorSensorHelper;
 
 @TeleOp(name = "TeleOp", group = "OpModes")
 public class V1 extends OpMode {
-    public static enum State { AUTO, MANUALCOLOR, MANUALSHOOTER, MANUAL}
-    private static V1.State state = V1.State.AUTO;
+    public enum State { AUTO, MANUALCOLOR, MANUALSHOOTER, MANUAL}
+    private static State state = V1.State.AUTO;
     int currentBall = 0;
     String[] colors;
     boolean hasColors = false;
@@ -19,18 +21,28 @@ public class V1 extends OpMode {
 
     @Override
     public void init() {
-        Drivetrain.init(hardwareMap);
-//        Spindexer.init(hardwareMap);
+//        Drivetrain.init(hardwareMap);
+        Spindexer.init(hardwareMap);
     }
     public void loop() {
-        drivetrain();
+//        drivetrain();
 //        shooter();
+        intake();
 
         if(gamepad2.right_bumper) {
             state = State.MANUALCOLOR;
         } else if(gamepad2.left_bumper) {
             state = State.AUTO;
         }
+
+        telemetry.addData("Spindexer Position", SpindexerHelper.findPosition());
+        telemetry.addData("Ball 1", Spindexer.colors[0]);
+        telemetry.addData("Ball 2", Spindexer.colors[1]);
+        telemetry.addData("Ball 3", Spindexer.colors[2]);
+        telemetry.addData("Current Color", ColorSensorHelper.getColor());
+        telemetry.addData("Current Position", SpindexerHelper.SpindexerMotor.getCurrentPosition());
+        telemetry.addData("Current Offset", SpindexerHelper.getStateOffset());
+        telemetry.update();
     }
 
     public void drivetrain() {
@@ -117,6 +129,12 @@ public class V1 extends OpMode {
                 // no shooter yet but more
                 break;
             }
+        }
+    }
+
+    public void intake() {
+        if(gamepad1.a) {
+            Spindexer.intake();
         }
     }
 }
