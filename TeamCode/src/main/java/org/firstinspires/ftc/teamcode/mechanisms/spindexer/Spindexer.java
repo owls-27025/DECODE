@@ -1,12 +1,17 @@
 package org.firstinspires.ftc.teamcode.mechanisms.spindexer;
 
+import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.mechanisms.spindexer.distanceSensor.DistanceSensorHelper;
 import org.firstinspires.ftc.teamcode.mechanisms.spindexer.intake.IntakeHelper;
 import org.firstinspires.ftc.teamcode.mechanisms.spindexer.colorSensor.ColorSensorHelper;
 import org.firstinspires.ftc.teamcode.mechanisms.spindexer.shooter.ShooterHelper;
 import org.firstinspires.ftc.teamcode.mechanisms.spindexer.SpindexerHelper;
+
+import java.util.Objects;
 
 public class Spindexer {
     static String[] motif = new String[3];
@@ -24,7 +29,7 @@ public class Spindexer {
     public static String[] shootMotifBall(int index) {
         motif[0] = "Green";
         motif[1] = "Purple";
-        motif[2] = "Purple"; // placeholder motif because no limelight yet
+        motif[2] = "Purple"; // placeholder motif because there is no limelight code yet
 
         colors = SpindexerHelper.getColors();
 
@@ -119,39 +124,19 @@ public class Spindexer {
 //        IntakeHelper.start();
 
         state = State.INTAKE;
-        for (int i = 0; i < 3; i++) {
-            SpindexerHelper.moveToPosition(i);
-            long arriveDeadline = System.currentTimeMillis() + 2000;
-            while (SpindexerHelper.SpindexerMotor.isBusy() && System.currentTimeMillis() < arriveDeadline) {
-                try { Thread.sleep(10); } catch (InterruptedException ignored) {}
-            }
-            long goneDeadline = System.currentTimeMillis() + 250;
-            while (DistanceSensorHelper.isBall() && System.currentTimeMillis() < goneDeadline) {
-                try { Thread.sleep(10); } catch (InterruptedException ignored) {}
-            }
-            long presentDeadline = System.currentTimeMillis() + 3000;
-            while (!DistanceSensorHelper.isBall() && System.currentTimeMillis() < presentDeadline) {
-                try { Thread.sleep(10); } catch (InterruptedException ignored) {}
-            }
-            if (!DistanceSensorHelper.isBall()) {
-                colors[i] = "Neither";
-                continue;
-            }
-            try { Thread.sleep(150); } catch (InterruptedException ignored) {}
-            String color = ColorSensorHelper.getColor();
-            long confirmDeadline = System.currentTimeMillis() + 500;
-            while (System.currentTimeMillis() < confirmDeadline) {
-                String newColor = ColorSensorHelper.getColor();
-                if (newColor.equals(color)) break;
-                color = newColor;
-                try { Thread.sleep(20); } catch (InterruptedException ignored) {}
-            }
-            colors[i] = color;
-            long clearDeadline = System.currentTimeMillis() + 800;
-            while (DistanceSensorHelper.isBall() && System.currentTimeMillis() < clearDeadline) {
-                try { Thread.sleep(10); } catch (InterruptedException ignored) {}
-            }
+        SpindexerHelper.moveToPosition(0);
+        while(!DistanceSensorHelper.isBall()) {
+            // a a a a a  a a
         }
+        state = State.COLORSENSOR;
+        SpindexerHelper.moveToPosition(0);
+        while(Objects.equals(ColorSensorHelper.getColor(), "Neither")) {
+            // do nothing
+        }
+        String color = ColorSensorHelper.getColor();
+        colors[0] = color;
+        state = State.INTAKE;
+        SpindexerHelper.moveToPosition(2);
 
 //        IntakeHelper.stop();
     }

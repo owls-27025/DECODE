@@ -17,7 +17,7 @@ public class SpindexerHelper {
     private static final int SINGLE = TPR / SLOTS;
     private static final int INTAKE_OFFSET = 48;
     private static final int SHOOTING_OFFSET = 0;
-    private static final int COLOR_SENSOR_OFFSET = 80;
+    private static final int COLOR_SENSOR_OFFSET = 0;
     private static String[] colors = new String[SLOTS];
 
     public static void init(HardwareMap hardwareMap) {
@@ -34,7 +34,14 @@ public class SpindexerHelper {
     }
 
     public static int getStateOffset() {
-        return (Spindexer.state == Spindexer.State.INTAKE) ? INTAKE_OFFSET : (Spindexer.state == Spindexer.State.SHOOTING) ? SHOOTING_OFFSET : (Spindexer.state == Spindexer.State.COLORSENSOR) ? COLOR_SENSOR_OFFSET : SHOOTING_OFFSET;
+        if(Spindexer.state == Spindexer.State.SHOOTING) {
+            return SHOOTING_OFFSET;
+        } else if(Spindexer.state == Spindexer.State.INTAKE) {
+            return INTAKE_OFFSET;
+        } else if(Spindexer.state == Spindexer.State.COLORSENSOR) {
+            return COLOR_SENSOR_OFFSET;
+        }
+        return 0;
     }
 
 
@@ -58,19 +65,16 @@ public class SpindexerHelper {
         int currIdx = findPosition();
         int deltaSlots = Math.floorMod(index - currIdx, SLOTS);
         int currentTicks = SpindexerMotor.getCurrentPosition();
-        int target = currentTicks + deltaSlots * SINGLE;
-        if(target % 96 != 48) {
-            target = currentTicks + deltaSlots * SINGLE + getStateOffset();
-        }
+        int target = currentTicks + deltaSlots * SINGLE + getStateOffset();
 
         SpindexerMotor.setTargetPosition(target);
         SpindexerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         SpindexerMotor.setPower(0.5);
     }
 
-    public static void moveServo(double pos01) {
+    public static void moveServo(double pos) {
         if (SpindexerServo == null) return;
-        SpindexerServo.setPosition(Math.max(0.0, Math.min(1.0, pos01)));
+        SpindexerServo.setPosition(Math.max(0.0, Math.min(1.0, pos)));
     }
 
     public static String[] getColors() {
