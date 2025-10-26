@@ -7,10 +7,13 @@ import org.firstinspires.ftc.teamcode.mechanisms.drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.mechanisms.spindexer.Spindexer;
 import org.firstinspires.ftc.teamcode.mechanisms.spindexer.SpindexerHelper;
 import org.firstinspires.ftc.teamcode.mechanisms.spindexer.colorSensor.ColorSensorHelper;
+import org.firstinspires.ftc.teamcode.mechanisms.spindexer.intake.IntakeHelper;
+
+import java.util.Arrays;
 
 @TeleOp(name = "TeleOp", group = "OpModes")
 public class V1 extends OpMode {
-    public enum State { AUTO, MANUALCOLOR, MANUALSHOOTER, MANUAL}
+    public enum State { AUTO, MANUAL}
     private static State state = V1.State.AUTO;
     int currentBall = 0;
     String[] colors;
@@ -18,11 +21,12 @@ public class V1 extends OpMode {
     String currentColor;
     double currentSpeed = 1;
     boolean isFieldCentric = false;
+    int currentIntakeBall = 0;
 
     @Override
     public void init() {
 //        Drivetrain.init(hardwareMap);
-        Spindexer.init(hardwareMap);
+        Spindexer.init(hardwareMap, telemetry);
     }
     public void loop() {
 //        drivetrain();
@@ -30,18 +34,20 @@ public class V1 extends OpMode {
         intake();
 
         if(gamepad2.right_bumper) {
-            state = State.MANUALCOLOR;
+            state = State.MANUAL;
         } else if(gamepad2.left_bumper) {
             state = State.AUTO;
         }
 
         telemetry.addData("Spindexer Position", SpindexerHelper.findPosition());
-        telemetry.addData("Ball 1", Spindexer.colors[0]);
-        telemetry.addData("Ball 2", Spindexer.colors[1]);
-        telemetry.addData("Ball 3", Spindexer.colors[2]);
+        telemetry.addData("Colors", Arrays.toString(Spindexer.colors));
         telemetry.addData("Current Color", ColorSensorHelper.getColor());
         telemetry.addData("Current Position", SpindexerHelper.SpindexerMotor.getCurrentPosition());
         telemetry.addData("Current Offset", SpindexerHelper.getStateOffset());
+        telemetry.addData("Current State", Spindexer.state);
+        telemetry.addData("current state again", Spindexer.state);
+        telemetry.addData("Target Position", SpindexerHelper.SpindexerMotor.getTargetPosition());
+        telemetry.addData("Power", SpindexerHelper.SpindexerMotor.getPower());
         telemetry.update();
     }
 
@@ -86,7 +92,7 @@ public class V1 extends OpMode {
             case AUTO: {
                 if(gamepad2.a) {
                     if(!hasColors) {
-                        colors = Spindexer.shootMotifBall(currentBall);
+//                        colors = Spindexer.shootMotifBall(currentBall);
                         hasColors = true;
                         currentBall = (currentBall + 1) % 3;
                     } else {
@@ -95,7 +101,7 @@ public class V1 extends OpMode {
                     }
                 } else if(gamepad2.b) {
                     if(!hasColors) {
-                        colors = Spindexer.shootMotif(currentBall);
+//                        colors = Spindexer.shootMotif(currentBall);
                         hasColors = true;
                     } else {
                         Spindexer.shootMotif(currentBall, colors);
@@ -103,7 +109,7 @@ public class V1 extends OpMode {
                 }
                 break;
             }
-            case MANUALCOLOR: {
+            case MANUAL: {
                 if(gamepad2.dpad_left || gamepad2.dpad_up) {
                     currentColor = "Green";
                 } else if(gamepad2.dpad_right || gamepad2.dpad_down) {
@@ -111,7 +117,7 @@ public class V1 extends OpMode {
                 }
                 if(gamepad2.a) {
                     if(!hasColors) {
-                        colors = Spindexer.shootMotifBall(currentColor);
+//                        colors = Spindexer.shootMotifBall(currentColor);
                         hasColors = true;
                         currentBall = (currentBall + 1) % 3;
                     } else {
@@ -121,20 +127,23 @@ public class V1 extends OpMode {
                 }
                 break;
             }
-            case MANUALSHOOTER: {
-                // no shooter yet
-                break;
-            }
-            case MANUAL: {
-                // no shooter yet but more
-                break;
-            }
         }
     }
 
     public void intake() {
-        if(gamepad1.a) {
-            Spindexer.intake();
+        if(gamepad1.aWasPressed()) {
+            if (IntakeHelper.intake.getPower() != 0) {
+                IntakeHelper.stop();
+            } else {
+                IntakeHelper.start();
+            }
+        } else if(gamepad1.bWasPressed()) {
+            telemetry.addLine("before thingy");
+            telemetry.update();
+            Spindexer.intake(currentIntakeBall);
+            telemetry.addLine("after thingy");
+            telemetry.update();
+            currentIntakeBall = (currentIntakeBall + 1) % 3;
         }
     }
 }

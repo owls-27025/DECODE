@@ -14,7 +14,7 @@ import static org.firstinspires.ftc.teamcode.mechanisms.spindexer.SpindexerHelpe
 public class SpindexerTest extends OpMode {
     @Override
     public void init() {
-        SpindexerHelper.init(hardwareMap);
+        SpindexerHelper.init(hardwareMap, telemetry);
     }
     public void loop() {
 
@@ -22,9 +22,6 @@ public class SpindexerTest extends OpMode {
         String[] motif2 = null;
         String[] motif3 = null;
         String[] motif4 = null;
-        if (gamepad1.a) {
-            Spindexer.shootMotifBall(0);
-        }
 
         telemetry.addData("Target Position", SpindexerMotor.getTargetPosition());
         telemetry.addData("Position: ", SpindexerHelper.findPosition());

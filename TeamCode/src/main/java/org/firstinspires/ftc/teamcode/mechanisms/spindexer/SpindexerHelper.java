@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.mechanisms.spindexer;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.mechanisms.spindexer.colorSensor.ColorSensorHelper;
 
 import java.util.Arrays;
@@ -19,8 +21,9 @@ public class SpindexerHelper {
     private static final int SHOOTING_OFFSET = 0;
     private static final int COLOR_SENSOR_OFFSET = 0;
     private static String[] colors = new String[SLOTS];
+    private static Telemetry codeisntworking;
 
-    public static void init(HardwareMap hardwareMap) {
+    public static void init(HardwareMap hardwareMap, Telemetry telemetry) {
         SpindexerMotor = hardwareMap.get(DcMotor.class, "spindexer");
         SpindexerServo = hardwareMap.get(Servo.class, "spindexer servo");
 
@@ -31,6 +34,8 @@ public class SpindexerHelper {
         SpindexerMotor.setPower(0.5);
 
         Arrays.fill(colors, "-");
+
+        codeisntworking = telemetry;
     }
 
     public static int getStateOffset() {
@@ -47,8 +52,7 @@ public class SpindexerHelper {
 
     public static int findPosition() {
         int ticks = SpindexerMotor.getCurrentPosition() - getStateOffset();
-        int idx = Math.round(ticks / (float) SINGLE);
-        return Math.floorMod(idx, SLOTS);
+        return (ticks / SINGLE) % 3;
     }
 
     public static void moveToNextPosition() {
@@ -64,8 +68,11 @@ public class SpindexerHelper {
 
         int currIdx = findPosition();
         int deltaSlots = Math.floorMod(index - currIdx, SLOTS);
+        codeisntworking.addData("deltaSlots", deltaSlots);
+        codeisntworking.update();
+
         int currentTicks = SpindexerMotor.getCurrentPosition();
-        int target = currentTicks + deltaSlots * SINGLE + getStateOffset();
+        int target = currentTicks + deltaSlots * SINGLE;
 
         SpindexerMotor.setTargetPosition(target);
         SpindexerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -75,23 +82,5 @@ public class SpindexerHelper {
     public static void moveServo(double pos) {
         if (SpindexerServo == null) return;
         SpindexerServo.setPosition(Math.max(0.0, Math.min(1.0, pos)));
-    }
-
-    public static String[] getColors() {
-        Spindexer.state = Spindexer.State.INTAKE;
-
-        for (int i = 0; i < 3; i++) {
-            moveToPosition(i);
-            if(SpindexerMotor.isBusy()) {
-                // nothing
-            }
-            colors[i] = ColorSensorHelper.getColor();
-        }
-
-        String[] result = colors.clone();
-
-        Arrays.fill(colors, "-");
-
-        return result;
     }
 }
