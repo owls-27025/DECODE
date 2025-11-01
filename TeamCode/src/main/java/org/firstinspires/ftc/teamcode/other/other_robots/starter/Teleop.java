@@ -233,7 +233,7 @@ public class Teleop extends OpMode {
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
         telemetry.addData("motorSpeed", launcher.getVelocity());
         telemetry.addData("Color: ", ColorSensorHelper.getColor());
-        telemetry.addData("Sensor Hue: ", ColorSensorHelper.readSample(hardwareMap.get(ColorSensor.class, "sensor1")).h);
+        telemetry.addData("Sensor Hue: ", ColorSensorHelper.readSample(hardwareMap.get(ColorSensor.class, "colorSensor")).h);
 
     }
 

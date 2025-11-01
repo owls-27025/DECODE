@@ -130,7 +130,7 @@ public class V1 extends OpMode {
         }
     }
 
-    public void intake() {
+    private void intake() {
         if(gamepad1.aWasPressed()) {
             if (IntakeHelper.intake.getPower() != 0) {
                 IntakeHelper.stop();

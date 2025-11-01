@@ -21,7 +21,7 @@ public class SpindexerHelper {
     private static final int SHOOTING_OFFSET = 0;
     private static final int COLOR_SENSOR_OFFSET = 0;
     private static String[] colors = new String[SLOTS];
-    private static Telemetry codeisntworking;
+    private static Telemetry spindexerTelemetry;
 
     public static void init(HardwareMap hardwareMap, Telemetry telemetry) {
         SpindexerMotor = hardwareMap.get(DcMotor.class, "spindexer");
@@ -35,7 +35,7 @@ public class SpindexerHelper {
 
         Arrays.fill(colors, "-");
 
-        codeisntworking = telemetry;
+        spindexerTelemetry = telemetry;
     }
 
     public static int getStateOffset() {
@@ -68,8 +68,8 @@ public class SpindexerHelper {
 
         int currIdx = findPosition();
         int deltaSlots = Math.floorMod(index - currIdx, SLOTS);
-        codeisntworking.addData("deltaSlots", deltaSlots);
-        codeisntworking.update();
+        spindexerTelemetry.addData("deltaSlots", deltaSlots);
+        spindexerTelemetry.update();
 
         int currentTicks = SpindexerMotor.getCurrentPosition();
         int target = currentTicks + deltaSlots * SINGLE;
