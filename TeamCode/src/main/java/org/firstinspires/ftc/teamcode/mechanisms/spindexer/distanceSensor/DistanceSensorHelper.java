@@ -8,13 +8,13 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class DistanceSensorHelper {
-    static Rev2mDistanceSensor distance;
+    public static Rev2mDistanceSensor distance;
 
     public static void init(HardwareMap hardwareMap) {
         distance = hardwareMap.get(Rev2mDistanceSensor.class, "distance sensor");
     }
 
     public static boolean isBall() {
-        return distance.getDistance(DistanceUnit.MM) < 200;
+        return distance.getDistance(DistanceUnit.MM) < 100;
     }
 }

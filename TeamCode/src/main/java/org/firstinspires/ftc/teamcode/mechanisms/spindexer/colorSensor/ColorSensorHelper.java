@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class ColorSensorHelper {
     private static final float GREEN_HUE_CENTER = 149f; // green
     private static final float PURPLE_HUE_CENTER = 266f; // purple
-    private static final float HUE_TOL_DEG = 25f; // accuracy
+    private static final float HUE_TOL_DEG = 58f; // accuracy
     private static final float MIN_SAT = 0.35f; // ignore gray
     private static final float MIN_VAL = 0.15f; // ignore very dark / too far
     private static final int   STABLE_N = 3; // frames required to confirm
