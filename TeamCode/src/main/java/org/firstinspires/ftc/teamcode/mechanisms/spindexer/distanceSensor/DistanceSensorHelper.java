@@ -6,12 +6,13 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.Config;
 
 public class DistanceSensorHelper {
     public static Rev2mDistanceSensor distance;
 
     public static void init(HardwareMap hardwareMap) {
-        distance = hardwareMap.get(Rev2mDistanceSensor.class, "distance sensor");
+        distance = hardwareMap.get(Rev2mDistanceSensor.class, Config.distanceSensor);
     }
 
     public static boolean isBall() {

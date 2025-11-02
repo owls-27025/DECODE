@@ -5,10 +5,11 @@ import android.graphics.Color;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import org.firstinspires.ftc.teamcode.Config;
 
 public class ColorSensorHelper {
     private static final float GREEN_HUE_CENTER = 149f; // green
-    private static final float PURPLE_HUE_CENTER = 266f; // purple
+    private static final float PURPLE_HUE_CENTER = 270f; // purple
     private static final float HUE_TOL_DEG = 30f; // accuracy
     private static final float MIN_SAT = 0.35f; // ignore gray
     private static final float MIN_VAL = 0.15f; // ignore very dark / too far
@@ -22,7 +23,7 @@ public class ColorSensorHelper {
     private static String stableColor = "…";
 
     public static void init(HardwareMap hw) {
-        colorSensor = hw.get(RevColorSensorV3.class, "color sensor");
+        colorSensor = hw.get(RevColorSensorV3.class, Config.colorSensor);
     }
 
     public static void init(HardwareMap hw, String name1, String name2) {
