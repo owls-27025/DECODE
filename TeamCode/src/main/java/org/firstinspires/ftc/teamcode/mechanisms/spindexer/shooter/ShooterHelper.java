@@ -7,22 +7,15 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class ShooterHelper {
     public static DcMotorEx shooterMotor;
-    public static Servo shooterAngle;
 
     public static void init(HardwareMap hardwareMap) {
         shooterMotor = hardwareMap.get(DcMotorEx.class, "shooter");
         shooterMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        shooterAngle = hardwareMap.get(Servo.class, "shooter servo");
+        shooterMotor.setDirection(DcMotor.Direction.REVERSE);
     }
 
     public static void shoot() {
         shooterMotor.setVelocity(1000); // placeholder, once limelight implemented calculate velocity
-        shooterAngle.setPosition(0); // placeholder, once limelight implemented calculate angle
-    }
-
-    public static void shoot(double velocity, double angle) {
-        shooterMotor.setVelocity(velocity);
-        shooterAngle.setPosition(angle); // placeholder
     }
 
     public static void shoot(double velocity) {

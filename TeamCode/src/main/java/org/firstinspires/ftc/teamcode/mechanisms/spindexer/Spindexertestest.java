@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.mechanisms.spindexer;
 
 import static org.firstinspires.ftc.teamcode.mechanisms.spindexer.SpindexerHelper.SpindexerMotor;
 
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -15,13 +14,13 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.DoubleStream;
 
-public class Spindexer {
+public class Spindexertestest {
     //based on spindexer motor ticks per rotation
     private final static int HALF_SLOT_TICKS = 48;
     private final static int SLOT_TICKS = 96;
     private static long loopIndex = 0L;
 
-    private final static double SHOOTER_VELOCITY = 1000;
+    public final static double SHOOTER_VELOCITY = 1200;
 
     static Telemetry ttelemetry;
     //There are 6 positions on the spindexer each represented as below
@@ -106,13 +105,13 @@ public class Spindexer {
         for (int i=0;i<3;i++) {
             intakeArtifact();
             Thread.sleep(2000);
-            while(!Objects.equals(ColorSensorHelper.getColor(), "Green") || !Objects.equals(ColorSensorHelper.getColor(), "Purple")) {
-                ttelemetry.addData("color", ColorSensorHelper.getColor());
-                ttelemetry.update();
-            }
+//            while(!Objects.equals(ColorSensorHelper.getColor(), "Green") || !Objects.equals(ColorSensorHelper.getColor(), "Purple")) {
+//                ttelemetry.addData("color", ColorSensorHelper.getColor());
+//                ttelemetry.update();
+//            }
             Thread.sleep(2000);
-            colors[i] = ColorSensorHelper.getColor();
-            ttelemetry.addData("Color: ",colors[i]);
+//            colors[i] = ColorSensorHelper.getColor();
+//            ttelemetry.addData("Color: ",colors[i]);
             ttelemetry.update();
             moveSpindexer(HALF_SLOT_TICKS);
             ttelemetry.addLine("thingy");
@@ -131,15 +130,12 @@ public class Spindexer {
 
     public static void intakeArtifact(){
         ttelemetry.addData("Intake Artifact Count before intake:", intakeArtifactCount);
-        while(!DistanceSensorHelper.isBall()){
-            ttelemetry.addLine("Waiting for ball intake...");
-            //telemetry.update();
-        }
-        if(DistanceSensorHelper.isBall()) {
-            //Move to color sensor position
-            moveSpindexer(HALF_SLOT_TICKS);
-            intakeArtifactCount++;
-        }
+//        while(!DistanceSensorHelper.isBall()){
+//            ttelemetry.addLine("Waiting for ball intake...");
+//            //telemetry.update();
+//        }
+        moveSpindexer(HALF_SLOT_TICKS);
+        intakeArtifactCount++;
         ttelemetry.addData("Intake Artifact Count:", intakeArtifactCount);
     }
 

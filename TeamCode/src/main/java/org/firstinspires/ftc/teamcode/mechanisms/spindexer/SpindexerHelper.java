@@ -1,11 +1,12 @@
 package org.firstinspires.ftc.teamcode.mechanisms.spindexer;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.mechanisms.spindexer.colorSensor.ColorSensorHelper;
+import org.firstinspires.ftc.teamcode.mechanisms.spindexer.deprecated.SpindexerOld;
 
 import java.util.Arrays;
 
@@ -25,13 +26,14 @@ public class SpindexerHelper {
 
     public static void init(HardwareMap hardwareMap, Telemetry telemetry) {
         SpindexerMotor = hardwareMap.get(DcMotor.class, "spindexer");
-        SpindexerServo = hardwareMap.get(Servo.class, "spindexer servo");
+        SpindexerServo = hardwareMap.get(Servo.class, "flap");
 
         SpindexerMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         SpindexerMotor.setTargetPosition(0);
         SpindexerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         SpindexerMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         SpindexerMotor.setPower(0.5);
+        SpindexerMotor.setDirection(DcMotor.Direction.REVERSE);
 
         Arrays.fill(colors, "-");
 
@@ -39,11 +41,11 @@ public class SpindexerHelper {
     }
 
     public static int getStateOffset() {
-        if(Spindexer.state == Spindexer.State.SHOOTING) {
+        if(SpindexerOld.state == SpindexerOld.State.SHOOTING) {
             return SHOOTING_OFFSET;
-        } else if(Spindexer.state == Spindexer.State.INTAKE) {
+        } else if(SpindexerOld.state == SpindexerOld.State.INTAKE) {
             return INTAKE_OFFSET;
-        } else if(Spindexer.state == Spindexer.State.COLORSENSOR) {
+        } else if(SpindexerOld.state == SpindexerOld.State.COLORSENSOR) {
             return COLOR_SENSOR_OFFSET;
         }
         return 0;
@@ -81,6 +83,6 @@ public class SpindexerHelper {
 
     public static void moveServo(double pos) {
         if (SpindexerServo == null) return;
-        SpindexerServo.setPosition(Math.max(0.0, Math.min(1.0, pos)));
+        SpindexerServo.setPosition(pos);
     }
 }

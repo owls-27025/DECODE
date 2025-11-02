@@ -5,9 +5,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.mechanisms.drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.mechanisms.spindexer.Spindexer;
+import org.firstinspires.ftc.teamcode.mechanisms.spindexer.deprecated.SpindexerOld;
 import org.firstinspires.ftc.teamcode.mechanisms.spindexer.SpindexerHelper;
 import org.firstinspires.ftc.teamcode.mechanisms.spindexer.colorSensor.ColorSensorHelper;
-import org.firstinspires.ftc.teamcode.mechanisms.spindexer.intake.IntakeHelper;
 
 import java.util.Arrays;
 
@@ -30,8 +30,16 @@ public class V1 extends OpMode {
     }
     public void loop() {
 //        drivetrain();
-//        shooter();
-        intake();
+        try {
+            shooter();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+//        try {
+//            intake();
+//        } catch (InterruptedException e) {
+//            throw new RuntimeException(e);
+//        }
 
         if(gamepad2.right_bumper) {
             state = State.MANUAL;
@@ -40,12 +48,12 @@ public class V1 extends OpMode {
         }
 
         telemetry.addData("Spindexer Position", SpindexerHelper.findPosition());
-        telemetry.addData("Colors", Arrays.toString(Spindexer.colors));
+        telemetry.addData("Colors", Arrays.toString(SpindexerOld.colors));
         telemetry.addData("Current Color", ColorSensorHelper.getColor());
         telemetry.addData("Current Position", SpindexerHelper.SpindexerMotor.getCurrentPosition());
         telemetry.addData("Current Offset", SpindexerHelper.getStateOffset());
-        telemetry.addData("Current State", Spindexer.state);
-        telemetry.addData("current state again", Spindexer.state);
+        telemetry.addData("Current State", SpindexerOld.state);
+        telemetry.addData("current state again", SpindexerOld.state);
         telemetry.addData("Target Position", SpindexerHelper.SpindexerMotor.getTargetPosition());
         telemetry.addData("Power", SpindexerHelper.SpindexerMotor.getPower());
         telemetry.update();
@@ -87,63 +95,15 @@ public class V1 extends OpMode {
         Drivetrain.BR.setPower((y + x - rx) * currentSpeed);
     }
 
-    public void shooter() {
-        switch (state) {
-            case AUTO: {
-                if(gamepad2.a) {
-                    if(!hasColors) {
-//                        colors = Spindexer.shootMotifBall(currentBall);
-                        hasColors = true;
-                        currentBall = (currentBall + 1) % 3;
-                    } else {
-                        Spindexer.shootMotifBall(currentBall, colors);
-                        currentBall = (currentBall + 1) % 3;
-                    }
-                } else if(gamepad2.b) {
-                    if(!hasColors) {
-//                        colors = Spindexer.shootMotif(currentBall);
-                        hasColors = true;
-                    } else {
-                        Spindexer.shootMotif(currentBall, colors);
-                    }
-                }
-                break;
-            }
-            case MANUAL: {
-                if(gamepad2.dpad_left || gamepad2.dpad_up) {
-                    currentColor = "Green";
-                } else if(gamepad2.dpad_right || gamepad2.dpad_down) {
-                    currentColor = "Purple";
-                }
-                if(gamepad2.a) {
-                    if(!hasColors) {
-//                        colors = Spindexer.shootMotifBall(currentColor);
-                        hasColors = true;
-                        currentBall = (currentBall + 1) % 3;
-                    } else {
-                        Spindexer.shootMotifBall(currentColor, colors);
-                        currentBall = (currentBall + 1) % 3;
-                    }
-                }
-                break;
-            }
+    public void shooter() throws InterruptedException {
+        if (gamepad1.bWasPressed()) {
+            Spindexer.shoot();
         }
     }
 
-    private void intake() {
+    private void intake() throws InterruptedException {
         if(gamepad1.aWasPressed()) {
-            if (IntakeHelper.intake.getPower() != 0) {
-                IntakeHelper.stop();
-            } else {
-                IntakeHelper.start();
-            }
-        } else if(gamepad1.bWasPressed()) {
-            telemetry.addLine("before thingy");
-            telemetry.update();
-            Spindexer.intake(currentIntakeBall);
-            telemetry.addLine("after thingy");
-            telemetry.update();
-            currentIntakeBall = (currentIntakeBall + 1) % 3;
+            Spindexer.intake();
         }
     }
 }
