@@ -36,6 +36,7 @@ public class Spindexer {
     private static final double[] intakePositions = new double[]{1.0,3.0,5.0};
     private final double[] shootPositions = new double[]{0.0,2.0,4.0};
     public static String[] colors;
+    public static String[] motif;
 
     private static int intakeArtifactCount;
 
@@ -160,15 +161,74 @@ public class Spindexer {
     }
 
     public static void shoot() throws InterruptedException {
+        SpindexerHelper.moveToPosition(calculateShooter(colors, motif));
         for(int i = 0; i < 3; i++) {
-            ShooterHelper.shoot(SHOOTER_VELOCITY);
-            if (Math.abs(ShooterHelper.shooterMotor.getVelocity() - SHOOTER_VELOCITY) < 5) {
-                SpindexerHelper.moveServo(1);
-                Thread.sleep(750);
+            ShooterHelper.shoot(Spindexertestest.SHOOTER_VELOCITY);
+            while(Math.abs(ShooterHelper.shooterMotor.getVelocity() - Spindexertestest.SHOOTER_VELOCITY) > 2) {
+//                ttelemetry.addData("shooter velocity", ShooterHelper.shooterMotor.getVelocity());
+//                ttelemetry.update();
             }
+
+            Thread.sleep(750);
+            SpindexerHelper.moveServo(1);
+            Thread.sleep(750);
             SpindexerHelper.moveServo(0.5);
             Thread.sleep(750);
             SpindexerHelper.moveToNextPosition();
+        }
+    }
+
+    // motifs
+    static String[] m1 = {"Purple", "Purple", "Green"};
+    static String[] m2 = {"Purple", "Green", "Purple"};
+    static String[] m3 = {"Green", "Purple", "Purple"};
+
+    // color combinations
+    static String[] i1 = {"Purple", "Purple", "Green"};
+    static String[] i2 = {"Purple", "Green", "Purple"};
+    static String[] i3 = {"Green", "Purple", "Purple"};
+    static String[] i4 = {"Purple", "Purple", "Purple"};
+    static String[] i5 = {"Green", "Green", "Purple"};
+    static String[] i6 = {"Green", "Green", "Green"};
+    static String[] i7 = {"Green", "Purple", "Green"};
+    static String[] i8 = {"Purple", "Green", "Green"};
+
+    // group them into arrays for lookup
+    static String[][] motifs = {m1, m2, m3};
+    static String[][] colorCombos = {i1, i2, i3, i4, i5, i6, i7, i8};
+
+    public static int calculateShooter(String[] colors, String[] motif) {
+        int motifIndex = -1;
+        int colorIndex = -1;
+
+        // find which motif matches
+        for (int i = 0; i < motifs.length; i++) {
+            if (Arrays.equals(motifs[i], motif)) {
+                motifIndex = i;
+                break;
+            }
+        }
+
+        // find which color combo matches
+        for (int i = 0; i < colorCombos.length; i++) {
+            if (Arrays.equals(colorCombos[i], colors)) {
+                colorIndex = i;
+                break;
+            }
+        }
+
+        // offsets
+        int[][] offsets = {
+                {0, 2, 1}, // m1
+                {1, 0, 2}, // m2
+                {2, 1, 0}  // m3
+        };
+
+        // if it works use offset, otherwise 0
+        if (colorIndex < 3) {
+            return offsets[motifIndex][colorIndex];
+        } else {
+            return 0;
         }
     }
 }

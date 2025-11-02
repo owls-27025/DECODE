@@ -5,13 +5,14 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.mechanisms.drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.mechanisms.spindexer.Spindexer;
-import org.firstinspires.ftc.teamcode.mechanisms.spindexer.deprecated.SpindexerOld;
 import org.firstinspires.ftc.teamcode.mechanisms.spindexer.SpindexerHelper;
+import org.firstinspires.ftc.teamcode.mechanisms.spindexer.Spindexertestest;
+import org.firstinspires.ftc.teamcode.mechanisms.spindexer.shooter.ShooterHelper;
 import org.firstinspires.ftc.teamcode.mechanisms.spindexer.colorSensor.ColorSensorHelper;
 
 import java.util.Arrays;
 
-@TeleOp(name = "TeleOp", group = "Opmodes")
+@TeleOp(name = "TeleOp", group = "OpModes")
 public class V1 extends OpMode {
     public enum State { AUTO, MANUAL}
     private static State state = V1.State.AUTO;
@@ -52,8 +53,6 @@ public class V1 extends OpMode {
         telemetry.addData("Current Color", ColorSensorHelper.getColor());
         telemetry.addData("Current Position", SpindexerHelper.SpindexerMotor.getCurrentPosition());
         telemetry.addData("Current Offset", SpindexerHelper.getStateOffset());
-        telemetry.addData("Current State", SpindexerOld.state);
-        telemetry.addData("current state again", SpindexerOld.state);
         telemetry.addData("Target Position", SpindexerHelper.SpindexerMotor.getTargetPosition());
         telemetry.addData("Power", SpindexerHelper.SpindexerMotor.getPower());
         telemetry.update();
@@ -98,6 +97,48 @@ public class V1 extends OpMode {
     public void shooter() throws InterruptedException {
         if (gamepad1.bWasPressed()) {
             Spindexer.shoot();
+        }
+        if (gamepad1.xWasPressed()) {
+
+            ShooterHelper.shoot(Spindexertestest.SHOOTER_VELOCITY);
+            while(Math.abs(ShooterHelper.shooterMotor.getVelocity() - Spindexertestest.SHOOTER_VELOCITY) > 2) {
+                telemetry.addData("shooter velocity", ShooterHelper.shooterMotor.getVelocity());
+                telemetry.update();
+            }
+
+            Thread.sleep(750);
+            SpindexerHelper.moveServo(1);
+            Thread.sleep(750);
+            SpindexerHelper.moveServo(0.5);
+            Thread.sleep(750);
+            SpindexerHelper.moveToNextPosition();
+
+            ShooterHelper.shoot(1400);
+            while(Math.abs(ShooterHelper.shooterMotor.getVelocity() - Spindexertestest.SHOOTER_VELOCITY) > 2) {
+                telemetry.addData("shooter velocity", ShooterHelper.shooterMotor.getVelocity());
+                telemetry.update();
+            }
+
+            Thread.sleep(750);
+            SpindexerHelper.moveServo(1);
+            Thread.sleep(750);
+            SpindexerHelper.moveServo(0.5);
+            Thread.sleep(750);
+            SpindexerHelper.moveToNextPosition();
+
+            ShooterHelper.shoot(1400);
+            while(Math.abs(ShooterHelper.shooterMotor.getVelocity() - Spindexertestest.SHOOTER_VELOCITY) > 2) {
+                telemetry.addData("shooter velocity", ShooterHelper.shooterMotor.getVelocity());
+                telemetry.update();
+            }
+
+            Thread.sleep(750);
+            SpindexerHelper.moveServo(1);
+            Thread.sleep(750);
+            SpindexerHelper.moveServo(0.5);
+            Thread.sleep(750);
+            SpindexerHelper.moveToNextPosition();
+
         }
     }
 
