@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.mechanisms.drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.mechanisms.spindexer.Spindexer;
 import org.firstinspires.ftc.teamcode.mechanisms.spindexer.SpindexerHelper;
-import org.firstinspires.ftc.teamcode.mechanisms.spindexer.Spindexertestest;
 import org.firstinspires.ftc.teamcode.mechanisms.spindexer.shooter.ShooterHelper;
 import org.firstinspires.ftc.teamcode.mechanisms.spindexer.colorSensor.ColorSensorHelper;
 
@@ -100,8 +99,8 @@ public class V1 extends OpMode {
         }
         if (gamepad1.xWasPressed()) {
 
-            ShooterHelper.shoot(Spindexertestest.SHOOTER_VELOCITY);
-            while(Math.abs(ShooterHelper.shooterMotor.getVelocity() - Spindexertestest.SHOOTER_VELOCITY) > 2) {
+            ShooterHelper.shoot(Spindexer.SHOOTER_VELOCITY);
+            while(Math.abs(ShooterHelper.shooterMotor.getVelocity() - Spindexer.SHOOTER_VELOCITY) > 2) {
                 telemetry.addData("shooter velocity", ShooterHelper.shooterMotor.getVelocity());
                 telemetry.update();
             }
@@ -114,7 +113,7 @@ public class V1 extends OpMode {
             SpindexerHelper.moveToNextPosition();
 
             ShooterHelper.shoot(1400);
-            while(Math.abs(ShooterHelper.shooterMotor.getVelocity() - Spindexertestest.SHOOTER_VELOCITY) > 2) {
+            while(Math.abs(ShooterHelper.shooterMotor.getVelocity() - Spindexer.SHOOTER_VELOCITY) > 2) {
                 telemetry.addData("shooter velocity", ShooterHelper.shooterMotor.getVelocity());
                 telemetry.update();
             }
@@ -127,7 +126,7 @@ public class V1 extends OpMode {
             SpindexerHelper.moveToNextPosition();
 
             ShooterHelper.shoot(1400);
-            while(Math.abs(ShooterHelper.shooterMotor.getVelocity() - Spindexertestest.SHOOTER_VELOCITY) > 2) {
+            while(Math.abs(ShooterHelper.shooterMotor.getVelocity() - Spindexer.SHOOTER_VELOCITY) > 2) {
                 telemetry.addData("shooter velocity", ShooterHelper.shooterMotor.getVelocity());
                 telemetry.update();
             }

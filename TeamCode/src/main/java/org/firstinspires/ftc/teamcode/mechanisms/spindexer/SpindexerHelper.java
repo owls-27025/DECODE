@@ -34,7 +34,7 @@ public class SpindexerHelper {
         SpindexerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         SpindexerMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         SpindexerMotor.setPower(0.5);
-//        SpindexerMotor.setDirection(DcMotor.Direction.REVERSE);
+        SpindexerMotor.setDirection(DcMotor.Direction.REVERSE);
 
         Arrays.fill(colors, "-");
 

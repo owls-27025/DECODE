@@ -11,7 +11,7 @@ public class Config {
     public static String BL = "backLeft";
 
     public static String intake = "intake";
-    public static String spindexerMotor = "spindexer motor";
+    public static String spindexerMotor = "spindexer";
     public static String spindexerServo = "flap";
     public static String shooter = "shooter";
 }

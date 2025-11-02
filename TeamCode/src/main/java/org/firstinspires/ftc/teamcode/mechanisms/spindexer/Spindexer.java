@@ -10,6 +10,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.mechanisms.spindexer.colorSensor.ColorSensorHelper;
 import org.firstinspires.ftc.teamcode.mechanisms.spindexer.distanceSensor.DistanceSensorHelper;
 import org.firstinspires.ftc.teamcode.mechanisms.spindexer.shooter.ShooterHelper;
+import org.firstinspires.ftc.teamcode.mechanisms.spindexer.intake.IntakeHelper;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -21,7 +22,7 @@ public class Spindexer {
     private final static int SLOT_TICKS = 96;
     private static long loopIndex = 0L;
 
-    private final static double SHOOTER_VELOCITY = 1000;
+    public final static double SHOOTER_VELOCITY = 1000;
 
     static Telemetry ttelemetry;
     //There are 6 positions on the spindexer each represented as below
@@ -45,6 +46,7 @@ public class Spindexer {
         DistanceSensorHelper.init(hardwareMap);
         ColorSensorHelper.init(hardwareMap);
         ShooterHelper.init(hardwareMap);
+        IntakeHelper.init(hardwareMap);
         ttelemetry = telemetry;
     }
 
@@ -102,6 +104,7 @@ public class Spindexer {
      * This method is used to intake 3 artifacts and read the colors into the colors array
      */
     public static void intake() throws InterruptedException {
+        IntakeHelper.start();
         colors = new String[3];
         intakePosition();
         for (int i=0;i<3;i++) {
@@ -123,7 +126,7 @@ public class Spindexer {
             //colors[i] = ColorSensorHelper.getColor();
             ttelemetry.addData("Color: ",colors[i]);
             ttelemetry.update();
-            moveSpindexer(HALF_SLOT_TICKS);
+            moveSpindexer(96);
             ttelemetry.addLine("thingy");
             Thread.sleep(2000);
             ttelemetry.addData("current ticks1", SpindexerMotor.getCurrentPosition());
@@ -136,6 +139,7 @@ public class Spindexer {
         }
         ttelemetry.addData("colors:", Arrays.toString(colors));
         ttelemetry.update();
+        IntakeHelper.stop();
     }
 
     public static void intakeArtifact(){
@@ -163,8 +167,8 @@ public class Spindexer {
     public static void shoot() throws InterruptedException {
         SpindexerHelper.moveToPosition(calculateShooter(colors, motif));
         for(int i = 0; i < 3; i++) {
-            ShooterHelper.shoot(Spindexertestest.SHOOTER_VELOCITY);
-            while(Math.abs(ShooterHelper.shooterMotor.getVelocity() - Spindexertestest.SHOOTER_VELOCITY) > 2) {
+            ShooterHelper.shoot(Spindexer.SHOOTER_VELOCITY);
+            while(Math.abs(ShooterHelper.shooterMotor.getVelocity() - Spindexer.SHOOTER_VELOCITY) > 2) {
 //                ttelemetry.addData("shooter velocity", ShooterHelper.shooterMotor.getVelocity());
 //                ttelemetry.update();
             }
