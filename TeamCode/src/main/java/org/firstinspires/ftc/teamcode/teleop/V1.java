@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.spindexer.colorSensor.ColorSens
 
 import java.util.Arrays;
 
-@TeleOp(name = "TeleOp", group = "OpModes")
+@TeleOp(name = "TeleOp", group = "Opmodes")
 public class V1 extends OpMode {
     public enum State { AUTO, MANUAL}
     private static State state = V1.State.AUTO;

@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.Config;
 import org.firstinspires.ftc.teamcode.mechanisms.spindexer.deprecated.SpindexerOld;
 
 import java.util.Arrays;
@@ -25,8 +26,8 @@ public class SpindexerHelper {
     private static Telemetry spindexerTelemetry;
 
     public static void init(HardwareMap hardwareMap, Telemetry telemetry) {
-        SpindexerMotor = hardwareMap.get(DcMotor.class, "spindexer");
-        SpindexerServo = hardwareMap.get(Servo.class, "flap");
+        SpindexerMotor = hardwareMap.get(DcMotor.class, Config.spindexerMotor);
+        SpindexerServo = hardwareMap.get(Servo.class, Config.spindexerServo);
 
         SpindexerMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         SpindexerMotor.setTargetPosition(0);

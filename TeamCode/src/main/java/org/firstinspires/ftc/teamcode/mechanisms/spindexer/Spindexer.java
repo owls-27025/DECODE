@@ -41,8 +41,8 @@ public class Spindexer {
 
     public static void init(HardwareMap hardwareMap, Telemetry telemetry) {
         SpindexerHelper.init(hardwareMap, telemetry);
-//        DistanceSensorHelper.init(hardwareMap);
-//        ColorSensorHelper.init(hardwareMap);
+        DistanceSensorHelper.init(hardwareMap);
+        ColorSensorHelper.init(hardwareMap);
         ShooterHelper.init(hardwareMap);
         ttelemetry = telemetry;
     }
