@@ -15,6 +15,6 @@ public class DistanceSensorHelper {
     }
 
     public static boolean isBall() {
-        return distance.getDistance(DistanceUnit.MM) < 100;
+        return distance.getDistance(DistanceUnit.MM) < 125;
     }
 }

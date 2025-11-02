@@ -102,7 +102,7 @@ public class V1test extends OpMode {
         if (gamepad1.xWasPressed()) {
 
             ShooterHelper.shoot(Spindexertestest.SHOOTER_VELOCITY);
-            while(Math.abs(ShooterHelper.shooterMotor.getVelocity() - Spindexertestest.SHOOTER_VELOCITY) > 2) {
+            while(Math.abs(ShooterHelper.shooterMotor.getVelocity() - Spindexertestest.SHOOTER_VELOCITY) > 5) {
                 telemetry.addData("shooter velocity", ShooterHelper.shooterMotor.getVelocity());
                 telemetry.update();
             }
@@ -115,7 +115,7 @@ public class V1test extends OpMode {
             SpindexerHelper.moveToNextPosition();
 
             ShooterHelper.shoot(1400);
-            while(Math.abs(ShooterHelper.shooterMotor.getVelocity() - Spindexertestest.SHOOTER_VELOCITY) > 2) {
+            while(Math.abs(ShooterHelper.shooterMotor.getVelocity() - 1400) > 5) {
                 telemetry.addData("shooter velocity", ShooterHelper.shooterMotor.getVelocity());
                 telemetry.update();
             }
@@ -128,7 +128,7 @@ public class V1test extends OpMode {
             SpindexerHelper.moveToNextPosition();
 
             ShooterHelper.shoot(1400);
-            while(Math.abs(ShooterHelper.shooterMotor.getVelocity() - Spindexertestest.SHOOTER_VELOCITY) > 2) {
+            while(Math.abs(ShooterHelper.shooterMotor.getVelocity() - 1400) > 5) {
                 telemetry.addData("shooter velocity", ShooterHelper.shooterMotor.getVelocity());
                 telemetry.update();
             }

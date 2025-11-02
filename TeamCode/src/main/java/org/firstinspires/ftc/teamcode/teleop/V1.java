@@ -30,16 +30,16 @@ public class V1 extends OpMode {
     }
     public void loop() {
 //        drivetrain();
-        try {
-            shooter();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
 //        try {
-//            intake();
+//            shooter();
 //        } catch (InterruptedException e) {
 //            throw new RuntimeException(e);
 //        }
+        try {
+            intake();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
         if(gamepad2.right_bumper) {
             state = State.MANUAL;
@@ -48,7 +48,7 @@ public class V1 extends OpMode {
         }
 
         telemetry.addData("Spindexer Position", SpindexerHelper.findPosition());
-        telemetry.addData("Colors", Arrays.toString(SpindexerOld.colors));
+        telemetry.addData("Colors", Arrays.toString(Spindexer.colors));
         telemetry.addData("Current Color", ColorSensorHelper.getColor());
         telemetry.addData("Current Position", SpindexerHelper.SpindexerMotor.getCurrentPosition());
         telemetry.addData("Current Offset", SpindexerHelper.getStateOffset());

@@ -35,14 +35,14 @@ public class Spindexer {
 
     private static final double[] intakePositions = new double[]{1.0,3.0,5.0};
     private final double[] shootPositions = new double[]{0.0,2.0,4.0};
-    private static String[] colors;
+    public static String[] colors;
 
     private static int intakeArtifactCount;
 
     public static void init(HardwareMap hardwareMap, Telemetry telemetry) {
         SpindexerHelper.init(hardwareMap, telemetry);
-//        DistanceSensorHelper.init(hardwareMap);
-//        ColorSensorHelper.init(hardwareMap);
+        DistanceSensorHelper.init(hardwareMap);
+        ColorSensorHelper.init(hardwareMap);
         ShooterHelper.init(hardwareMap);
         ttelemetry = telemetry;
     }
@@ -106,12 +106,20 @@ public class Spindexer {
         for (int i=0;i<3;i++) {
             intakeArtifact();
             Thread.sleep(2000);
-            while(!Objects.equals(ColorSensorHelper.getColor(), "Green") || !Objects.equals(ColorSensorHelper.getColor(), "Purple")) {
-                ttelemetry.addData("color", ColorSensorHelper.getColor());
-                ttelemetry.update();
+//            while(Objects.equals(ColorSensorHelper.getColor(), "Neither")) {
+//                ttelemetry.addData("colorInWhile", ColorSensorHelper.getColor());
+//                ttelemetry.update();
+//            }
+            boolean detected_color = false;
+            String colorRead = "Neither";
+            while(!detected_color) {
+                colorRead = ColorSensorHelper.getColor();
+                if (!Objects.equals(colorRead, "Neither")) {
+                    detected_color = true;
+                }
             }
-            Thread.sleep(2000);
-            colors[i] = ColorSensorHelper.getColor();
+            colors[i] = colorRead;
+            //colors[i] = ColorSensorHelper.getColor();
             ttelemetry.addData("Color: ",colors[i]);
             ttelemetry.update();
             moveSpindexer(HALF_SLOT_TICKS);

@@ -48,8 +48,8 @@ public class ColorSensorHelper {
             guess = "Neither";
         }
 
-        updateDebounce(guess);
-        return stableColor;
+        //updateDebounce(guess);
+        return guess;
     }
 
     // ---- helpers ----
