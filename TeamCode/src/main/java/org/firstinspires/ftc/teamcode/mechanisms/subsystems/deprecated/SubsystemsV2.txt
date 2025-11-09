@@ -1,28 +1,31 @@
-package org.firstinspires.ftc.teamcode.mechanisms.spindexer;
+package org.firstinspires.ftc.teamcode.mechanisms.subsystems.deprecated;
 
-import static org.firstinspires.ftc.teamcode.mechanisms.spindexer.SpindexerHelper.SpindexerMotor;
+import static org.firstinspires.ftc.teamcode.mechanisms.subsystems.spindexer.SpindexerHelper.SpindexerMotor;
 
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.mechanisms.spindexer.colorSensor.ColorSensorHelper;
-import org.firstinspires.ftc.teamcode.mechanisms.spindexer.distanceSensor.DistanceSensorHelper;
-import org.firstinspires.ftc.teamcode.mechanisms.spindexer.shooter.ShooterHelper;
-import org.firstinspires.ftc.teamcode.mechanisms.spindexer.intake.IntakeHelper;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.mechanisms.subsystems.spindexer.SpindexerHelper;
+import org.firstinspires.ftc.teamcode.mechanisms.subsystems.colorSensor.ColorSensorHelper;
+import org.firstinspires.ftc.teamcode.mechanisms.subsystems.shooter.ShooterHelper;
+import org.firstinspires.ftc.teamcode.mechanisms.subsystems.intake.IntakeHelper;
+
+// converted to txt file to reduce errors when changing other things
 
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.DoubleStream;
 
-public class Spindexer {
+public class SubsystemsV2 {
     //based on spindexer motor ticks per rotation
     private final static int HALF_SLOT_TICKS = 48;
     private final static int SLOT_TICKS = 96;
     private static long loopIndex = 0L;
 
-    public final static double SHOOTER_VELOCITY = 1000;
+    public static double SHOOTER_VELOCITY = 1000;
+    public static double SUBTRACTION_VELOCITY = 50;
 
     static Telemetry ttelemetry;
     //There are 6 positions on the spindexer each represented as below
@@ -37,14 +40,14 @@ public class Spindexer {
     private static final double[] intakePositions = new double[]{1.0,3.0,5.0};
     private final double[] shootPositions = new double[]{0.0,2.0,4.0};
     public static String[] colors;
+    public static int[] hues;
     public static String[] motif;
 
     private static int intakeArtifactCount;
 
     public static void init(HardwareMap hardwareMap, Telemetry telemetry) {
         SpindexerHelper.init(hardwareMap, telemetry);
-        DistanceSensorHelper.init(hardwareMap);
-        ColorSensorHelper.init(hardwareMap);
+        ColorSensorHelper.init(hardwareMap, telemetry);
         ShooterHelper.init(hardwareMap);
         IntakeHelper.init(hardwareMap);
         ttelemetry = telemetry;
@@ -75,6 +78,8 @@ public class Spindexer {
         ttelemetry.addData("Loop Index..", loopIndex);
         ttelemetry.addData("Current position Ticks:", currPositionTicks);
         ttelemetry.addData("Current position:", currPos);
+        ttelemetry.addData("Distance", ColorSensorHelper.colorSensor.getDistance(DistanceUnit.MM));
+        ttelemetry.addData("is ball ?? question mark ??", ColorSensorHelper.isBall());
         if (DoubleStream.of(intakePositions).anyMatch(n -> n == currPos)) {
             targetPosition = currPositionTicks;
         } else {
@@ -106,6 +111,7 @@ public class Spindexer {
     public static void intake() throws InterruptedException {
         IntakeHelper.start();
         colors = new String[3];
+        hues = new int[3];
         intakePosition();
         for (int i=0;i<3;i++) {
             intakeArtifact();
@@ -116,17 +122,21 @@ public class Spindexer {
 //            }
             boolean detected_color = false;
             String colorRead = "Neither";
+            int hueRead = 0;
             while(!detected_color) {
                 colorRead = ColorSensorHelper.getColor();
+                hueRead = (int) ColorSensorHelper.readSample(ColorSensorHelper.colorSensor).h;
                 if (!Objects.equals(colorRead, "Neither")) {
                     detected_color = true;
                 }
             }
             colors[i] = colorRead;
+            hues[i] = hueRead;
+
             //colors[i] = ColorSensorHelper.getColor();
             ttelemetry.addData("Color: ",colors[i]);
             ttelemetry.update();
-            moveSpindexer(96);
+            moveSpindexer(HALF_SLOT_TICKS);
             ttelemetry.addLine("thingy");
             Thread.sleep(2000);
             ttelemetry.addData("current ticks1", SpindexerMotor.getCurrentPosition());
@@ -137,18 +147,52 @@ public class Spindexer {
 //                telemetry.update();
 //            }
         }
+        ttelemetry.addData("colors", Arrays.toString(colors));
+        ttelemetry.addData("hues", Arrays.toString(hues));
+        ttelemetry.update();
+        IntakeHelper.stop();
+    }
+
+
+    public static void intakeArtifactForVerticalColorSensor() throws InterruptedException {
+        IntakeHelper.start();
+        colors = new String[3];
+        intakePosition();
+        for (int i = 0; i < 3; i++) {
+            String colorRead = "Neither";
+            while(ColorSensorHelper.colorSensor.getDistance(DistanceUnit.MM) >= 60);
+            if(ColorSensorHelper.colorSensor.getDistance(DistanceUnit.MM) < 60) {
+                boolean detected_color = false;
+                while (!detected_color) {
+                    colorRead = ColorSensorHelper.getColor();
+                    if (!Objects.equals(colorRead, "Neither")) {
+                        detected_color = true;
+                    }
+                }
+            }
+            //Move to color sensor position
+            colors[i] = colorRead;
+            Thread.sleep(2000);
+            moveSpindexer(96);
+            ttelemetry.addData("Color: ",colors[i]);
+//            ttelemetry.addData("current ticks1", SpindexerMotor.getCurrentPosition());
+//            ttelemetry.addData("target ticks1", SpindexerMotor.getTargetPosition());
+            ttelemetry.update();
+        }
+
         ttelemetry.addData("colors:", Arrays.toString(colors));
         ttelemetry.update();
         IntakeHelper.stop();
     }
 
+
     public static void intakeArtifact(){
         ttelemetry.addData("Intake Artifact Count before intake:", intakeArtifactCount);
-        while(!DistanceSensorHelper.isBall()){
+        while(!ColorSensorHelper.isBall()){
             ttelemetry.addLine("Waiting for ball intake...");
             //telemetry.update();
         }
-        if(DistanceSensorHelper.isBall()) {
+        if(ColorSensorHelper.isBall()) {
             //Move to color sensor position
             moveSpindexer(HALF_SLOT_TICKS);
             intakeArtifactCount++;
@@ -165,20 +209,25 @@ public class Spindexer {
     }
 
     public static void shoot() throws InterruptedException {
-        SpindexerHelper.moveToPosition(calculateShooter(colors, motif));
+        SpindexerHelper.moveToPosition(0);
         for(int i = 0; i < 3; i++) {
-            ShooterHelper.shoot(Spindexer.SHOOTER_VELOCITY);
-            while(Math.abs(ShooterHelper.shooterMotor.getVelocity() - Spindexer.SHOOTER_VELOCITY) > 2) {
-//                ttelemetry.addData("shooter velocity", ShooterHelper.shooterMotor.getVelocity());
-//                ttelemetry.update();
+            if(i == 0) {
+                ShooterHelper.shoot(SHOOTER_VELOCITY - SUBTRACTION_VELOCITY);
+            } else if(i == 1) {
+                ShooterHelper.shoot(SHOOTER_VELOCITY - (SUBTRACTION_VELOCITY / 2));
+            } else {
+                ShooterHelper.shoot(SHOOTER_VELOCITY);
             }
+            while(Math.abs(ShooterHelper.shooterMotor.getVelocity() - SHOOTER_VELOCITY) > 5);
 
             Thread.sleep(750);
             SpindexerHelper.moveServo(1);
             Thread.sleep(750);
             SpindexerHelper.moveServo(0.5);
-            Thread.sleep(750);
+//            Thread.sleep(1000);
             SpindexerHelper.moveToNextPosition();
+
+            while(SpindexerHelper.SpindexerMotor.isBusy());
         }
     }
 
@@ -202,37 +251,41 @@ public class Spindexer {
     static String[][] colorCombos = {i1, i2, i3, i4, i5, i6, i7, i8};
 
     public static int calculateShooter(String[] colors, String[] motif) {
-        int motifIndex = -1;
-        int colorIndex = -1;
-
-        // find which motif matches
-        for (int i = 0; i < motifs.length; i++) {
-            if (Arrays.equals(motifs[i], motif)) {
-                motifIndex = i;
-                break;
-            }
-        }
-
-        // find which color combo matches
-        for (int i = 0; i < colorCombos.length; i++) {
-            if (Arrays.equals(colorCombos[i], colors)) {
-                colorIndex = i;
-                break;
-            }
-        }
-
-        // offsets
-        int[][] offsets = {
-                {0, 2, 1}, // m1
-                {1, 0, 2}, // m2
-                {2, 1, 0}  // m3
-        };
-
-        // if it works use offset, otherwise 0
-        if (colorIndex < 3) {
-            return offsets[motifIndex][colorIndex];
-        } else {
+        if(colors == null || colors.length < 3) {
             return 0;
+        } else {
+            int motifIndex = -1;
+            int colorIndex = -1;
+
+            // find which motif matches
+            for (int i = 0; i < motifs.length; i++) {
+                if (Arrays.equals(motifs[i], motif)) {
+                    motifIndex = i;
+                    break;
+                }
+            }
+
+            // find which color combo matches
+            for (int i = 0; i < colorCombos.length; i++) {
+                if (Arrays.equals(colorCombos[i], colors)) {
+                    colorIndex = i;
+                    break;
+                }
+            }
+
+            // offsets
+            int[][] offsets = {
+                    {0, 2, 1}, // m1
+                    {1, 0, 2}, // m2
+                    {2, 1, 0}  // m3
+            };
+
+            // if it works use offset, otherwise 0
+            if (colorIndex < 3) {
+                return offsets[motifIndex][colorIndex];
+            } else {
+                return 0;
+            }
         }
     }
 }

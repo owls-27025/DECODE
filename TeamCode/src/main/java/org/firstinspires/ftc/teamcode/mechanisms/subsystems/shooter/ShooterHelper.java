@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.mechanisms.spindexer.shooter;
+package org.firstinspires.ftc.teamcode.mechanisms.subsystems.shooter;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -9,9 +9,11 @@ public class ShooterHelper {
     public static DcMotorEx shooterMotor;
 
     public static void init(HardwareMap hardwareMap) {
-        shooterMotor = hardwareMap.get(DcMotorEx.class, Config.shooter);
-        shooterMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        shooterMotor.setDirection(DcMotor.Direction.REVERSE);
+        if (Config.shooter.itemActive) {
+            shooterMotor = hardwareMap.get(DcMotorEx.class, Config.shooter.itemName);
+            shooterMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            shooterMotor.setDirection(DcMotor.Direction.REVERSE);
+        }
     }
 
     public static void shoot() {

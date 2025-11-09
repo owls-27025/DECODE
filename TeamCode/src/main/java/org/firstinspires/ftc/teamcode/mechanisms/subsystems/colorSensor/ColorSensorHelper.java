@@ -1,29 +1,30 @@
-package org.firstinspires.ftc.teamcode.mechanisms.spindexer.colorSensor;
+package org.firstinspires.ftc.teamcode.mechanisms.subsystems.colorSensor;
 
 import android.graphics.Color;
 
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Config;
 
 public class ColorSensorHelper {
-    private static final float GREEN_HUE_CENTER = 149f; // green
-    private static final float PURPLE_HUE_CENTER = 270f; // purple
-    private static final float HUE_TOL_DEG = 30f; // accuracy
+    private static final float GREEN_HUE_CENTER = 130f; // green
+    private static final float PURPLE_HUE_CENTER = 200f; // purple
+    private static final float HUE_TOL_DEG = 20f; // accuracy
     private static final float MIN_SAT = 0.35f; // ignore gray
     private static final float MIN_VAL = 0.15f; // ignore very dark / too far
     private static final int   STABLE_N = 3; // frames required to confirm
 
     public static RevColorSensorV3 colorSensor;
 
-    private static int greenStreak = 0;
-    private static int purpleStreak = 0;
-    private static int neitherStreak = 0;
-    private static String stableColor = "…";
 
     public static void init(HardwareMap hw) {
-        colorSensor = hw.get(RevColorSensorV3.class, Config.colorSensor);
+        if (Config.colorSensor.itemActive) {
+            colorSensor = hw.get(RevColorSensorV3.class, Config.colorSensor.itemName);
+        }
     }
 
     public static void init(HardwareMap hw, String name1, String name2) {
@@ -38,37 +39,18 @@ public class ColorSensorHelper {
         h = s1.h; s = s1.s; v = s1.v;
 
         String guess;
-        float dGreen  = hueDist(h, GREEN_HUE_CENTER);
-        float dPurple = hueDist(h, PURPLE_HUE_CENTER);
 
-        if (dGreen <= HUE_TOL_DEG && dGreen < dPurple) {
+        if (h > 155 && h < 200) {
             guess = "Green";
-        } else if (dPurple <= HUE_TOL_DEG && dPurple < dGreen) {
-            guess = "Purple";
-        } else {
+        } else if (h < 155) {
             guess = "Neither";
+        } else {
+            guess = "Purple";
         }
-
-        //updateDebounce(guess);
         return guess;
     }
 
     // ---- helpers ----
-    private static void updateDebounce(String guess) {
-        switch (guess) {
-            case "Green":
-                greenStreak++; purpleStreak = 0; neitherStreak = 0; break;
-            case "Purple":
-                purpleStreak++; greenStreak = 0; neitherStreak = 0; break;
-            default:
-                neitherStreak++; greenStreak = 0; purpleStreak = 0; break;
-        }
-
-        if (greenStreak  >= STABLE_N) stableColor = "Green";
-        else if (purpleStreak >= STABLE_N) stableColor = "Purple";
-        else if (neitherStreak >= STABLE_N) stableColor = "Neither";
-    }
-
     private static float hueDist(float a, float b) {
         float d = Math.abs(a - b) % 360f;
         return (d > 180f) ? 360f - d : d;
@@ -123,5 +105,9 @@ public class ColorSensorHelper {
         public float h;
         float s;
         float v;
+    }
+
+    public static boolean isBall() {
+        return colorSensor.getDistance(DistanceUnit.MM) < 60;
     }
 }

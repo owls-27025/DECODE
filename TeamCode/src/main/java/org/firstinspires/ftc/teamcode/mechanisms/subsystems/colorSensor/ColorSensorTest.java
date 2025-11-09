@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.mechanisms.spindexer.colorSensor;
+package org.firstinspires.ftc.teamcode.mechanisms.subsystems.colorSensor;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -18,6 +18,7 @@ public class ColorSensorTest extends OpMode {
     @Override
     public void loop() {
         telemetry.addData("Color: ", ColorSensorHelper.getColor());
+        telemetry.addData("Hue: ", ColorSensorHelper.readSample(ColorSensorHelper.colorSensor).h);
         telemetry.update();
     }
 }

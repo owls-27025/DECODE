@@ -1,20 +1,17 @@
-package org.firstinspires.ftc.teamcode.mechanisms.spindexer;
+package org.firstinspires.ftc.teamcode.mechanisms.subsystems.spindexer;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Gamepad;
-import org.firstinspires.ftc.teamcode.mechanisms.spindexer.SpindexerHelper;
 
 import java.util.Arrays;
 
-import static org.firstinspires.ftc.teamcode.mechanisms.spindexer.SpindexerHelper.SpindexerMotor;
+import static org.firstinspires.ftc.teamcode.mechanisms.subsystems.spindexer.SpindexerHelper.SpindexerMotor;
 
 @TeleOp(name = "Spindexer Test", group = "Spindexer")
 public class SpindexerTest extends OpMode {
     @Override
     public void init() {
-        SpindexerHelper.init(hardwareMap, telemetry);
+        SpindexerHelper.init(hardwareMap);
     }
     public void loop() {
 

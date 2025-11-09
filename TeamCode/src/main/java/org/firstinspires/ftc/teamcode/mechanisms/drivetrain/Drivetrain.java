@@ -15,10 +15,18 @@ public class Drivetrain {
     private static IMU imu;
 
     public static void init(HardwareMap hardwareMap) {
-        FR = hardwareMap.get(DcMotor.class, Config.FR);
-        FL = hardwareMap.get(DcMotor.class, Config.FL);
-        BR = hardwareMap.get(DcMotor.class, Config.BR);
-        BL = hardwareMap.get(DcMotor.class, Config.BL);
+        if (Config.FR.itemActive) {
+            FR = hardwareMap.get(DcMotor.class, Config.FR.itemName);
+        }
+        if (Config.FL.itemActive) {
+            FL = hardwareMap.get(DcMotor.class, Config.FL.itemName);
+        }
+        if (Config.BR.itemActive) {
+            BR = hardwareMap.get(DcMotor.class, Config.BR.itemName);
+        }
+        if (Config.BL.itemActive) {
+            BL = hardwareMap.get(DcMotor.class, Config.BL.itemName);
+        }
 
         FL.setDirection(DcMotor.Direction.REVERSE);
         BL.setDirection(DcMotor.Direction.REVERSE);
@@ -35,8 +43,8 @@ public class Drivetrain {
 
         imu = hardwareMap.get(IMU.class, "imu");
         RevHubOrientationOnRobot Orientation = new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD); // placeholder
+                RevHubOrientationOnRobot.LogoFacingDirection.BACKWARD,
+                RevHubOrientationOnRobot.UsbFacingDirection.UP);
 
         imu.initialize(new IMU.Parameters(Orientation));
     }
