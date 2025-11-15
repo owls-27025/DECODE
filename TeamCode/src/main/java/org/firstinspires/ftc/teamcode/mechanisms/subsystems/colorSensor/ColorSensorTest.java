@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.mechanisms.subsystems.colorSensor;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
 @TeleOp(name = "Color Sensor Test", group = "ColorSensor")
 public class ColorSensorTest extends OpMode {
     
@@ -19,6 +21,7 @@ public class ColorSensorTest extends OpMode {
     public void loop() {
         telemetry.addData("Color: ", ColorSensorHelper.getColor());
         telemetry.addData("Hue: ", ColorSensorHelper.readSample(ColorSensorHelper.colorSensor).h);
+        telemetry.addData("Distance: ", ColorSensorHelper.colorSensor.getDistance(DistanceUnit.MM));
         telemetry.update();
     }
 }

@@ -2,13 +2,14 @@ package org.firstinspires.ftc.teamcode.mechanisms.subsystems;
 
 import static org.firstinspires.ftc.teamcode.Helpers.easeInOutSine;
 import static org.firstinspires.ftc.teamcode.mechanisms.subsystems.spindexer.SpindexerHelper.SpindexerMotor;
+import static org.firstinspires.ftc.teamcode.mechanisms.subsystems.spindexer.SpindexerHelper.intakePosition;
+import static org.firstinspires.ftc.teamcode.mechanisms.subsystems.spindexer.SpindexerHelper.shootPosition;
 import static org.firstinspires.ftc.teamcode.teleop.V1.currentSpeed;
-import static org.firstinspires.ftc.teamcode.teleop.V1.isIntaking;
-import static org.firstinspires.ftc.teamcode.teleop.V1.isShooting;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.mechanisms.drivetrain.Drivetrain;
@@ -19,13 +20,17 @@ import org.firstinspires.ftc.teamcode.mechanisms.subsystems.spindexer.SpindexerH
 import org.firstinspires.ftc.teamcode.teleop.V1;
 
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.DoubleStream;
 
 public class Subsystems {
-    private final static int HALF_SLOT_TICKS = 48;
+    public final static int HALF_SLOT_TICKS = 48;
 
     public static double SHOOTER_VELOCITY = 1000;
     public static double SUBTRACTION_VELOCITY = 50;
+
+    private static ElapsedTime delayTimer;
+    private static boolean delayStarted;
 
     //There are 6 positions on the spindexer each represented as below
     //              3
@@ -36,14 +41,42 @@ public class Subsystems {
     //      1       *       5
     //              0
 
-    private static final double[] intakePositions = new double[]{1.0,3.0,5.0};
-    private static final double[] shootPositions = new double[]{0.0,2.0,4.0};
+    public static final double[] intakePositions = new double[]{1.0,3.0,5.0};
+    public static final double[] shootPositions = new double[]{0.0,2.0,4.0};
     public static String[] colors;
     public static int[] hues;
     public static String[] motif;
 
     public static int artifactCount;
-    private static Telemetry subSysTelemetry;
+
+    static boolean isDetected;
+
+
+    public enum IntakeState {
+        INIT,
+        MOVING_TO_POSITION,
+        WAITING_FOR_BALL,
+        MOVING_TO_NEXT_POSITION,
+        COMPLETED
+    }
+
+    public static IntakeState currentState;
+
+
+    public enum ShootState {
+        INIT,
+        MOVING_TO_SHOOT_POSITION,
+        SPINNING_UP_SHOOTER,
+        FIRING,
+        ADVANCING_NEXT_BALL,
+        COMPLETED
+    }
+
+    public static ShootState currentShootState;
+    private static int shotsLeft;
+    private static long lastCheckTime;
+
+    private static Telemetry subsystemTelemetry;
 
     public static void init(HardwareMap hardwareMap, Telemetry telemetry) {
         // init subsystems
@@ -53,197 +86,166 @@ public class Subsystems {
         IntakeHelper.init(hardwareMap);
         Drivetrain.init(hardwareMap);
 
-        // set up telemetry
-        subSysTelemetry = telemetry;
-
         // variables
-        artifactCount = 3;
+        artifactCount = 0;
+        currentState = IntakeState.INIT;
+        currentShootState = ShootState.INIT;
+        shotsLeft = 0;
+        lastCheckTime = 0;
+
+        subsystemTelemetry = telemetry;
+
+        isDetected = false;
+
+        delayStarted = false;
+        delayTimer = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
     }
 
-    public static void moveSpindexer(int ticks) {
-        int targetTicks = SpindexerMotor.getCurrentPosition() + ticks;
-        moveSpindexerTo(targetTicks);
-
-    }
-
-    public static void moveSpindexerTo(int targetPosition){
-        SpindexerMotor.setTargetPosition(targetPosition);
-        SpindexerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        SpindexerMotor.setPower(0.5);
-    }
-
-    //This method moves the spindexer to the intake position no matter in which position the spindexer is in
-    public static void intakePosition() {
-        int currPositionTicks = SpindexerMotor.getCurrentPosition();
-        int targetPosition;
-
-        //Check if the current position is already Intake position
-
-        double currPos = findExactPosition(currPositionTicks);
-        if (DoubleStream.of(intakePositions).anyMatch(n -> n == currPos)) {
-            targetPosition = currPositionTicks;
+    public static void intake(Gamepad gamepad2) {
+        if (currentState == IntakeState.INIT) {
+            if (gamepad2.aWasPressed()) {
+                currentState = IntakeState.MOVING_TO_POSITION;
+            } else if (gamepad2.bWasPressed()) {
+                currentState = IntakeState.COMPLETED;
+            }
         } else {
-            int nextHalfSlotTicks = (currPositionTicks + HALF_SLOT_TICKS - currPositionTicks % HALF_SLOT_TICKS);
-            double nextPos = (double)((double)nextHalfSlotTicks / HALF_SLOT_TICKS) % 6;
-
-            //Check if the next position is one of the Intake positions - 1, 3, 5
-
-            if (DoubleStream.of(intakePositions).anyMatch(n -> n == nextPos)) {
-                targetPosition = nextHalfSlotTicks;
-            } else {
-                targetPosition = nextHalfSlotTicks + HALF_SLOT_TICKS;
+            if (gamepad2.bWasPressed()) {
+                currentState = IntakeState.COMPLETED;
+                return;
+            } else if (gamepad2.aWasPressed()) {
+                currentState = IntakeState.MOVING_TO_POSITION;
             }
-        }
+            switch (currentState) {
+                case MOVING_TO_POSITION:
+                    isDetected = false;
+                    intakePosition();
+                    IntakeHelper.start();
 
-        moveSpindexerTo(targetPosition);
-    }
+                    delayStarted = false;
 
-    public static void shootPosition() {
-        int currPositionTicks = SpindexerMotor.getCurrentPosition();
-        int targetPosition;
-
-        //Check if the current position is already shooting position
-
-        double currPos = findExactPosition(currPositionTicks);
-        if (DoubleStream.of(shootPositions).anyMatch(n -> n == currPos)) {
-            targetPosition = currPositionTicks;
-        } else {
-            int nextHalfSlotTicks = (currPositionTicks + HALF_SLOT_TICKS - currPositionTicks % HALF_SLOT_TICKS);
-            double nextPos = (double)((double)nextHalfSlotTicks / HALF_SLOT_TICKS) % 6;
-
-            //Check if the next position is one of the shooting positions - 0, 2, 4
-
-            if (DoubleStream.of(shootPositions).anyMatch(n -> n == nextPos)) {
-                targetPosition = nextHalfSlotTicks;
-            } else {
-                targetPosition = nextHalfSlotTicks + HALF_SLOT_TICKS;
-            }
-        }
-
-        moveSpindexerTo(targetPosition);
-    }
-
-    public static double findExactPosition(int ticks) {
-        return (double)(ticks/HALF_SLOT_TICKS) % 6;
-    }
-
-    public static void intake() throws InterruptedException {
-        if (!isIntaking) {
-            // move to nearest intake position and start motor
-            intakePosition();
-            IntakeHelper.start();
-
-            for (int i = 0; i < 3; i++) {
-                while (!ColorSensorHelper.isBall()) {
-                    // waits for ball to be on ramp
-                }
-
-                // wait for ball to move into intake
-                Thread.sleep(100);
-
-                // move to next position
-                SpindexerHelper.moveToNextPosition();
-
-                artifactCount++;
-            }
-
-            IntakeHelper.stop();
-        }
-        isIntaking = false;
-    }
-
-    /**
-     * This method is used to intake 3 artifacts and read the colors into the colors array
-     */
-
-
-    public static void shoot() throws InterruptedException {
-        if (!isShooting) {
-            shootPosition();
-
-            int oldArtifactCount = artifactCount;
-
-            for (int i = 0; i < oldArtifactCount; i++) {
-                if (i == 0) {
-                    ShooterHelper.shoot(SHOOTER_VELOCITY - SUBTRACTION_VELOCITY);
-                } else if (i == 1) {
-                    ShooterHelper.shoot(SHOOTER_VELOCITY - (SUBTRACTION_VELOCITY / 2));
-                } else {
-                    ShooterHelper.shoot(SHOOTER_VELOCITY);
-                }
-                while (Math.abs(ShooterHelper.shooterMotor.getVelocity() - SHOOTER_VELOCITY) > 5) ;
-
-                Thread.sleep(750);
-                SpindexerHelper.moveServo(1);
-                Thread.sleep(750);
-                SpindexerHelper.moveServo(0.5);
-                SpindexerHelper.moveToNextPosition();
-
-                while (SpindexerHelper.SpindexerMotor.isBusy()) ;
-
-                artifactCount--;
-            }
-        }
-        isShooting = false;
-    }
-
-    // motifs
-    static String[] m1 = {"Purple", "Purple", "Green"};
-    static String[] m2 = {"Purple", "Green", "Purple"};
-    static String[] m3 = {"Green", "Purple", "Purple"};
-
-    // color combinations
-    static String[] i1 = {"Purple", "Purple", "Green"};
-    static String[] i2 = {"Purple", "Green", "Purple"};
-    static String[] i3 = {"Green", "Purple", "Purple"};
-    static String[] i4 = {"Purple", "Purple", "Purple"};
-    static String[] i5 = {"Green", "Green", "Purple"};
-    static String[] i6 = {"Green", "Green", "Green"};
-    static String[] i7 = {"Green", "Purple", "Green"};
-    static String[] i8 = {"Purple", "Green", "Green"};
-
-    // group them into arrays for lookup
-    static String[][] motifs = {m1, m2, m3};
-    static String[][] colorCombos = {i1, i2, i3, i4, i5, i6, i7, i8};
-
-    public static int calculateShooter(String[] colors, String[] motif) {
-        if(colors == null || colors.length < 3) {
-            return 0;
-        } else {
-            int motifIndex = -1;
-            int colorIndex = -1;
-
-            // find which motif matches
-            for (int i = 0; i < motifs.length; i++) {
-                if (Arrays.equals(motifs[i], motif)) {
-                    motifIndex = i;
+                    currentState = IntakeState.WAITING_FOR_BALL;
                     break;
-                }
-            }
 
-            // find which color combo matches
-            for (int i = 0; i < colorCombos.length; i++) {
-                if (Arrays.equals(colorCombos[i], colors)) {
-                    colorIndex = i;
+                case WAITING_FOR_BALL:
+                    if (ColorSensorHelper.isBall() && !isDetected && artifactCount < 3) {
+                        if (delayStarted == false) {
+                            delayTimer.reset();
+                            delayStarted = true;
+                        }
+
+                        if (delayTimer.now(TimeUnit.MILLISECONDS) - delayTimer.startTime() > 100) {
+                            delayTimer.reset();
+                            delayStarted = false;
+                            isDetected = true;
+
+                            SpindexerHelper.moveToNextPosition();
+
+                            artifactCount++;
+
+                            if (artifactCount >= 3) {
+                                currentState = IntakeState.COMPLETED;
+                            } else {
+                                isDetected = false;
+                            }
+                        }
+                    }
                     break;
-                }
-            }
 
-            // offsets
-            int[][] offsets = {
-                    {0, 2, 1}, // m1
-                    {1, 0, 2}, // m2
-                    {2, 1, 0}  // m3
-            };
-
-            // if it works use offset, otherwise 0
-            if (colorIndex < 3) {
-                return offsets[motifIndex][colorIndex];
-            } else {
-                return 0;
+                case COMPLETED:
+                    IntakeHelper.stop();
+                    currentState = IntakeState.INIT;
+                    break;
             }
         }
     }
+
+
+
+
+    public static void shoot(Gamepad gamepad2) {
+        if (currentShootState == ShootState.INIT) {
+            if (gamepad2.xWasPressed()) {
+                currentShootState = ShootState.MOVING_TO_SHOOT_POSITION;
+            }
+        } else if (currentShootState != ShootState.COMPLETED && artifactCount > 0) {
+            if (gamepad2.bWasPressed()) {
+                currentShootState = ShootState.COMPLETED;
+                return;
+            } else if (gamepad2.xWasPressed()) {
+                currentShootState = ShootState.MOVING_TO_SHOOT_POSITION;
+            }
+
+            switch (currentShootState) {
+                case MOVING_TO_SHOOT_POSITION:
+                    shootPosition();
+                    shotsLeft = artifactCount;
+                    currentShootState = ShootState.SPINNING_UP_SHOOTER;
+                    break;
+
+                case SPINNING_UP_SHOOTER:
+                    double targetVelocity = getTargetVelocity();
+
+                    ShooterHelper.shoot(targetVelocity);
+
+                    long now = System.currentTimeMillis();
+                    if (now - lastCheckTime >= 100) {
+                        lastCheckTime = now;
+                        if (Math.abs(ShooterHelper.shooterMotor.getVelocity() - targetVelocity) <= 5) {
+                            currentShootState = ShootState.FIRING;
+                        }
+                    }
+                    break;
+
+                case FIRING:
+                    SpindexerHelper.moveServo(1);
+                    delayTimer.reset();
+                    delayStarted = true;
+                    if (delayTimer.milliseconds() - delayTimer.startTime() > 100) {
+                        SpindexerHelper.moveServo(0.5);
+                        currentShootState = ShootState.ADVANCING_NEXT_BALL;
+                    }
+                    break;
+
+                case ADVANCING_NEXT_BALL:
+                    SpindexerHelper.moveToNextPosition();
+
+                    long checkTime = System.currentTimeMillis();
+                    if (checkTime - lastCheckTime >= 100) {
+                        lastCheckTime = checkTime;
+                        if (!SpindexerHelper.SpindexerMotor.isBusy()) {
+                            artifactCount--;
+                            shotsLeft--;
+
+                            if (shotsLeft <= 0) {
+                                currentShootState = ShootState.COMPLETED;
+                            } else {
+                                currentShootState = ShootState.SPINNING_UP_SHOOTER;
+                            }
+                        }
+                    }
+                    break;
+
+                case COMPLETED:
+                    break;
+            }
+        }
+    }
+
+    private static double getTargetVelocity() {
+        int shotIndex = shotsLeft == artifactCount ? 0 :
+                shotsLeft == artifactCount - 1 ? 1 : 2;
+
+        double targetVelocity;
+        if (shotIndex == 0) {
+            targetVelocity = SHOOTER_VELOCITY - SUBTRACTION_VELOCITY;
+        } else if (shotIndex == 1) {
+            targetVelocity = SHOOTER_VELOCITY - (SUBTRACTION_VELOCITY / 2);
+        } else {
+            targetVelocity = SHOOTER_VELOCITY;
+        }
+        return targetVelocity;
+    }
+
 
     public static void drivetrain(Gamepad gamepad1) {
         // speed control
@@ -279,21 +281,6 @@ public class Subsystems {
             y = Drivetrain.fieldCentricDrive(x, y)[0];
             x = Drivetrain.fieldCentricDrive(x, y)[1];
         }
-        double flPower = ((y + x + rx) * currentSpeed);
-        double blPower = ((y - x + rx) * currentSpeed);
-        double frPower = ((y - x - rx) * currentSpeed);
-        double brPower = ((y + x - rx) * currentSpeed);
-        subSysTelemetry.addData("y", y);
-        subSysTelemetry.addData("x", x);
-        subSysTelemetry.addData("rx", rx);
-        subSysTelemetry.addData("FL Power", flPower);
-        subSysTelemetry.addData("FR Power", frPower);
-        subSysTelemetry.addData("BL Power", blPower);
-        subSysTelemetry.addData("BR Power", brPower);
-
-
-
-
 
         // move drivetrain
         Drivetrain.FL.setPower((y + x + rx) * currentSpeed);

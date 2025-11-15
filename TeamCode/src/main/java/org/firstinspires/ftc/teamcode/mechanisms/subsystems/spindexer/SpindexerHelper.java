@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode.mechanisms.subsystems.spindexer;
 
+import static org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems.HALF_SLOT_TICKS;
+import static org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems.intakePositions;
+import static org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems.shootPositions;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -10,12 +14,13 @@ import org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems;
 import org.firstinspires.ftc.teamcode.teleop.V1;
 
 import java.util.Arrays;
+import java.util.stream.DoubleStream;
 
 public class SpindexerHelper {
     public static DcMotor SpindexerMotor;
     public static Servo SpindexerServo;
-//hello
-    //TPR = ticks per rotation, SINGLE = ticks for a single position, SLOTS = three different positions
+
+    // TPR = ticks per rotation, SINGLE = ticks for a single position, SLOTS = three different positions
     private static final int TPR = 288;
     private static final int SLOTS = 3;
     private static final int SINGLE = TPR / SLOTS;
@@ -42,19 +47,9 @@ public class SpindexerHelper {
         Arrays.fill(colors, "-");
     }
 
-    public static int getStateOffset() {
-        if(V1.state == V1.State.SHOOT) {
-            return SHOOTING_OFFSET;
-        } else if(V1.state == V1.State.INTAKE) {
-            return INTAKE_OFFSET;
-        }
-        return 0;
-    }
-
-
     public static int findPosition() {
-        int ticks = SpindexerMotor.getCurrentPosition() - getStateOffset();
-        return (ticks / SINGLE) % 3;
+        int ticks = SpindexerMotor.getCurrentPosition();
+        return (ticks / HALF_SLOT_TICKS) % 6;
     }
 
     public static void moveToNextPosition() {
@@ -82,5 +77,73 @@ public class SpindexerHelper {
     public static void moveServo(double pos) {
         if (SpindexerServo == null) return;
         SpindexerServo.setPosition(pos);
+    }
+
+
+    public static void moveSpindexer(int ticks) {
+        int targetTicks = SpindexerMotor.getCurrentPosition() + ticks;
+        moveSpindexerTo(targetTicks);
+
+    }
+
+    public static void moveSpindexerTo(int targetPosition){
+        SpindexerMotor.setTargetPosition(targetPosition);
+        SpindexerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        SpindexerMotor.setPower(0.5);
+    }
+
+    //This method moves the spindexer to the intake position no matter in which position the spindexer is in
+    public static void intakePosition() {
+        int currPositionTicks = SpindexerMotor.getCurrentPosition();
+        int targetPosition;
+
+        //Check if the current position is already Intake position
+
+        double currPos = findExactPosition(currPositionTicks);
+        if (DoubleStream.of(intakePositions).anyMatch(n -> n == currPos)) {
+            targetPosition = currPositionTicks;
+        } else {
+            int nextHalfSlotTicks = (currPositionTicks + HALF_SLOT_TICKS - currPositionTicks % HALF_SLOT_TICKS);
+            double nextPos = (double)((double)nextHalfSlotTicks / HALF_SLOT_TICKS) % 6;
+
+            //Check if the next position is one of the Intake positions - 1, 3, 5
+
+            if (DoubleStream.of(intakePositions).anyMatch(n -> n == nextPos)) {
+                targetPosition = nextHalfSlotTicks;
+            } else {
+                targetPosition = nextHalfSlotTicks + HALF_SLOT_TICKS;
+            }
+        }
+
+        moveSpindexerTo(targetPosition);
+    }
+
+    public static void shootPosition() {
+        int currPositionTicks = SpindexerMotor.getCurrentPosition();
+        int targetPosition;
+
+        //Check if the current position is already shooting position
+
+        double currPos = findExactPosition(currPositionTicks);
+        if (DoubleStream.of(shootPositions).anyMatch(n -> n == currPos)) {
+            targetPosition = currPositionTicks;
+        } else {
+            int nextHalfSlotTicks = (currPositionTicks + HALF_SLOT_TICKS - currPositionTicks % HALF_SLOT_TICKS);
+            double nextPos = (double)((double)nextHalfSlotTicks / HALF_SLOT_TICKS) % 6;
+
+            //Check if the next position is one of the shooting positions - 0, 2, 4
+
+            if (DoubleStream.of(shootPositions).anyMatch(n -> n == nextPos)) {
+                targetPosition = nextHalfSlotTicks;
+            } else {
+                targetPosition = nextHalfSlotTicks + HALF_SLOT_TICKS;
+            }
+        }
+
+        moveSpindexerTo(targetPosition);
+    }
+
+    public static double findExactPosition(int ticks) {
+        return (double)(ticks/HALF_SLOT_TICKS) % 6;
     }
 }
