@@ -13,6 +13,8 @@ import org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.colorSensor.ColorSensorHelper;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.spindexer.SpindexerHelper;
 
+import java.util.concurrent.TimeUnit;
+
 @TeleOp(name = "TeleOp", group = "OpModes")
 public class V1 extends OpMode {
     // drivetrain
@@ -69,7 +71,8 @@ public class V1 extends OpMode {
         // state machine telemetry
         telemetry.addData("Shooter State", Subsystems.currentShootState);
         telemetry.addData("Intake State", Subsystems.currentState);
-
+        telemetry.addData("Delay", Subsystems.delayTimer.time(TimeUnit.MILLISECONDS));
+        telemetry.addData("Delay started", Subsystems.delayStarted);
 
         telemetry.update();
     }

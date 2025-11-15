@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.mechanisms.subsystems.colorSensor;
 
 import android.graphics.Color;
 
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -18,35 +19,31 @@ public class ColorSensorHelper {
     private static final float MIN_VAL = 0.15f; // ignore very dark / too far
     private static final int   STABLE_N = 3; // frames required to confirm
 
-    public static RevColorSensorV3 colorSensor;
+    public static Rev2mDistanceSensor colorSensor;
 
 
     public static void init(HardwareMap hw) {
         if (Config.colorSensor.itemActive) {
-            colorSensor = hw.get(RevColorSensorV3.class, Config.colorSensor.itemName);
+            colorSensor = hw.get(Rev2mDistanceSensor.class, Config.colorSensor.itemName);
         }
-    }
-
-    public static void init(HardwareMap hw, String name1, String name2) {
-        colorSensor = hw.get(RevColorSensorV3.class, name1);
     }
 
     public static String getColor() {
-        Sample s1 = readSample(colorSensor);
-
-        float h, s, v;
-
-        h = s1.h; s = s1.s; v = s1.v;
-
-        String guess;
-
-        if (h > 155 && h < 200) {
-            guess = "Green";
-        } else if (h < 155) {
-            guess = "Neither";
-        } else {
-            guess = "Purple";
-        }
+//        Sample s1 = readSample(colorSensor);
+//
+//        float h, s, v;
+//
+//        h = s1.h; s = s1.s; v = s1.v;
+//
+        String guess = "Neither";
+//
+//        if (h > 155 && h < 200) {
+//            guess = "Green";
+//        } else if (h < 155) {
+//            guess = "Neither";
+//        } else {
+//            guess = "Purple";
+//        }
         return guess;
     }
 

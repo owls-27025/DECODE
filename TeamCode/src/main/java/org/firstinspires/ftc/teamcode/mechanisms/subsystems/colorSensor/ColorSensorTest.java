@@ -19,8 +19,6 @@ public class ColorSensorTest extends OpMode {
 
     @Override
     public void loop() {
-        telemetry.addData("Color: ", ColorSensorHelper.getColor());
-        telemetry.addData("Hue: ", ColorSensorHelper.readSample(ColorSensorHelper.colorSensor).h);
         telemetry.addData("Distance: ", ColorSensorHelper.colorSensor.getDistance(DistanceUnit.MM));
         telemetry.update();
     }

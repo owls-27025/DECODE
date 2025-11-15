@@ -29,8 +29,8 @@ public class Subsystems {
     public static double SHOOTER_VELOCITY = 1000;
     public static double SUBTRACTION_VELOCITY = 50;
 
-    private static ElapsedTime delayTimer;
-    private static boolean delayStarted;
+    public static ElapsedTime delayTimer;
+    public static boolean delayStarted;
 
     //There are 6 positions on the spindexer each represented as below
     //              3
@@ -87,11 +87,10 @@ public class Subsystems {
         Drivetrain.init(hardwareMap);
 
         // variables
-        artifactCount = 0;
+        artifactCount = 3;
         currentState = IntakeState.INIT;
         currentShootState = ShootState.INIT;
         shotsLeft = 0;
-        lastCheckTime = 0;
 
         subsystemTelemetry = telemetry;
 
@@ -132,21 +131,20 @@ public class Subsystems {
                             delayTimer.reset();
                             delayStarted = true;
                         }
+                    }
+                    if (delayStarted && delayTimer.time(TimeUnit.MILLISECONDS) > 500) {
+                        delayTimer.reset();
+                        delayStarted = false;
+                        isDetected = true;
 
-                        if (delayTimer.now(TimeUnit.MILLISECONDS) - delayTimer.startTime() > 100) {
-                            delayTimer.reset();
-                            delayStarted = false;
-                            isDetected = true;
+                        SpindexerHelper.moveToNextPosition();
 
-                            SpindexerHelper.moveToNextPosition();
+                        artifactCount++;
 
-                            artifactCount++;
-
-                            if (artifactCount >= 3) {
-                                currentState = IntakeState.COMPLETED;
-                            } else {
-                                isDetected = false;
-                            }
+                        if (artifactCount >= 3) {
+                            currentState = IntakeState.COMPLETED;
+                        } else {
+                            isDetected = false;
                         }
                     }
                     break;
@@ -180,6 +178,7 @@ public class Subsystems {
                     shootPosition();
                     shotsLeft = artifactCount;
                     currentShootState = ShootState.SPINNING_UP_SHOOTER;
+                    delayStarted = false;
                     break;
 
                 case SPINNING_UP_SHOOTER:
@@ -187,9 +186,13 @@ public class Subsystems {
 
                     ShooterHelper.shoot(targetVelocity);
 
-                    long now = System.currentTimeMillis();
-                    if (now - lastCheckTime >= 100) {
-                        lastCheckTime = now;
+                    if(!delayStarted) {
+                        delayTimer.reset();
+                        delayStarted = true;
+                    }
+
+                    if (delayTimer.time(TimeUnit.MILLISECONDS) > 100) {
+                        delayTimer.reset();
                         if (Math.abs(ShooterHelper.shooterMotor.getVelocity() - targetVelocity) <= 5) {
                             currentShootState = ShootState.FIRING;
                         }
