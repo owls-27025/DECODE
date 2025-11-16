@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.teamcode.Config;
+import org.firstinspires.ftc.teamcode.Configuration;
 
 public class Drivetrain {
     public static DcMotor FL;
@@ -15,17 +15,17 @@ public class Drivetrain {
     private static IMU imu;
 
     public static void init(HardwareMap hardwareMap) {
-        if (Config.FR.itemActive) {
-            FR = hardwareMap.get(DcMotor.class, Config.FR.itemName);
+        if (Configuration.FR.itemActive) {
+            FR = hardwareMap.get(DcMotor.class, Configuration.FR.itemName);
         }
-        if (Config.FL.itemActive) {
-            FL = hardwareMap.get(DcMotor.class, Config.FL.itemName);
+        if (Configuration.FL.itemActive) {
+            FL = hardwareMap.get(DcMotor.class, Configuration.FL.itemName);
         }
-        if (Config.BR.itemActive) {
-            BR = hardwareMap.get(DcMotor.class, Config.BR.itemName);
+        if (Configuration.BR.itemActive) {
+            BR = hardwareMap.get(DcMotor.class, Configuration.BR.itemName);
         }
-        if (Config.BL.itemActive) {
-            BL = hardwareMap.get(DcMotor.class, Config.BL.itemName);
+        if (Configuration.BL.itemActive) {
+            BL = hardwareMap.get(DcMotor.class, Configuration.BL.itemName);
         }
 
         FL.setDirection(DcMotor.Direction.REVERSE);

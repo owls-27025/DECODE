@@ -8,10 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.Config;
-import org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems;
-import org.firstinspires.ftc.teamcode.teleop.V1;
+import org.firstinspires.ftc.teamcode.Configuration;
 
 import java.util.Arrays;
 import java.util.stream.DoubleStream;
@@ -30,11 +27,11 @@ public class SpindexerHelper {
     private static String[] colors = new String[SLOTS];
 
     public static void init(HardwareMap hardwareMap) {
-        if (Config.spindexerMotor.itemActive) {
-            SpindexerMotor = hardwareMap.get(DcMotor.class, Config.spindexerMotor.itemName);
+        if (Configuration.spindexerMotor.itemActive) {
+            SpindexerMotor = hardwareMap.get(DcMotor.class, Configuration.spindexerMotor.itemName);
         }
-        if (Config.spindexerServo.itemActive) {
-            SpindexerServo = hardwareMap.get(Servo.class, Config.spindexerServo.itemName);
+        if (Configuration.spindexerServo.itemActive) {
+            SpindexerServo = hardwareMap.get(Servo.class, Configuration.spindexerServo.itemName);
         }
 
         SpindexerMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
-public class Config {
+public class Configuration {
     // robot config
     public static configItem colorSensor = new configItem("color sensor", true);
 
@@ -14,10 +14,7 @@ public class Config {
     public static configItem spindexerServo = new configItem("flap", true);
     public static configItem shooter = new configItem("shooter", true);
 
-
-
-
-
+    public static configItem odometry = new configItem("odometry", true);
 
 
 

@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.mechanisms.subsystems.shooter;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import org.firstinspires.ftc.teamcode.Config;
+import org.firstinspires.ftc.teamcode.Configuration;
 
 import java.util.Arrays;
 
@@ -11,8 +11,8 @@ public class ShooterHelper {
     public static DcMotorEx shooterMotor;
 
     public static void init(HardwareMap hardwareMap) {
-        if (Config.shooter.itemActive) {
-            shooterMotor = hardwareMap.get(DcMotorEx.class, Config.shooter.itemName);
+        if (Configuration.shooter.itemActive) {
+            shooterMotor = hardwareMap.get(DcMotorEx.class, Configuration.shooter.itemName);
             shooterMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             shooterMotor.setDirection(DcMotor.Direction.REVERSE);
         }

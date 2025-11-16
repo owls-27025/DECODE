@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.other.other_robots.fenix.roadrunner;
+package org.firstinspires.ftc.teamcode.mechanisms.drivetrain.roadrunner;
 
 import androidx.annotation.NonNull;
 
@@ -33,18 +33,19 @@ import com.acmerobotics.roadrunner.ftc.RawEncoder;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
-import org.firstinspires.ftc.teamcode.other.other_robots.fenix.roadrunner.messages.DriveCommandMessage;
-import org.firstinspires.ftc.teamcode.other.other_robots.fenix.roadrunner.messages.MecanumCommandMessage;
-import org.firstinspires.ftc.teamcode.other.other_robots.fenix.roadrunner.messages.MecanumLocalizerInputsMessage;
-import org.firstinspires.ftc.teamcode.other.other_robots.fenix.roadrunner.messages.PoseMessage;
+import org.firstinspires.ftc.teamcode.Configuration;
+import org.firstinspires.ftc.teamcode.mechanisms.drivetrain.roadrunner.messages.DriveCommandMessage;
+import org.firstinspires.ftc.teamcode.mechanisms.drivetrain.roadrunner.messages.MecanumCommandMessage;
+import org.firstinspires.ftc.teamcode.mechanisms.drivetrain.roadrunner.messages.MecanumLocalizerInputsMessage;
+import org.firstinspires.ftc.teamcode.mechanisms.drivetrain.roadrunner.messages.PoseMessage;
 
 import java.lang.Math;
 import java.util.Arrays;
@@ -58,22 +59,20 @@ public final class MecanumDrive {
         // TODO: fill in these values based on
         //   see https://ftc-docs.firstinspires.org/en/latest/programming_resources/imu/imu.html?highlight=imu#physical-hub-mounting
         public RevHubOrientationOnRobot.LogoFacingDirection logoFacingDirection =
-                RevHubOrientationOnRobot.LogoFacingDirection.UP;
+                RevHubOrientationOnRobot.LogoFacingDirection.BACKWARD;
         public RevHubOrientationOnRobot.UsbFacingDirection usbFacingDirection =
-                RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD;
+                RevHubOrientationOnRobot.UsbFacingDirection.UP;
 
         // drive model parameters
-        public double inPerTick = 0.0028003578235;
-        //public double inPerTick = 0.00292226767097;
-        public double lateralInPerTick = 0.002282130398382663;
-        public double trackWidthTicks = 4218.625644821668;
+        public double inPerTick = 0.001971383148;
+        public double lateralInPerTick = inPerTick;
+        public double trackWidthTicks = 0;
 
         // feedforward parameters (in tick units)
-        public double kS = 0.7590072084999271;
-        //public double kS = 0.7815975903443237;
-        public double kV = 0.00043034297460884166;
-        //public double kV = 0.0005877978037046695;
-        public double kA = 0.0001;
+        public double kS = 0;
+        public double kV = 0;
+        public double kA = 0;
+
         // path profile parameters (in inches)
         public double maxWheelVel = 50;
         public double minProfileAccel = -30;
@@ -84,13 +83,13 @@ public final class MecanumDrive {
         public double maxAngAccel = Math.PI;
 
         // path controller gains
-        public double axialGain = 3;
-        public double lateralGain = 3;
-        public double headingGain = 3; // shared with turn
+        public double axialGain = 0.0;
+        public double lateralGain = 0.0;
+        public double headingGain = 0.0; // shared with turn
 
-        public double axialVelGain = 1.0;
-        public double lateralVelGain = 2.0;
-        public double headingVelGain = 3.0; // shared with turn
+        public double axialVelGain = 0.0;
+        public double lateralVelGain = 0.0;
+        public double headingVelGain = 0.0; // shared with turn
     }
 
     public static Params PARAMS = new Params();
@@ -228,10 +227,10 @@ public final class MecanumDrive {
 
         // TODO: make sure your config has motors with these names (or change them)
         //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
-        leftFront = hardwareMap.get(DcMotorEx.class, "FL");
-        leftBack = hardwareMap.get(DcMotorEx.class, "BL");
-        rightBack = hardwareMap.get(DcMotorEx.class, "BR");
-        rightFront = hardwareMap.get(DcMotorEx.class, "FR");
+        leftFront = hardwareMap.get(DcMotorEx.class, Configuration.FL.itemName);
+        leftBack = hardwareMap.get(DcMotorEx.class, Configuration.BL.itemName);
+        rightBack = hardwareMap.get(DcMotorEx.class, Configuration.BR.itemName);
+        rightFront = hardwareMap.get(DcMotorEx.class, Configuration.FR.itemName);
 
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -239,8 +238,7 @@ public final class MecanumDrive {
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // TODO: reverse motor directions if needed
-        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        //   leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // TODO: make sure your config has an IMU with this name (can be BNO or BHI)
         //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
@@ -248,8 +246,9 @@ public final class MecanumDrive {
                 PARAMS.logoFacingDirection, PARAMS.usbFacingDirection));
 
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
-// TODO DON'T FORGET TO CHANGE IT BACK TO PINPOINT
-        localizer = new org.firstinspires.ftc.teamcode.other.other_robots.fenix.roadrunner.PinpointLocalizer(hardwareMap, PARAMS.inPerTick, pose);
+
+        localizer = new PinpointLocalizer(hardwareMap, PARAMS.inPerTick, pose);
+
         FlightRecorder.write("MECANUM_PARAMS", PARAMS);
     }
 

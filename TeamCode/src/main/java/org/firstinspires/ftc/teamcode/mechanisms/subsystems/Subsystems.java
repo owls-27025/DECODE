@@ -1,12 +1,10 @@
 package org.firstinspires.ftc.teamcode.mechanisms.subsystems;
 
 import static org.firstinspires.ftc.teamcode.Helpers.easeInOutSine;
-import static org.firstinspires.ftc.teamcode.mechanisms.subsystems.spindexer.SpindexerHelper.SpindexerMotor;
 import static org.firstinspires.ftc.teamcode.mechanisms.subsystems.spindexer.SpindexerHelper.intakePosition;
 import static org.firstinspires.ftc.teamcode.mechanisms.subsystems.spindexer.SpindexerHelper.shootPosition;
 import static org.firstinspires.ftc.teamcode.teleop.V1.currentSpeed;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -19,9 +17,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.subsystems.shooter.ShooterHelpe
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.spindexer.SpindexerHelper;
 import org.firstinspires.ftc.teamcode.teleop.V1;
 
-import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.DoubleStream;
 
 public class Subsystems {
     public final static int HALF_SLOT_TICKS = 48;
@@ -33,7 +29,7 @@ public class Subsystems {
     public static boolean delayStarted;
     public static boolean spindexerMoved;
 
-    //There are 6 positions on the spindexer each represented as below
+    // There are 6 positions on the spindexer each represented as below
     //              3
     //      2       *       4
     //          *   *   *
@@ -79,6 +75,8 @@ public class Subsystems {
 
     private static Telemetry subsystemTelemetry;
 
+    private static boolean shootStarted;
+
     public static void init(HardwareMap hardwareMap, Telemetry telemetry) {
         // init subsystems
         SpindexerHelper.init(hardwareMap);
@@ -99,13 +97,16 @@ public class Subsystems {
 
         delayStarted = false;
         delayTimer = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
+
+        shootStarted = false;
     }
+
+
     public static void intake(Gamepad gamepad2) {
         if (currentState == IntakeState.INIT) {
             if (gamepad2.aWasPressed()) {
+                // start intake
                 currentState = IntakeState.MOVING_TO_POSITION;
-            } else if (gamepad2.bWasPressed()) {
-                currentState = IntakeState.COMPLETED;
             }
         } else {
             if (gamepad2.aWasPressed()) {
@@ -113,6 +114,7 @@ public class Subsystems {
             }
             switch (currentState) {
                 case MOVING_TO_POSITION:
+                    // start intake motor
                     isDetected = false;
                     intakePosition();
                     IntakeHelper.start();
@@ -123,6 +125,7 @@ public class Subsystems {
                     break;
 
                 case WAITING_FOR_BALL:
+                    // wait for color sensor to detect ball
                     if (ColorSensorHelper.isBall() && !isDetected && artifactCount < 3) {
                         if (delayStarted == false) {
                             delayTimer.reset();
@@ -130,6 +133,7 @@ public class Subsystems {
                         }
                     }
                     if (delayStarted && delayTimer.time(TimeUnit.MILLISECONDS) > 250) {
+                        // move spindexer to next position and uptick artifact count
                         delayTimer.reset();
                         delayStarted = false;
                         isDetected = true;
@@ -147,6 +151,7 @@ public class Subsystems {
                     break;
 
                 case COMPLETED:
+                    // stop intake motor
                     IntakeHelper.stop();
                     SpindexerHelper.shootPosition();
                     currentState = IntakeState.INIT;
@@ -155,25 +160,66 @@ public class Subsystems {
         }
     }
 
+    public static void intakeAuto(int artifacts) {
+        while (artifactCount < artifacts) {
+            // start intake motor
+            isDetected = false;
+            intakePosition();
+            IntakeHelper.start();
 
+            delayStarted = false;
 
+            currentState = IntakeState.WAITING_FOR_BALL;
+            // wait for color sensor to detect ball
+            if (ColorSensorHelper.isBall() && !isDetected && artifactCount < 3) {
+                if (!delayStarted) {
+                    delayTimer.reset();
+                    delayStarted = true;
+                }
+            }
+            if (delayStarted && delayTimer.time(TimeUnit.MILLISECONDS) > 250) {
+                // move spindexer to next position and uptick artifact count
+                delayTimer.reset();
+                delayStarted = false;
+                isDetected = true;
+
+                SpindexerHelper.moveToNextPosition();
+
+                artifactCount++;
+
+                if (artifactCount >= 3) {
+                    currentState = IntakeState.COMPLETED;
+                } else {
+                    isDetected = false;
+                }
+            }
+
+            // stop intake motor
+            IntakeHelper.stop();
+            SpindexerHelper.shootPosition();
+            currentState = IntakeState.INIT;
+        }
+    }
 
     public static void shoot(Gamepad gamepad2) {
         if (currentShootState == ShootState.INIT) {
             if (gamepad2.xWasPressed()) {
+                // start shooter
                 currentShootState = ShootState.MOVING_TO_SHOOT_POSITION;
             }
             else if (gamepad2.yWasPressed()) {
+                // manually shoot (TESTING ONLY)
                 artifactCount = 1;
                 currentShootState = ShootState.MOVING_TO_SHOOT_POSITION;
             }
         } else if (currentShootState != ShootState.COMPLETED && artifactCount > 0) {
             if (gamepad2.xWasPressed()) {
+                // start shooter
                 currentShootState = ShootState.MOVING_TO_SHOOT_POSITION;
             }
-
             switch (currentShootState) {
                 case MOVING_TO_SHOOT_POSITION:
+                    // start shooter motor
                     shootPosition();
                     shotsLeft = artifactCount;
                     currentShootState = ShootState.SPINNING_UP_SHOOTER;
@@ -181,6 +227,7 @@ public class Subsystems {
                     break;
 
                 case SPINNING_UP_SHOOTER:
+                    // wait until shooter is at target velocity
                     double targetVelocity = SHOOTER_VELOCITY;
 
                     ShooterHelper.shoot(targetVelocity);
@@ -200,6 +247,7 @@ public class Subsystems {
                     break;
 
                 case FIRING:
+                    // shoot one artifact
                     SpindexerHelper.moveServo(1);
                     if (!delayStarted) {
                         delayTimer.reset();
@@ -214,6 +262,7 @@ public class Subsystems {
                     break;
 
                 case ADVANCING_NEXT_BALL:
+                    // move spindexer and prep for next ball
                     if (!spindexerMoved) {
                         SpindexerHelper.moveToNextPosition();
                         spindexerMoved = true;
@@ -241,8 +290,58 @@ public class Subsystems {
                     break;
 
                 case COMPLETED:
+                    // stop shooter motor
                     currentShootState = ShootState.INIT;
                     break;
+            }
+        }
+    }
+
+    public static void shootAuto(int artifacts) {
+        while (artifacts > 0) {
+            shootPosition();
+            double targetVelocity = SHOOTER_VELOCITY;
+
+            ShooterHelper.shoot(targetVelocity);
+
+            if (!delayStarted) {
+                delayTimer.reset();
+                delayStarted = true;
+            }
+
+            if (delayTimer.time(TimeUnit.MILLISECONDS) > 100) {
+                delayTimer.reset();
+                if (Math.abs(ShooterHelper.shooterMotor.getVelocity() - targetVelocity) <= 15) {
+                    delayStarted = false;
+                }
+            }
+            // shoot one artifact
+            SpindexerHelper.moveServo(1);
+            if (!delayStarted) {
+                delayTimer.reset();
+                delayStarted = true;
+            }
+            if (delayTimer.time(TimeUnit.MILLISECONDS) > 500) {
+                SpindexerHelper.moveServo(0.5);
+                delayStarted = false;
+                spindexerMoved = false;
+            }
+            // move spindexer and prep for next ball
+            if (!spindexerMoved) {
+                SpindexerHelper.moveToNextPosition();
+                spindexerMoved = true;
+            }
+
+            if (!delayStarted) {
+                delayTimer.reset();
+                delayStarted = true;
+            }
+
+            if (delayTimer.time(TimeUnit.MILLISECONDS) > 100) {
+                delayTimer.reset();
+                if (!SpindexerHelper.SpindexerMotor.isBusy()) {
+                    artifacts--;
+                }
             }
         }
     }
@@ -289,4 +388,5 @@ public class Subsystems {
         Drivetrain.FR.setPower((y - x - rx) * currentSpeed);
         Drivetrain.BR.setPower((y + x - rx) * currentSpeed);
     }
+
 }

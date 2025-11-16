@@ -3,13 +3,11 @@ package org.firstinspires.ftc.teamcode.mechanisms.subsystems.colorSensor;
 import android.graphics.Color;
 
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
-import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.Config;
+import org.firstinspires.ftc.teamcode.Configuration;
 
 public class ColorSensorHelper {
     private static final float GREEN_HUE_CENTER = 130f; // green
@@ -23,8 +21,8 @@ public class ColorSensorHelper {
 
 
     public static void init(HardwareMap hw) {
-        if (Config.colorSensor.itemActive) {
-            colorSensor = hw.get(Rev2mDistanceSensor.class, Config.colorSensor.itemName);
+        if (Configuration.colorSensor.itemActive) {
+            colorSensor = hw.get(Rev2mDistanceSensor.class, Configuration.colorSensor.itemName);
         }
     }
 
