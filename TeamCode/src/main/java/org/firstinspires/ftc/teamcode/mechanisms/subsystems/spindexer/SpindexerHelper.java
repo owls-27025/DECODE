@@ -60,6 +60,19 @@ public class SpindexerHelper {
         SpindexerMotor.setPower(0.5);
     }
 
+    public static void moveHalfPosition(boolean forward) {
+        int current = SpindexerMotor.getCurrentPosition();
+        int target = 0;
+        if (forward) {
+            target = current + HALF_SLOT_TICKS;
+        } else {
+            target = current - HALF_SLOT_TICKS;
+        }
+        SpindexerMotor.setTargetPosition(target);
+        SpindexerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        SpindexerMotor.setPower(0.5);
+    }
+
     public static void moveToPosition(int index) {
         if (index < 0) return;
 

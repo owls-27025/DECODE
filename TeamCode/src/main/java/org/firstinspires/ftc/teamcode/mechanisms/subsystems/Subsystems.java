@@ -26,11 +26,12 @@ import java.util.stream.DoubleStream;
 public class Subsystems {
     public final static int HALF_SLOT_TICKS = 48;
 
-    public static double SHOOTER_VELOCITY = 1000;
+    public static double SHOOTER_VELOCITY = 1200;
     public static double SUBTRACTION_VELOCITY = 50;
 
     public static ElapsedTime delayTimer;
     public static boolean delayStarted;
+    public static boolean spindexerMoved;
 
     //There are 6 positions on the spindexer each represented as below
     //              3
@@ -87,7 +88,7 @@ public class Subsystems {
         Drivetrain.init(hardwareMap);
 
         // variables
-        artifactCount = 3;
+        artifactCount = 0;
         currentState = IntakeState.INIT;
         currentShootState = ShootState.INIT;
         shotsLeft = 0;
@@ -99,7 +100,6 @@ public class Subsystems {
         delayStarted = false;
         delayTimer = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
     }
-
     public static void intake(Gamepad gamepad2) {
         if (currentState == IntakeState.INIT) {
             if (gamepad2.aWasPressed()) {
@@ -108,10 +108,7 @@ public class Subsystems {
                 currentState = IntakeState.COMPLETED;
             }
         } else {
-            if (gamepad2.bWasPressed()) {
-                currentState = IntakeState.COMPLETED;
-                return;
-            } else if (gamepad2.aWasPressed()) {
+            if (gamepad2.aWasPressed()) {
                 currentState = IntakeState.MOVING_TO_POSITION;
             }
             switch (currentState) {
@@ -132,7 +129,7 @@ public class Subsystems {
                             delayStarted = true;
                         }
                     }
-                    if (delayStarted && delayTimer.time(TimeUnit.MILLISECONDS) > 500) {
+                    if (delayStarted && delayTimer.time(TimeUnit.MILLISECONDS) > 250) {
                         delayTimer.reset();
                         delayStarted = false;
                         isDetected = true;
@@ -151,6 +148,7 @@ public class Subsystems {
 
                 case COMPLETED:
                     IntakeHelper.stop();
+                    SpindexerHelper.shootPosition();
                     currentState = IntakeState.INIT;
                     break;
             }
@@ -165,11 +163,12 @@ public class Subsystems {
             if (gamepad2.xWasPressed()) {
                 currentShootState = ShootState.MOVING_TO_SHOOT_POSITION;
             }
+            else if (gamepad2.yWasPressed()) {
+                artifactCount = 1;
+                currentShootState = ShootState.MOVING_TO_SHOOT_POSITION;
+            }
         } else if (currentShootState != ShootState.COMPLETED && artifactCount > 0) {
-            if (gamepad2.bWasPressed()) {
-                currentShootState = ShootState.COMPLETED;
-                return;
-            } else if (gamepad2.xWasPressed()) {
+            if (gamepad2.xWasPressed()) {
                 currentShootState = ShootState.MOVING_TO_SHOOT_POSITION;
             }
 
@@ -182,7 +181,7 @@ public class Subsystems {
                     break;
 
                 case SPINNING_UP_SHOOTER:
-                    double targetVelocity = getTargetVelocity();
+                    double targetVelocity = SHOOTER_VELOCITY;
 
                     ShooterHelper.shoot(targetVelocity);
 
@@ -193,7 +192,8 @@ public class Subsystems {
 
                     if (delayTimer.time(TimeUnit.MILLISECONDS) > 100) {
                         delayTimer.reset();
-                        if (Math.abs(ShooterHelper.shooterMotor.getVelocity() - targetVelocity) <= 5) {
+                        if (Math.abs(ShooterHelper.shooterMotor.getVelocity() - targetVelocity) <= 15) {
+                            delayStarted = false;
                             currentShootState = ShootState.FIRING;
                         }
                     }
@@ -201,20 +201,31 @@ public class Subsystems {
 
                 case FIRING:
                     SpindexerHelper.moveServo(1);
-                    delayTimer.reset();
-                    delayStarted = true;
-                    if (delayTimer.milliseconds() - delayTimer.startTime() > 100) {
+                    if (!delayStarted) {
+                        delayTimer.reset();
+                        delayStarted = true;
+                    }
+                    if (delayTimer.time(TimeUnit.MILLISECONDS) > 500) {
                         SpindexerHelper.moveServo(0.5);
+                        delayStarted = false;
+                        spindexerMoved = false;
                         currentShootState = ShootState.ADVANCING_NEXT_BALL;
                     }
                     break;
 
                 case ADVANCING_NEXT_BALL:
-                    SpindexerHelper.moveToNextPosition();
+                    if (!spindexerMoved) {
+                        SpindexerHelper.moveToNextPosition();
+                        spindexerMoved = true;
+                    }
 
-                    long checkTime = System.currentTimeMillis();
-                    if (checkTime - lastCheckTime >= 100) {
-                        lastCheckTime = checkTime;
+                    if (!delayStarted) {
+                        delayTimer.reset();
+                        delayStarted = true;
+                    }
+
+                    if (delayTimer.time(TimeUnit.MILLISECONDS) > 100) {
+                        delayTimer.reset();
                         if (!SpindexerHelper.SpindexerMotor.isBusy()) {
                             artifactCount--;
                             shotsLeft--;
@@ -224,29 +235,16 @@ public class Subsystems {
                             } else {
                                 currentShootState = ShootState.SPINNING_UP_SHOOTER;
                             }
+
                         }
                     }
                     break;
 
                 case COMPLETED:
+                    currentShootState = ShootState.INIT;
                     break;
             }
         }
-    }
-
-    private static double getTargetVelocity() {
-        int shotIndex = shotsLeft == artifactCount ? 0 :
-                shotsLeft == artifactCount - 1 ? 1 : 2;
-
-        double targetVelocity;
-        if (shotIndex == 0) {
-            targetVelocity = SHOOTER_VELOCITY - SUBTRACTION_VELOCITY;
-        } else if (shotIndex == 1) {
-            targetVelocity = SHOOTER_VELOCITY - (SUBTRACTION_VELOCITY / 2);
-        } else {
-            targetVelocity = SHOOTER_VELOCITY;
-        }
-        return targetVelocity;
     }
 
 

@@ -11,6 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.mechanisms.drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.colorSensor.ColorSensorHelper;
+import org.firstinspires.ftc.teamcode.mechanisms.subsystems.shooter.ShooterHelper;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.spindexer.SpindexerHelper;
 
 import java.util.concurrent.TimeUnit;
@@ -20,11 +21,13 @@ public class V1 extends OpMode {
     // drivetrain
     public static double currentSpeed = 1;
     public static boolean isFieldCentric = false;
+    boolean firing = false;
 
     @Override
     public void init() {
         // initialize subsystems
         Subsystems.init(hardwareMap, telemetry);
+        firing = false;
     }
 
     public void loop() {
@@ -42,9 +45,26 @@ public class V1 extends OpMode {
             Subsystems.SUBTRACTION_VELOCITY += 10;
         }
 
+        if (gamepad2.left_bumper) {
+            SpindexerHelper.moveHalfPosition(false);
+        } else if (gamepad2.right_bumper) {
+            SpindexerHelper.moveHalfPosition(true);
+        }
+
+        if (gamepad2.left_trigger != 0) {
+            SpindexerHelper.intakePosition();
+        } else if (gamepad2.right_trigger != 0) {
+            SpindexerHelper.shootPosition();
+        }
+
         Subsystems.intake(gamepad2);
 
         Subsystems.shoot(gamepad2);
+
+        if (gamepad2.b) {
+            Subsystems.currentShootState = Subsystems.ShootState.COMPLETED;
+            Subsystems.currentState = Subsystems.IntakeState.COMPLETED;
+        }
 
         drivetrain(gamepad1);
         telemetry();
@@ -52,8 +72,7 @@ public class V1 extends OpMode {
 
     private void telemetry() {
         // shooter telemetry
-        telemetry.addData("Shooting Velocity", Subsystems.SHOOTER_VELOCITY);
-        telemetry.addData("Shooting Subtraction", Subsystems.SUBTRACTION_VELOCITY);
+        telemetry.addData("Current Velocity", Subsystems.SHOOTER_VELOCITY);
 
         // color sensor telemetry
         telemetry.addData("Distance", ColorSensorHelper.colorSensor.getDistance(DistanceUnit.MM));
@@ -70,6 +89,12 @@ public class V1 extends OpMode {
 
         // state machine telemetry
         telemetry.addData("Shooter State", Subsystems.currentShootState);
+        if (Subsystems.currentShootState == Subsystems.ShootState.FIRING) {
+            firing = true;
+        }
+
+        telemetry.addData("Has fired", firing);
+
         telemetry.addData("Intake State", Subsystems.currentState);
         telemetry.addData("Delay", Subsystems.delayTimer.time(TimeUnit.MILLISECONDS));
         telemetry.addData("Delay started", Subsystems.delayStarted);
