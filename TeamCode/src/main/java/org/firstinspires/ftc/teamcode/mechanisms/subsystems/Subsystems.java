@@ -5,11 +5,14 @@ import static org.firstinspires.ftc.teamcode.mechanisms.subsystems.spindexer.Spi
 import static org.firstinspires.ftc.teamcode.mechanisms.subsystems.spindexer.SpindexerHelper.shootPosition;
 import static org.firstinspires.ftc.teamcode.teleop.V1.currentSpeed;
 
+import static java.lang.Thread.sleep;
+
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.auto.AutoTest;
 import org.firstinspires.ftc.teamcode.mechanisms.drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.colorSensor.ColorSensorHelper;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.intake.IntakeHelper;
@@ -22,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 public class Subsystems {
     public final static int HALF_SLOT_TICKS = 48;
 
-    public static double SHOOTER_VELOCITY = 1200;
+    public static double SHOOTER_VELOCITY = 1100;
     public static double SUBTRACTION_VELOCITY = 50;
 
     public static ElapsedTime delayTimer;
@@ -160,44 +163,21 @@ public class Subsystems {
         }
     }
 
-    public static void intakeAuto(int artifacts) {
-        while (artifactCount < artifacts) {
-            // start intake motor
-            isDetected = false;
+    public static void intakeAuto() throws InterruptedException {
+        boolean finished = false;
+        while (!finished) {
             intakePosition();
+
             IntakeHelper.start();
 
-            delayStarted = false;
-
-            currentState = IntakeState.WAITING_FOR_BALL;
-            // wait for color sensor to detect ball
-            if (ColorSensorHelper.isBall() && !isDetected && artifactCount < 3) {
-                if (!delayStarted) {
-                    delayTimer.reset();
-                    delayStarted = true;
-                }
+            while (!ColorSensorHelper.isBall()) {
+                // wai
             }
-            if (delayStarted && delayTimer.time(TimeUnit.MILLISECONDS) > 250) {
-                // move spindexer to next position and uptick artifact count
-                delayTimer.reset();
-                delayStarted = false;
-                isDetected = true;
+            sleep(200);
 
-                SpindexerHelper.moveToNextPosition();
+            SpindexerHelper.moveToNextPosition();
 
-                artifactCount++;
-
-                if (artifactCount >= 3) {
-                    currentState = IntakeState.COMPLETED;
-                } else {
-                    isDetected = false;
-                }
-            }
-
-            // stop intake motor
-            IntakeHelper.stop();
-            SpindexerHelper.shootPosition();
-            currentState = IntakeState.INIT;
+            finished = true;
         }
     }
 
@@ -209,7 +189,7 @@ public class Subsystems {
             }
             else if (gamepad2.yWasPressed()) {
                 // manually shoot (TESTING ONLY)
-                artifactCount = 1;
+                artifactCount = 3;
                 currentShootState = ShootState.MOVING_TO_SHOOT_POSITION;
             }
         } else if (currentShootState != ShootState.COMPLETED && artifactCount > 0) {
@@ -297,52 +277,37 @@ public class Subsystems {
         }
     }
 
-    public static void shootAuto(int artifacts) {
+    public static void shootAuto(int numArtifacts) throws InterruptedException {
+        int artifacts = numArtifacts;
+
         while (artifacts > 0) {
             shootPosition();
             double targetVelocity = SHOOTER_VELOCITY;
 
             ShooterHelper.shoot(targetVelocity);
 
-            if (!delayStarted) {
-                delayTimer.reset();
-                delayStarted = true;
+            while (Math.abs(ShooterHelper.shooterMotor.getVelocity() - targetVelocity) >= 5) {
+                // wait
             }
-
-            if (delayTimer.time(TimeUnit.MILLISECONDS) > 100) {
-                delayTimer.reset();
-                if (Math.abs(ShooterHelper.shooterMotor.getVelocity() - targetVelocity) <= 15) {
-                    delayStarted = false;
-                }
-            }
+            sleep(500);
             // shoot one artifact
             SpindexerHelper.moveServo(1);
-            if (!delayStarted) {
-                delayTimer.reset();
-                delayStarted = true;
-            }
-            if (delayTimer.time(TimeUnit.MILLISECONDS) > 500) {
-                SpindexerHelper.moveServo(0.5);
-                delayStarted = false;
-                spindexerMoved = false;
-            }
+            subsystemTelemetry.addLine("servo up");
+            subsystemTelemetry.update();
+
+            sleep(500);
+
+            SpindexerHelper.moveServo(0.5);
+
+            sleep(200);
+
             // move spindexer and prep for next ball
-            if (!spindexerMoved) {
-                SpindexerHelper.moveToNextPosition();
-                spindexerMoved = true;
-            }
+            SpindexerHelper.moveToNextPosition();
 
-            if (!delayStarted) {
-                delayTimer.reset();
-                delayStarted = true;
+            while (SpindexerHelper.SpindexerMotor.isBusy()) {
+                    // empty :3
             }
-
-            if (delayTimer.time(TimeUnit.MILLISECONDS) > 100) {
-                delayTimer.reset();
-                if (!SpindexerHelper.SpindexerMotor.isBusy()) {
-                    artifacts--;
-                }
-            }
+            artifacts--;
         }
     }
 

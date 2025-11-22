@@ -12,7 +12,7 @@ public class Drivetrain {
     public static DcMotor FR;
     public static DcMotor BL;
     public static DcMotor BR;
-    private static IMU imu;
+    public static IMU imu;
 
     public static void init(HardwareMap hardwareMap) {
         if (Configuration.FR.itemActive) {
@@ -35,6 +35,11 @@ public class Drivetrain {
         FL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        FR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        FL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         FR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         BR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

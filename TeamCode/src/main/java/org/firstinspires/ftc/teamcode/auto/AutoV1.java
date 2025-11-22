@@ -17,40 +17,25 @@ public class AutoV1 extends LinearOpMode {
 
     public class Subsystems {
 
-        public class Shoot1 implements Action {
+        public class Shoot implements Action {
+            public int artifacts;
+
+            public Shoot(int numArtifacts) {
+                artifacts = numArtifacts;
+            }
 
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems.shootAuto(1);
+                try {
+                    org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems.shootAuto(artifacts);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
                 return false;
             }
         }
-        public Action shoot1() {
-            return new Shoot1();
-        }
-
-        public class Shoot2 implements Action {
-
-            @Override
-            public boolean run(@NonNull TelemetryPacket packet) {
-                org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems.shootAuto(2);
-                return false;
-            }
-        }
-        public Action shoot2() {
-            return new Shoot2();
-        }
-
-        public class Shoot3 implements Action {
-
-            @Override
-            public boolean run(@NonNull TelemetryPacket packet) {
-                org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems.shootAuto(3);
-                return false;
-            }
-        }
-        public Action shoot3() {
-            return new Shoot3();
+        public Action shoot(int artifacts) {
+            return new Shoot(artifacts);
         }
     }
 
@@ -63,13 +48,13 @@ public class AutoV1 extends LinearOpMode {
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
 
         TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
-                .splineTo(new Vector2d(10, 10), Math.toRadians(0));
+                .splineToConstantHeading(new Vector2d(10, 10), 0);
 
         waitForStart();
 
         Actions.runBlocking(new SequentialAction(
                 tab1.build(),
-                subsystems.shoot3()
+                subsystems.shoot(3)
             )
         );
     }
