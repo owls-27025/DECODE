@@ -21,8 +21,8 @@ public class ColorSensorHelper {
 
 
     public static void init(HardwareMap hw) {
-        if (Configuration.colorSensor.itemActive) {
-            colorSensor = hw.get(Rev2mDistanceSensor.class, Configuration.colorSensor.itemName);
+        if (Configuration.distance.itemActive) {
+            colorSensor = hw.get(Rev2mDistanceSensor.class, Configuration.distance.itemName);
         }
     }
 

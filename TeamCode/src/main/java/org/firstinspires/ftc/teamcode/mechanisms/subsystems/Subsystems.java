@@ -223,7 +223,7 @@ public class Subsystems {
             }
             else if (gamepad2.yWasPressed()) {
                 // manually shoot (TESTING ONLY)
-                artifactCount = 3;
+                artifactCount = 1;
                 currentShootState = ShootState.MOVING_TO_SHOOT_POSITION;
             }
         } else if (currentShootState != ShootState.COMPLETED && artifactCount > 0) {
@@ -278,7 +278,7 @@ public class Subsystems {
                 case ADVANCING_NEXT_BALL:
                     // move spindexer and prep for next ball
                     if (!spindexerMoved) {
-                        SpindexerHelper.moveToNextPosition();
+//                        SpindexerHelper.moveToNextPosition();
                         spindexerMoved = true;
                     }
 

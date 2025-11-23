@@ -107,6 +107,7 @@ public class AutoTest2 extends LinearOpMode {
     private double  targetHeading = 0;
     private double  driveSpeed = 0;
     private double  turnSpeed = 0;
+    private double strafeSpeed = 0;
     private double  leftSpeed = 0;
     private double  rightSpeed = 0;
     private int FLTarget = 0;
@@ -170,9 +171,11 @@ public class AutoTest2 extends LinearOpMode {
 
         driveStraight(DRIVE_SPEED, -25.0, 0.0);    // Drive Back
 
-
+        telemetry.addLine("drived");
 
         turnToHeading( TURN_SPEED, -45.0); // Turn to face artifacts
+
+        telemetry.addLine("turned");
 
         strafe(DRIVE_SPEED, 20.0, 0.0); // go to artifacts
 
@@ -287,8 +290,8 @@ public class AutoTest2 extends LinearOpMode {
 
             // Set the required driving speed  (must be positive for RUN_TO_POSITION)
             // Start driving straight, and then enter the control loop
-            maxDriveSpeed = Math.abs(maxDriveSpeed);
-            moveRobot(0, maxDriveSpeed, 0);
+            strafeSpeed = Math.abs(maxDriveSpeed);
+            moveRobot(0, strafeSpeed, 0);
 
             // keep looping while we are still active, and BOTH motors are running.
             while (opModeIsActive() &&
@@ -297,12 +300,8 @@ public class AutoTest2 extends LinearOpMode {
                 // Determine required steering to keep on heading
                 turnSpeed = getSteeringCorrection(heading, P_DRIVE_GAIN);
 
-                // if driving in reverse, the motor correction also needs to be reversed
-                if (distance < 0)
-                    turnSpeed *= -1.0;
-
                 // Apply the turning correction to the current driving speed.
-                moveRobot(0, driveSpeed, turnSpeed);
+                moveRobot(0, strafeSpeed, turnSpeed);
 
                 // Display drive status for the driver.
                 sendTelemetry(true);
@@ -332,28 +331,33 @@ public class AutoTest2 extends LinearOpMode {
      *              If a relative angle is required, add/subtract from current heading.
      */
     public void turnToHeading(double maxTurnSpeed, double heading) {
+        // Use encoders for turning
+        FL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        FR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        // Run getSteeringCorrection() once to pre-calculate the current error
-        getSteeringCorrection(heading, P_DRIVE_GAIN);
+        // Prime headingError once before the loop
+        getSteeringCorrection(heading, P_TURN_GAIN);
 
-        // keep looping while we are still active, and not on heading.
+        // Loop while we are active and the ANGLE error is larger than the threshold
         while (opModeIsActive() && (Math.abs(headingError) > HEADING_THRESHOLD)) {
+            // steering is motor power, headingError is in DEGREES
+            double steering = getSteeringCorrection(heading, P_TURN_GAIN);
 
-            // Determine required steering to keep on heading
-            turnSpeed = getSteeringCorrection(heading, P_TURN_GAIN);
+            // Limit motor power to requested maxTurnSpeed
+            double turn = Range.clip(steering, -maxTurnSpeed, maxTurnSpeed);
 
-            // Clip the speed to the maximum permitted value.
-            turnSpeed = Range.clip(turnSpeed, -maxTurnSpeed, maxTurnSpeed);
+            // Apply turn (no drive or strafe)
+            moveRobot(0, 0, turn);
 
-            // Pivot in place by applying the turning correction
-            moveRobot(0, 0, turnSpeed);
-
-            // Display drive status for the driver.
+            // Telemetry will show headingError and targetHeading
             sendTelemetry(false);
         }
 
-        // Stop all motion;
+        // Stop all motion
         moveRobot(0, 0, 0);
+        sleep(80);
     }
 
     /**
@@ -425,6 +429,7 @@ public class AutoTest2 extends LinearOpMode {
     public void moveRobot(double drive, double strafe, double turn) {
         driveSpeed = drive;     // save this value as a class member so it can be used by telemetry.
         turnSpeed  = turn;      // save this value as a class member so it can be used by telemetry.
+        strafeSpeed = strafe;
 
         double frontLeftPower = drive + strafe + turn;
         double backLeftPower = drive - strafe + turn;
@@ -447,6 +452,9 @@ public class AutoTest2 extends LinearOpMode {
         BL.setPower(backLeftPower);
         FR.setPower(frontRightPower);
         BR.setPower(backRightPower);
+
+        leftSpeed = (frontLeftPower + backLeftPower) / 2;
+        rightSpeed = (frontRightPower + backRightPower) / 2;
     }
 
     /**
@@ -475,6 +483,6 @@ public class AutoTest2 extends LinearOpMode {
      * read the Robot heading directly from the IMU (in degrees)
      */
     public double getHeading() {
-        return Drivetrain.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+        return imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
     }
 }
