@@ -7,6 +7,7 @@ import static org.firstinspires.ftc.teamcode.teleop.V1.currentSpeed;
 
 import static java.lang.Thread.sleep;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -163,7 +164,7 @@ public class Subsystems {
         }
     }
 
-    public static void intakeAuto() throws InterruptedException {
+    public static void intakeAuto(int ticks) throws InterruptedException {
         boolean finished = false;
         while (!finished) {
             intakePosition();
@@ -176,6 +177,35 @@ public class Subsystems {
             sleep(200);
 
             SpindexerHelper.moveToNextPosition();
+
+            Drivetrain.BL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            Drivetrain.BR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            Drivetrain.FL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            Drivetrain.FR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+            Drivetrain.BL.setTargetPosition(ticks);
+            Drivetrain.BR.setTargetPosition(ticks);
+            Drivetrain.FL.setTargetPosition(ticks);
+            Drivetrain.FR.setTargetPosition(ticks);
+
+            Drivetrain.BL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            Drivetrain.BR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            Drivetrain.FL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            Drivetrain.FR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            Drivetrain.BL.setPower(0.35);
+            Drivetrain.BR.setPower(0.35);
+            Drivetrain.FL.setPower(0.35);
+            Drivetrain.FR.setPower(0.35);
+
+            while (Drivetrain.BL.isBusy() && Drivetrain.BR.isBusy() && Drivetrain.FL.isBusy() && Drivetrain.FR.isBusy()) {
+                // wait
+            }
+
+            Drivetrain.BL.setPower(0);
+            Drivetrain.BR.setPower(0);
+            Drivetrain.FL.setPower(0);
+            Drivetrain.FR.setPower(0);
 
             finished = true;
         }

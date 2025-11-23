@@ -20,18 +20,10 @@ public class AutoTest extends LinearOpMode {
 
         forward(-1000);
         Subsystems.shootAuto(3);
-        turn(-45);
-        strafe(-600);
-        forward(100);
-        Subsystems.intakeAuto();
-//        forward(100);
-//        Subsystems.intakeAuto();
-//        forward(100);
-//        Subsystems.intakeAuto();
-//        shootPosition();
-//        forward(-300);
-//        turn(-45);
-//        Subsystems.shootAuto(3);
+        turn(-90);
+        Subsystems.intakeAuto(200);
+        Subsystems.intakeAuto(200);
+        Subsystems.intakeAuto(200);
     }
 
     public void forward(int ticks) {
