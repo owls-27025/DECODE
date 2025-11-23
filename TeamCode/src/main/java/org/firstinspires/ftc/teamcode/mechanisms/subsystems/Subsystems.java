@@ -220,11 +220,12 @@ public class Subsystems {
             if (gamepad2.xWasPressed()) {
                 // start shooter
                 currentShootState = ShootState.MOVING_TO_SHOOT_POSITION;
-            }
-            else if (gamepad2.yWasPressed()) {
+            } else if (gamepad2.yWasPressed()) {
                 // manually shoot (TESTING ONLY)
                 artifactCount = 1;
                 currentShootState = ShootState.MOVING_TO_SHOOT_POSITION;
+            } else if (gamepad2.dpadLeftWasPressed()) {
+                ShooterHelper.shooterMotor.setPower(-0.7);
             }
         } else if (currentShootState != ShootState.COMPLETED && artifactCount > 0) {
             if (gamepad2.xWasPressed()) {
