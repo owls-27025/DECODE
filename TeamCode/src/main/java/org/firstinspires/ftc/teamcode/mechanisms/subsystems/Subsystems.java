@@ -171,13 +171,6 @@ public class Subsystems {
 
             IntakeHelper.start();
 
-            while (!ColorSensorHelper.isBall()) {
-                // wai
-            }
-            sleep(200);
-
-            SpindexerHelper.moveToNextPosition();
-
             Drivetrain.BL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             Drivetrain.BR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             Drivetrain.FL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -193,10 +186,21 @@ public class Subsystems {
             Drivetrain.FL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             Drivetrain.FR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-            Drivetrain.BL.setPower(0.35);
-            Drivetrain.BR.setPower(0.35);
-            Drivetrain.FL.setPower(0.35);
-            Drivetrain.FR.setPower(0.35);
+            Drivetrain.BL.setPower(0);
+            Drivetrain.BR.setPower(0);
+            Drivetrain.FL.setPower(0);
+            Drivetrain.FR.setPower(0);
+
+            while (!ColorSensorHelper.isBall()) {
+                // wai
+                Drivetrain.BL.setPower(0.35);
+                Drivetrain.BR.setPower(0.35);
+                Drivetrain.FL.setPower(0.35);
+                Drivetrain.FR.setPower(0.35);
+            }
+            sleep(200);
+
+            SpindexerHelper.moveToNextPosition();
 
             while (Drivetrain.BL.isBusy() && Drivetrain.BR.isBusy() && Drivetrain.FL.isBusy() && Drivetrain.FR.isBusy()) {
                 // wait
@@ -322,8 +326,8 @@ public class Subsystems {
             sleep(500);
             // shoot one artifact
             SpindexerHelper.moveServo(1);
-            subsystemTelemetry.addLine("servo up");
-            subsystemTelemetry.update();
+//            subsystemTelemetry.addLine("servo up");
+//            subsystemTelemetry.update();
 
             sleep(500);
 

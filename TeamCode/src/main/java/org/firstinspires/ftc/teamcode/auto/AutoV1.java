@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.auto;
 
 import androidx.annotation.NonNull;
+
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.*;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
 import org.firstinspires.ftc.teamcode.mechanisms.drivetrain.roadrunner.MecanumDrive;
 
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems;
@@ -34,6 +36,7 @@ public class AutoV1 extends LinearOpMode {
                 return false;
             }
         }
+
         public Action shoot(int artifacts) {
             return new Shoot(artifacts);
         }
@@ -53,9 +56,9 @@ public class AutoV1 extends LinearOpMode {
         waitForStart();
 
         Actions.runBlocking(new SequentialAction(
-                tab1.build(),
-                subsystems.shoot(3)
-            )
+                        tab1.build(),
+                        subsystems.shoot(3)
+                )
         );
     }
 }
