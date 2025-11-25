@@ -40,9 +40,9 @@ public class V1 extends OpMode {
 
         // change shooter subtraction
         if (gamepad2.dpadLeftWasPressed()) {
-            Subsystems.SUBTRACTION_VELOCITY -= 10;
+            SpindexerHelper.SPEED -= 0.05;
         } else if (gamepad2.dpadRightWasPressed()) {
-            Subsystems.SUBTRACTION_VELOCITY += 10;
+            SpindexerHelper.SPEED += 0.05;
         }
 
         if (gamepad2.left_bumper) {
@@ -98,6 +98,10 @@ public class V1 extends OpMode {
         telemetry.addData("Intake State", Subsystems.currentState);
         telemetry.addData("Delay", Subsystems.delayTimer.time(TimeUnit.MILLISECONDS));
         telemetry.addData("Delay started", Subsystems.delayStarted);
+
+        telemetry.addData("spindexer motor position", SpindexerHelper.SpindexerMotor.getCurrentPosition());
+
+        telemetry.addData("spindexer speed", SpindexerHelper.SPEED);
 
         telemetry.update();
     }

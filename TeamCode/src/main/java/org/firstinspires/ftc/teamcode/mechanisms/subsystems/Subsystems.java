@@ -24,7 +24,7 @@ import org.firstinspires.ftc.teamcode.teleop.V1;
 import java.util.concurrent.TimeUnit;
 
 public class Subsystems {
-    public final static int HALF_SLOT_TICKS = 48;
+    public final static int HALF_SLOT_TICKS = 145;
 
     public static double SHOOTER_VELOCITY = 1100;
     public static double SUBTRACTION_VELOCITY = 50;
@@ -110,10 +110,12 @@ public class Subsystems {
         if (currentState == IntakeState.INIT) {
             if (gamepad2.aWasPressed()) {
                 // start intake
+                artifactCount = 3;
                 currentState = IntakeState.MOVING_TO_POSITION;
             }
         } else {
             if (gamepad2.aWasPressed()) {
+                artifactCount = 3;
                 currentState = IntakeState.MOVING_TO_POSITION;
             }
             switch (currentState) {
@@ -224,8 +226,13 @@ public class Subsystems {
                 // manually shoot (TESTING ONLY)
                 artifactCount = 1;
                 currentShootState = ShootState.MOVING_TO_SHOOT_POSITION;
-            } else if (gamepad2.dpadLeftWasPressed()) {
-                ShooterHelper.shooterMotor.setPower(-0.7);
+            } else if (gamepad2.backWasPressed()) {
+                if (ShooterHelper.shooterMotor.getPower() == 0) {
+                    ShooterHelper.shooterMotor.setVelocity(0);
+                    ShooterHelper.shooterMotor.setPower(-0.7);
+                } else {
+                    ShooterHelper.shooterMotor.setPower(0);
+                }
             }
         } else if (currentShootState != ShootState.COMPLETED && artifactCount > 0) {
             if (gamepad2.xWasPressed()) {
@@ -279,7 +286,7 @@ public class Subsystems {
                 case ADVANCING_NEXT_BALL:
                     // move spindexer and prep for next ball
                     if (!spindexerMoved) {
-//                        SpindexerHelper.moveToNextPosition();
+                        SpindexerHelper.moveToNextPosition();
                         spindexerMoved = true;
                     }
 
@@ -305,6 +312,7 @@ public class Subsystems {
                     break;
 
                 case COMPLETED:
+                    subsystemTelemetry.addLine("yo");
                     // stop shooter motor
                     currentShootState = ShootState.INIT;
                     break;

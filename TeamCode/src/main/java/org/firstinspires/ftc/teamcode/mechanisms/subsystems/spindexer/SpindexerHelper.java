@@ -18,12 +18,14 @@ public class SpindexerHelper {
     public static Servo SpindexerServo;
 
     // TPR = ticks per rotation, SINGLE = ticks for a single position, SLOTS = three different positions
-    private static final int TPR = 288;
+
+    private static final int TPR = 145; // for new spindexer, 1150 rpm motor
     private static final int SLOTS = 3;
-    private static final int SINGLE = TPR / SLOTS;
+    private static final int SINGLE = HALF_SLOT_TICKS * 2;
     private static final int INTAKE_OFFSET = 48;
     private static final int SHOOTING_OFFSET = 0;
     private static final int COLOR_SENSOR_OFFSET = 0;
+    public static double SPEED = 0.1;
     private static String[] colors = new String[SLOTS];
 
     public static void init(HardwareMap hardwareMap) {
@@ -38,7 +40,7 @@ public class SpindexerHelper {
         SpindexerMotor.setTargetPosition(0);
         SpindexerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         SpindexerMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        SpindexerMotor.setPower(0.5);
+        SpindexerMotor.setPower(SPEED);
         SpindexerMotor.setDirection(DcMotor.Direction.REVERSE);
 
         Arrays.fill(colors, "-");
@@ -54,7 +56,7 @@ public class SpindexerHelper {
         int target = current + SINGLE;
         SpindexerMotor.setTargetPosition(target);
         SpindexerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        SpindexerMotor.setPower(0.5);
+        SpindexerMotor.setPower(SPEED);
     }
 
     public static void moveHalfPosition(boolean forward) {
@@ -67,7 +69,7 @@ public class SpindexerHelper {
         }
         SpindexerMotor.setTargetPosition(target);
         SpindexerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        SpindexerMotor.setPower(0.5);
+        SpindexerMotor.setPower(SPEED);
     }
 
     public static void moveToPosition(int index) {
@@ -81,7 +83,7 @@ public class SpindexerHelper {
 
         SpindexerMotor.setTargetPosition(target);
         SpindexerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        SpindexerMotor.setPower(0.5);
+        SpindexerMotor.setPower(SPEED);
     }
 
     public static void moveServo(double pos) {
@@ -99,7 +101,7 @@ public class SpindexerHelper {
     public static void moveSpindexerTo(int targetPosition){
         SpindexerMotor.setTargetPosition(targetPosition);
         SpindexerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        SpindexerMotor.setPower(0.5);
+        SpindexerMotor.setPower(SPEED);
     }
 
     //This method moves the spindexer to the intake position no matter in which position the spindexer is in

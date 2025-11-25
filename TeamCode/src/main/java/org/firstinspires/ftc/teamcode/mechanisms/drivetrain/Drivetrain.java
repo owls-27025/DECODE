@@ -28,7 +28,7 @@ public class Drivetrain {
             BL = hardwareMap.get(DcMotor.class, Configuration.BL.itemName);
         }
 
-        FL.setDirection(DcMotor.Direction.REVERSE);
+        FR.setDirection(DcMotor.Direction.REVERSE);
         BL.setDirection(DcMotor.Direction.REVERSE);
 
         FR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

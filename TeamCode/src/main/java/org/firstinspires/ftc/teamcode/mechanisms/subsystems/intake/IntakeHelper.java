@@ -16,7 +16,7 @@ public class IntakeHelper {
     }
 
     public static void start() {
-        intake.setPower(0.9);
+        intake.setPower(1);
     }
 
     public static void stop() {

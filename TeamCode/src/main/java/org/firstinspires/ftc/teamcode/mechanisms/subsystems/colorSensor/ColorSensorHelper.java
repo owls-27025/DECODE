@@ -103,6 +103,6 @@ public class ColorSensorHelper {
     }
 
     public static boolean isBall() {
-        return colorSensor.getDistance(DistanceUnit.MM) < 75;
+        return colorSensor.getDistance(DistanceUnit.MM) < 130;
     }
 }
