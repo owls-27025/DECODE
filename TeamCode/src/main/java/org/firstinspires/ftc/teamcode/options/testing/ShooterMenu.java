@@ -1,0 +1,47 @@
+package org.firstinspires.ftc.teamcode.options.testing;
+
+import com.qualcomm.robotcore.hardware.Gamepad;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.mechanisms.subsystems.shooter.ShooterHelper;
+import org.firstinspires.ftc.teamcode.mechanisms.subsystems.spindexer.SpindexerHelper;
+import org.firstinspires.ftc.teamcode.options.MenuLib;
+import org.firstinspires.ftc.teamcode.options.Globals;
+
+public class ShooterMenu extends MenuLib.Menu {
+    public ShooterMenu(MenuLib.MenuHost host, Gamepad gamepad, Telemetry telemetry) {
+        super(host, gamepad, telemetry, "SHOOTER");
+
+        addOption(new MenuLib.Option(
+                "Start Shooter Motor",
+                () -> {
+                    ShooterHelper.shooterMotor.setVelocity(Globals.ShooterVelocity);
+                }
+        ));
+
+        addOption(new MenuLib.IntOption(
+                "Shooter Velocity: ",
+                1100,
+                50,
+                0,
+                1600,
+                value -> Globals.ShooterVelocity = value
+        ));
+
+        addOption(new MenuLib.DoubleOption(
+                "Servo Position: ",
+                0.0,
+                0.05,
+                0.0,
+                1.0,
+                2,
+                SpindexerHelper::moveServo
+        ));
+
+        addOption(new MenuLib.SubMenu(
+                "Back",
+                host,
+                () -> new TestMenu(host, gamepad, telemetry)
+        ));
+    }
+}

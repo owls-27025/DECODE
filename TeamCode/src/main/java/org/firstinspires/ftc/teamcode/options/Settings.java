@@ -3,11 +3,11 @@ package org.firstinspires.ftc.teamcode.options;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.Globals;
 import org.firstinspires.ftc.teamcode.mechanisms.drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems;
-import org.firstinspires.ftc.teamcode.options.MenuLib;
-import org.firstinspires.ftc.teamcode.options.TestMenu;
+import org.firstinspires.ftc.teamcode.options.testing.TestMenu;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @TeleOp
 public class Settings extends LinearOpMode implements MenuLib.MenuHost {
@@ -18,6 +18,8 @@ public class Settings extends LinearOpMode implements MenuLib.MenuHost {
     public void runOpMode() {
         Subsystems.init(hardwareMap, telemetry);
         Drivetrain.init(hardwareMap);
+
+        AtomicBoolean isFinished = new AtomicBoolean(false);
 
         mainMenu = new MenuLib.Menu(this, gamepad1, telemetry, "SETTINGS") {
             {
@@ -33,7 +35,7 @@ public class Settings extends LinearOpMode implements MenuLib.MenuHost {
 
                 addOption(new MenuLib.DoubleOption(
                         "Spindexer Speed: ",
-                        0.1,
+                        Globals.SpindexerSpeed,
                         0.05,
                         0.0,
                         1.0,
@@ -41,10 +43,46 @@ public class Settings extends LinearOpMode implements MenuLib.MenuHost {
                         value -> Globals.SpindexerSpeed = value
                 ));
 
+                addOption(new MenuLib.DoubleOption(
+                        "Drive Speed: ",
+                        Globals.DriveSpeed,
+                        0.05,
+                        0.0,
+                        1.0,
+                        2,
+                        value -> Globals.DriveSpeed = value
+                ));
+
+                addOption(new MenuLib.DoubleOption(
+                        "Slow Drive Speed: ",
+                        Globals.SlowDriveSpeed,
+                        0.05,
+                        0.0,
+                        1.0,
+                        2,
+                        value -> Globals.SlowDriveSpeed = value
+                ));
+
+                addOption(new MenuLib.IntOption(
+                        "Forced Artifacts: ",
+                        Globals.ForcedArtifacts,
+                        1,
+                        1,
+                        3,
+                        value -> Globals.ForcedArtifacts = value
+                ));
+
                 addOption(new MenuLib.SubMenu(
                         "Test",
                         Settings.this,
                         () -> new TestMenu(Settings.this, gamepad1, telemetry)
+                ));
+
+                addOption(new MenuLib.Option(
+                        "Exit",
+                        () -> {
+                            isFinished.set(true);
+                        }
                 ));
             }
         };
@@ -54,11 +92,15 @@ public class Settings extends LinearOpMode implements MenuLib.MenuHost {
 
         waitForStart();
 
-        while (opModeIsActive()) {
+        while (opModeIsActive() && !isFinished.get()) {
             if (currentMenu != null) {
                 currentMenu.loop();
             }
         }
+
+        telemetry.addLine("exiting...");
+        telemetry.update();
+        sleep(1500);
     }
 
 

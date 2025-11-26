@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.colorSensor.ColorSensorHelper;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.shooter.ShooterHelper;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.spindexer.SpindexerHelper;
+import org.firstinspires.ftc.teamcode.options.Globals;
 
 import java.util.concurrent.TimeUnit;
 
@@ -38,13 +39,6 @@ public class V1 extends OpMode {
             Subsystems.SHOOTER_VELOCITY -= 50;
         }
 
-        // change shooter subtraction
-        if (gamepad2.dpadLeftWasPressed()) {
-            SpindexerHelper.SPEED -= 0.05;
-        } else if (gamepad2.dpadRightWasPressed()) {
-            SpindexerHelper.SPEED += 0.05;
-        }
-
         if (gamepad2.left_bumper) {
             SpindexerHelper.moveHalfPosition(false);
         } else if (gamepad2.right_bumper) {
@@ -61,7 +55,7 @@ public class V1 extends OpMode {
 
         Subsystems.shoot(gamepad2);
 
-        if (gamepad2.b) {
+        if (gamepad2.bWasPressed() && !gamepad1.start && !gamepad2.start) {
             Subsystems.currentShootState = Subsystems.ShootState.COMPLETED;
             Subsystems.currentState = Subsystems.IntakeState.COMPLETED;
         }
@@ -101,7 +95,7 @@ public class V1 extends OpMode {
 
         telemetry.addData("spindexer motor position", SpindexerHelper.SpindexerMotor.getCurrentPosition());
 
-        telemetry.addData("spindexer speed", SpindexerHelper.SPEED);
+        telemetry.addData("spindexer speed", Globals.SpindexerSpeed);
 
         telemetry.update();
     }

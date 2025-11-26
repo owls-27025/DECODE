@@ -1,7 +1,15 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.options;
 
 public class Globals {
-    public static double SpindexerSpeed;
+    public static double SpindexerSpeed = 0.1;
+
+    public static double DriveSpeed = 1.0;
+
+    public static double SlowDriveSpeed = 0.35;
+
+    public static int ShooterVelocity = 1100;
+
+    public static int ForcedArtifacts = 1;
 
     public enum Alliances {
         RED,

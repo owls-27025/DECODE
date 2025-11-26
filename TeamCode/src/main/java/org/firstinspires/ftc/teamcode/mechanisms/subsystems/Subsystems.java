@@ -19,6 +19,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.subsystems.colorSensor.ColorSen
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.intake.IntakeHelper;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.shooter.ShooterHelper;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.spindexer.SpindexerHelper;
+import org.firstinspires.ftc.teamcode.options.Globals;
 import org.firstinspires.ftc.teamcode.teleop.V1;
 
 import java.util.concurrent.TimeUnit;
@@ -108,12 +109,12 @@ public class Subsystems {
 
     public static void intake(Gamepad gamepad2) {
         if (currentState == IntakeState.INIT) {
-            if (gamepad2.aWasPressed()) {
+            if (gamepad2.aWasPressed() && !gamepad2.start) {
                 // start intake
                 currentState = IntakeState.MOVING_TO_POSITION;
             }
         } else {
-            if (gamepad2.aWasPressed()) {
+            if (gamepad2.aWasPressed() && !gamepad2.start) {
                 currentState = IntakeState.MOVING_TO_POSITION;
             }
             switch (currentState) {
@@ -130,28 +131,35 @@ public class Subsystems {
 
                 case WAITING_FOR_BALL:
                     // wait for color sensor to detect ball
+
                     if (ColorSensorHelper.isBall() && !isDetected && artifactCount < 3) {
-                        if (delayStarted == false) {
-                            delayTimer.reset();
-                            delayStarted = true;
-                        }
-                    }
-                    if (delayStarted && delayTimer.time(TimeUnit.MILLISECONDS) > 250) {
-                        // move spindexer to next position and uptick artifact count
-                        delayTimer.reset();
-                        delayStarted = false;
                         isDetected = true;
 
-                        SpindexerHelper.moveToNextPosition();
+                        if (!delayStarted) {
+                            delayStarted = true;
+                            delayTimer.reset();
+                        }
 
-                        artifactCount++;
+                        if (delayTimer.time(TimeUnit.MILLISECONDS) > 250) {
+                            SpindexerHelper.moveToNextPosition();
 
-                        if (artifactCount >= 3) {
-                            currentState = IntakeState.COMPLETED;
-                        } else {
-                            isDetected = false;
+                            artifactCount++;
+
+                            if (artifactCount >= 3) {
+                                currentState = IntakeState.COMPLETED;
+                            } else {
+                                currentState = IntakeState.MOVING_TO_NEXT_POSITION;
+                            }
                         }
                     }
+                    break;
+
+                case MOVING_TO_NEXT_POSITION:
+                    if (!SpindexerHelper.SpindexerMotor.isBusy()) {
+                        currentState = IntakeState.WAITING_FOR_BALL;
+                    }
+
+                    isDetected = false;
                     break;
 
                 case COMPLETED:
@@ -221,18 +229,20 @@ public class Subsystems {
                 // start shooter
                 currentShootState = ShootState.MOVING_TO_SHOOT_POSITION;
             } else if (gamepad2.yWasPressed()) {
-                // manually shoot (TESTING ONLY)
-                artifactCount = 1;
+                // forced shoot
+                artifactCount = Globals.ForcedArtifacts;
                 currentShootState = ShootState.MOVING_TO_SHOOT_POSITION;
             } else if (gamepad2.backWasPressed()) {
                 if (ShooterHelper.shooterMotor.getPower() == 0) {
                     ShooterHelper.shooterMotor.setVelocity(0);
-                    ShooterHelper.shooterMotor.setPower(-0.7);
+                    ShooterHelper.shooterMotor.setPower(-0.2);
                 } else {
                     ShooterHelper.shooterMotor.setPower(0);
                 }
             }
-        } else if (currentShootState != ShootState.COMPLETED && artifactCount > 0) {
+        } else if (currentShootState == ShootState.COMPLETED) {
+            currentShootState = ShootState.INIT;
+        } else if (artifactCount > 0) {
             if (gamepad2.xWasPressed()) {
                 // start shooter
                 currentShootState = ShootState.MOVING_TO_SHOOT_POSITION;
@@ -310,8 +320,6 @@ public class Subsystems {
                     break;
 
                 case COMPLETED:
-                    subsystemTelemetry.addLine("yo");
-                    // stop shooter motor
                     currentShootState = ShootState.INIT;
                     break;
             }
@@ -356,9 +364,9 @@ public class Subsystems {
     public static void drivetrain(Gamepad gamepad1) {
         // speed control
         if(gamepad1.left_bumper) {
-            currentSpeed = 0.35;
+            currentSpeed = Globals.SlowDriveSpeed;
         } else {
-            currentSpeed = 1;
+            currentSpeed = Globals.DriveSpeed;
         }
 
         // field centric toggle

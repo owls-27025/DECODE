@@ -22,6 +22,8 @@ public class servo extends OpMode {
             servo.setPosition(1);
         } else if (gamepad1.b) {
             servo.setPosition(0.5);
+        } else if (gamepad1.x) {
+            servo.setPosition(0);
         }
     }
 }

@@ -200,22 +200,24 @@ public class MenuLib {
                 return;
             }
 
-            if (gamepad.dpadDownWasPressed()) {
-                pointer = (pointer + 1) % options.size();
-            }
-            if (gamepad.dpadUpWasPressed()) {
-                pointer = (pointer - 1 + options.size()) % options.size();
-            }
+            if (!gamepad.start) {
+                if (gamepad.dpadDownWasPressed()) {
+                    pointer = (pointer + 1) % options.size();
+                }
+                if (gamepad.dpadUpWasPressed()) {
+                    pointer = (pointer - 1 + options.size()) % options.size();
+                }
 
-            if (gamepad.dpadLeftWasPressed()) {
-                options.get(pointer).onLeft();
-            }
-            if (gamepad.dpadRightWasPressed()) {
-                options.get(pointer).onRight();
-            }
+                if (gamepad.dpadLeftWasPressed()) {
+                    options.get(pointer).onLeft();
+                }
+                if (gamepad.dpadRightWasPressed()) {
+                    options.get(pointer).onRight();
+                }
 
-            if (gamepad.aWasPressed()) {
-                options.get(pointer).run();
+                if (gamepad.aWasPressed()) {
+                    options.get(pointer).run();
+                }
             }
 
             telemetry.clearAll();
