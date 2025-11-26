@@ -124,8 +124,6 @@ public class Subsystems {
                     intakePosition();
                     IntakeHelper.start();
 
-                    delayStarted = false;
-
                     currentState = IntakeState.WAITING_FOR_BALL;
                     break;
 
@@ -134,22 +132,14 @@ public class Subsystems {
 
                     if (ColorSensorHelper.isBall() && !isDetected && artifactCount < 3) {
                         isDetected = true;
+                        SpindexerHelper.moveToNextPosition();
 
-                        if (!delayStarted) {
-                            delayStarted = true;
-                            delayTimer.reset();
-                        }
+                        artifactCount++;
 
-                        if (delayTimer.time(TimeUnit.MILLISECONDS) > 250) {
-                            SpindexerHelper.moveToNextPosition();
-
-                            artifactCount++;
-
-                            if (artifactCount >= 3) {
-                                currentState = IntakeState.COMPLETED;
-                            } else {
-                                currentState = IntakeState.MOVING_TO_NEXT_POSITION;
-                            }
+                        if (artifactCount >= 3) {
+                            currentState = IntakeState.COMPLETED;
+                        } else {
+                            currentState = IntakeState.MOVING_TO_NEXT_POSITION;
                         }
                     }
                     break;
