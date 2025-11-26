@@ -5,6 +5,7 @@ import static org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems.in
 import static org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems.shootPositions;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -19,7 +20,7 @@ public class SpindexerHelper {
 
     // TPR = ticks per rotation, SINGLE = ticks for a single position, SLOTS = three different positions
 
-    private static final int TPR = 145; // for new spindexer, 1150 rpm motor
+    public static final int TPR = 145; // for new spindexer, 1150 rpm motor
     private static final int SLOTS = 3;
     private static final int SINGLE = HALF_SLOT_TICKS * 2;
     private static final int INTAKE_OFFSET = 48;
@@ -41,7 +42,7 @@ public class SpindexerHelper {
         SpindexerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         SpindexerMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         SpindexerMotor.setPower(SPEED);
-        SpindexerMotor.setDirection(DcMotor.Direction.REVERSE);
+        SpindexerMotor.setDirection(DcMotor.Direction.FORWARD);
 
         Arrays.fill(colors, "-");
     }
@@ -61,11 +62,12 @@ public class SpindexerHelper {
 
     public static void moveHalfPosition(boolean forward) {
         int current = SpindexerMotor.getCurrentPosition();
+        int subtraction = current % TPR;
         int target = 0;
         if (forward) {
-            target = current + HALF_SLOT_TICKS;
+            target = current + HALF_SLOT_TICKS - subtraction;
         } else {
-            target = current - HALF_SLOT_TICKS;
+            target = current - HALF_SLOT_TICKS + subtraction;
         }
         SpindexerMotor.setTargetPosition(target);
         SpindexerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);

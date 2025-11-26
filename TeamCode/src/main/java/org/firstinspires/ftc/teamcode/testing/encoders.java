@@ -13,15 +13,20 @@ public class encoders extends OpMode {
     @Override
     public void init() {
         Subsystems.init(hardwareMap, telemetry);
-        SpindexerHelper.SpindexerMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        SpindexerHelper.SpindexerMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         Drivetrain.init(hardwareMap);
+        telemetry.setAutoClear(false);
     }
 
     @Override
     public void loop() {
-        SpindexerHelper.SpindexerMotor.setPower(gamepad1.left_stick_y * 0.05);
-        telemetry.addData("spindexer encoder", SpindexerHelper.SpindexerMotor.getCurrentPosition());
-        telemetry.update();
+        if (gamepad1.aWasPressed()) {
+            for (int i = 0; i < 5; i++) {
+                SpindexerHelper.moveHalfPosition(true);
+                telemetry.addData("current pos", SpindexerHelper.SpindexerMotor.getCurrentPosition());
+                telemetry.addData("off by", Math.abs((SpindexerHelper.SpindexerMotor.getCurrentPosition() - SpindexerHelper.TPR)));
+                while (SpindexerHelper.SpindexerMotor.isBusy());
+                telemetry.update();
+            }
+        }
     }
 }
