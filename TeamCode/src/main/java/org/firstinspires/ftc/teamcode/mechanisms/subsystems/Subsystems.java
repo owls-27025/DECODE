@@ -7,6 +7,11 @@ import static org.firstinspires.ftc.teamcode.teleop.V1.currentSpeed;
 
 import static java.lang.Thread.sleep;
 
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
+import com.acmerobotics.roadrunner.Vector2d;
+import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -43,8 +48,8 @@ public class Subsystems {
     //      1       *       5
     //              0
 
-    public static final double[] intakePositions = new double[]{1.0,3.0,5.0};
-    public static final double[] shootPositions = new double[]{0.0,2.0,4.0};
+    public static final double[] intakePositions = new double[]{1.0, 3.0, 5.0};
+    public static final double[] shootPositions = new double[]{0.0, 2.0, 4.0};
     public static String[] colors;
     public static int[] hues;
     public static String[] motif;
@@ -172,55 +177,61 @@ public class Subsystems {
         }
     }
 
-    public static void intakeAuto(int ticks) throws InterruptedException {
-        boolean finished = false;
-        while (!finished) {
-            intakePosition();
+    public static boolean intakeAuto() {
+        boolean moved = false;
 
-            IntakeHelper.start();
+        switch (currentState) {
+            case MOVING_TO_POSITION:
+                // start intake motor
+                isDetected = false;
+                intakePosition();
+                IntakeHelper.start();
 
-            Drivetrain.BL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            Drivetrain.BR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            Drivetrain.FL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            Drivetrain.FR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                delayStarted = false;
 
-            Drivetrain.BL.setTargetPosition(ticks);
-            Drivetrain.BR.setTargetPosition(ticks);
-            Drivetrain.FL.setTargetPosition(ticks);
-            Drivetrain.FR.setTargetPosition(ticks);
+                currentState = IntakeState.WAITING_FOR_BALL;
+                break;
 
-            Drivetrain.BL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            Drivetrain.BR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            Drivetrain.FL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            Drivetrain.FR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            case WAITING_FOR_BALL:
+                // wait for color sensor to detect ball
+                if (ColorSensorHelper.isBall() && !isDetected && artifactCount < 3) {
+                    isDetected = true;
 
-            Drivetrain.BL.setPower(0);
-            Drivetrain.BR.setPower(0);
-            Drivetrain.FL.setPower(0);
-            Drivetrain.FR.setPower(0);
+                    if (!delayStarted) {
+                        delayStarted = true;
+                        delayTimer.reset();
+                    }
 
-            while (!ColorSensorHelper.isBall()) {
-                // wai
-                Drivetrain.BL.setPower(0.35);
-                Drivetrain.BR.setPower(0.35);
-                Drivetrain.FL.setPower(0.35);
-                Drivetrain.FR.setPower(0.35);
-            }
-            sleep(200);
+                    if (delayTimer.time(TimeUnit.MILLISECONDS) > 250) {
+                        SpindexerHelper.moveToNextPosition();
 
-            SpindexerHelper.moveToNextPosition();
+                        artifactCount++;
 
-            while (Drivetrain.BL.isBusy() && Drivetrain.BR.isBusy() && Drivetrain.FL.isBusy() && Drivetrain.FR.isBusy()) {
-                // wait
-            }
+                        if (artifactCount >= 3) {
+                            currentState = IntakeState.COMPLETED;
+                        } else {
+                            currentState = IntakeState.MOVING_TO_NEXT_POSITION;
+                        }
+                    }
+                }
+                break;
 
-            Drivetrain.BL.setPower(0);
-            Drivetrain.BR.setPower(0);
-            Drivetrain.FL.setPower(0);
-            Drivetrain.FR.setPower(0);
+            case MOVING_TO_NEXT_POSITION:
+                if (!SpindexerHelper.SpindexerMotor.isBusy()) {
+                    currentState = IntakeState.WAITING_FOR_BALL;
+                }
 
-            finished = true;
+                isDetected = false;
+                break;
+
+            case COMPLETED:
+                // stop intake motor
+                IntakeHelper.stop();
+                SpindexerHelper.shootPosition();
+                currentState = IntakeState.INIT;
+                return true;
         }
+        return false;
     }
 
     public static void shoot(Gamepad gamepad2) {
@@ -262,7 +273,7 @@ public class Subsystems {
 
                     ShooterHelper.shoot(targetVelocity);
 
-                    if(!delayStarted) {
+                    if (!delayStarted) {
                         delayTimer.reset();
                         delayStarted = true;
                     }
@@ -326,52 +337,98 @@ public class Subsystems {
         }
     }
 
-    public static void shootAuto(int numArtifacts) throws InterruptedException {
-        int artifacts = numArtifacts;
+    public static boolean shootAuto(int numArtifacts) {
+        switch (currentShootState) {
+            case MOVING_TO_SHOOT_POSITION:
+                // start shooter motor
+                shootPosition();
+                shotsLeft = numArtifacts;
+                currentShootState = ShootState.SPINNING_UP_SHOOTER;
+                delayStarted = false;
+                break;
 
-        while (artifacts > 0) {
-            shootPosition();
-            double targetVelocity = SHOOTER_VELOCITY;
+            case SPINNING_UP_SHOOTER:
+                // wait until shooter is at target velocity
+                double targetVelocity = SHOOTER_VELOCITY;
 
-            ShooterHelper.shoot(targetVelocity);
+                ShooterHelper.shoot(targetVelocity);
 
-            while (Math.abs(ShooterHelper.shooterMotor.getVelocity() - targetVelocity) >= 5) {
-                // wait
-            }
-            sleep(500);
-            // shoot one artifact
-            SpindexerHelper.moveServo(1);
-//            subsystemTelemetry.addLine("servo up");
-//            subsystemTelemetry.update();
+                if (!delayStarted) {
+                    delayTimer.reset();
+                    delayStarted = true;
+                }
 
-            sleep(500);
+                if (delayTimer.time(TimeUnit.MILLISECONDS) > 100) {
+                    delayTimer.reset();
+                    if (Math.abs(ShooterHelper.shooterMotor.getVelocity() - targetVelocity) <= 15) {
+                        delayStarted = false;
+                        currentShootState = ShootState.FIRING;
+                    }
+                }
+                break;
 
-            SpindexerHelper.moveServo(0.5);
+            case FIRING:
+                // shoot one artifact
+                SpindexerHelper.moveServo(1);
+                if (!delayStarted) {
+                    delayTimer.reset();
+                    delayStarted = true;
+                }
+                if (delayTimer.time(TimeUnit.MILLISECONDS) > 500) {
+                    SpindexerHelper.moveServo(0.5);
+                    delayStarted = false;
+                    spindexerMoved = false;
+                    currentShootState = ShootState.ADVANCING_NEXT_BALL;
+                }
+                break;
 
-            sleep(200);
+            case ADVANCING_NEXT_BALL:
+                // move spindexer and prep for next ball
+                if (!spindexerMoved) {
+                    SpindexerHelper.moveToNextPosition();
+                    spindexerMoved = true;
+                }
 
-            // move spindexer and prep for next ball
-            SpindexerHelper.moveToNextPosition();
+                if (!delayStarted) {
+                    delayTimer.reset();
+                    delayStarted = true;
+                }
 
-            while (SpindexerHelper.SpindexerMotor.isBusy()) {
-                    // empty :3
-            }
-            artifacts--;
+                if (delayTimer.time(TimeUnit.MILLISECONDS) > 100) {
+                    delayTimer.reset();
+                    if (!SpindexerHelper.SpindexerMotor.isBusy()) {
+                        artifactCount--;
+                        shotsLeft--;
+
+                        if (shotsLeft <= 0) {
+                            currentShootState = ShootState.COMPLETED;
+                        } else {
+                            currentShootState = ShootState.SPINNING_UP_SHOOTER;
+                        }
+
+                    }
+                }
+                break;
+
+            case COMPLETED:
+                currentShootState = ShootState.INIT;
+                return true;
         }
+        return false;
     }
 
 
     public static void drivetrain(Gamepad gamepad1) {
         // speed control
-        if(gamepad1.left_bumper) {
+        if (gamepad1.left_bumper) {
             currentSpeed = Globals.SlowDriveSpeed;
         } else {
             currentSpeed = Globals.DriveSpeed;
         }
 
         // field centric toggle
-        if(gamepad1.guideWasPressed()) {
-            if(!V1.isFieldCentric) {
+        if (gamepad1.guideWasPressed()) {
+            if (!V1.isFieldCentric) {
                 V1.isFieldCentric = true;
                 return;
             } else {
@@ -381,7 +438,7 @@ public class Subsystems {
         }
 
         // reset imu
-        if(gamepad1.startWasPressed()) {
+        if (gamepad1.startWasPressed()) {
             Drivetrain.resetIMU();
         }
 
@@ -391,7 +448,7 @@ public class Subsystems {
         double rx = easeInOutSine(gamepad1.right_stick_x);
 
         // calculate field centric variables
-        if(V1.isFieldCentric) {
+        if (V1.isFieldCentric) {
             y = Drivetrain.fieldCentricDrive(x, y)[0];
             x = Drivetrain.fieldCentricDrive(x, y)[1];
         }

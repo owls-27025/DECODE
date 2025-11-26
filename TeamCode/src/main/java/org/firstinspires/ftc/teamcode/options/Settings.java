@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode.options;
 
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.Configuration;
 import org.firstinspires.ftc.teamcode.mechanisms.drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems;
 import org.firstinspires.ftc.teamcode.options.testing.TestMenu;
@@ -18,6 +20,8 @@ public class Settings extends LinearOpMode implements MenuLib.MenuHost {
     public void runOpMode() {
         Subsystems.init(hardwareMap, telemetry);
         Drivetrain.init(hardwareMap);
+
+        GoBildaPinpointDriver pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, Configuration.odometry.itemName);
 
         AtomicBoolean isFinished = new AtomicBoolean(false);
 
@@ -75,7 +79,7 @@ public class Settings extends LinearOpMode implements MenuLib.MenuHost {
                 addOption(new MenuLib.SubMenu(
                         "Test",
                         Settings.this,
-                        () -> new TestMenu(Settings.this, gamepad1, telemetry)
+                        () -> new TestMenu(Settings.this, gamepad1, telemetry, pinpoint)
                 ));
 
                 addOption(new MenuLib.Option(

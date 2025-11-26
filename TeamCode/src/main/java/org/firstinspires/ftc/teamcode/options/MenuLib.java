@@ -45,6 +45,27 @@ public class MenuLib {
         }
     }
 
+    public static class InfoOption extends Option {
+
+        public InfoOption(String label) {
+            super(label, () -> {});
+        }
+
+        public InfoOption(Supplier<String> labelSupplier) {
+            super(labelSupplier, () -> {});
+        }
+
+        @Override
+        public void run() {}
+
+        @Override
+        public void onLeft() {}
+
+        @Override
+        public void onRight() {}
+    }
+
+
     public static class SubMenu extends Option {
         public SubMenu(String label, MenuHost host, Supplier<Menu> submenuSupplier) {
             super(label, () -> {

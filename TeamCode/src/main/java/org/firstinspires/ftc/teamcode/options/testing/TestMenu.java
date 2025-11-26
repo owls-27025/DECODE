@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.options.testing;
 
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -9,20 +10,35 @@ import org.firstinspires.ftc.teamcode.options.Settings;
 
 public class TestMenu extends MenuLib.Menu {
 
-    public TestMenu(MenuLib.MenuHost host, Gamepad gamepad, Telemetry telemetry) {
+    public TestMenu(MenuLib.MenuHost host, Gamepad gamepad, Telemetry telemetry, GoBildaPinpointDriver pinpoint) {
         super(host, gamepad, telemetry, "TEST MENU");
 
         addOption(new MenuLib.SubMenu(
                 "Spindexer",
                 host,
-                () -> new SpindexerMenu(host, gamepad, telemetry)
+                () -> new SpindexerMenu(host, gamepad, telemetry, pinpoint)
         ));
 
         addOption(new MenuLib.SubMenu(
                 "Shooter",
                 host,
-                () -> new ShooterMenu(host, gamepad, telemetry)
+                () -> new ShooterMenu(host, gamepad, telemetry, pinpoint)
         ));
+
+        addOption(new MenuLib.SubMenu(
+                "Intake",
+                host,
+                () -> new IntakeMenu(host, gamepad, telemetry, pinpoint)
+        ));
+
+        addOption(new MenuLib.SubMenu(
+                "Drivetrain",
+                host,
+                () -> new DrivetrainMenu(host, gamepad, telemetry, pinpoint)
+        ));
+
+        addOption(new MenuLib.InfoOption(() ->
+                ""));
 
         addOption(new MenuLib.Option(
                 "Back",

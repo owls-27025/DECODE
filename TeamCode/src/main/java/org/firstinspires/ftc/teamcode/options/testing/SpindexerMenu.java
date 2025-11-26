@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.options.testing;
 
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -10,7 +11,7 @@ import org.firstinspires.ftc.teamcode.options.MenuLib;
 
 public class SpindexerMenu extends MenuLib.Menu {
 
-    public SpindexerMenu(MenuLib.MenuHost host, Gamepad gamepad, Telemetry telemetry) {
+    public SpindexerMenu(MenuLib.MenuHost host, Gamepad gamepad, Telemetry telemetry, GoBildaPinpointDriver pinpoint) {
         super(host, gamepad, telemetry, "SPINDEXER");
 
         addOption(new MenuLib.Option(
@@ -23,15 +24,25 @@ public class SpindexerMenu extends MenuLib.Menu {
                 () -> SpindexerHelper.moveHalfPosition(false)
         ));
 
-//        telemetry.addData("Position: ", SpindexerHelper.SpindexerMotor.getCurrentPosition());
-//        telemetry.addData("Relative Position: ", SpindexerHelper.SpindexerMotor.getCurrentPosition() % SpindexerHelper.TPR);
-//        telemetry.addData("Error: ", Math.abs(SpindexerHelper.SpindexerMotor.getCurrentPosition() - SpindexerHelper.TPR));
-//        telemetry.addData("Distance: ", ColorSensorHelper.colorSensor.getDistance(DistanceUnit.MM));
+        addOption(new MenuLib.InfoOption(() ->
+                ""));
+
+        addOption(new MenuLib.InfoOption(() ->
+                "Position: " + SpindexerHelper.SpindexerMotor.getCurrentPosition()));
+        addOption(new MenuLib.InfoOption(() ->
+                "Relative Position: " + SpindexerHelper.SpindexerMotor.getCurrentPosition() % SpindexerHelper.TPR));
+        addOption(new MenuLib.InfoOption(() ->
+                "Error: " + Math.abs(SpindexerHelper.SpindexerMotor.getCurrentPosition() - SpindexerHelper.TPR)));
+        addOption(new MenuLib.InfoOption(() ->
+                        "Distance: " + ColorSensorHelper.colorSensor.getDistance(DistanceUnit.MM)));
+
+        addOption(new MenuLib.InfoOption(() ->
+                ""));
 
         addOption(new MenuLib.SubMenu(
                 "Back",
                 host,
-                () -> new TestMenu(host, gamepad, telemetry)
+                () -> new TestMenu(host, gamepad, telemetry, pinpoint)
         ));
     }
 }
