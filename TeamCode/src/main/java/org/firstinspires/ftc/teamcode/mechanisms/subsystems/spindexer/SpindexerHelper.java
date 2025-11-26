@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.Configuration;
+import org.firstinspires.ftc.teamcode.Globals;
 
 import java.util.Arrays;
 import java.util.stream.DoubleStream;
@@ -26,7 +27,7 @@ public class SpindexerHelper {
     private static final int INTAKE_OFFSET = 48;
     private static final int SHOOTING_OFFSET = 0;
     private static final int COLOR_SENSOR_OFFSET = 0;
-    public static double SPEED = 0.1;
+    public static double SPEED = Globals.SpindexerSpeed;
     private static String[] colors = new String[SLOTS];
 
     public static void init(HardwareMap hardwareMap) {
