@@ -13,6 +13,7 @@ import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -38,6 +39,7 @@ public class Subsystems {
     public static ElapsedTime delayTimer;
     public static boolean delayStarted;
     public static boolean spindexerMoved;
+    public static int initialArtifactCount;
 
     // There are 6 positions on the spindexer each represented as below
     //              3
@@ -253,6 +255,7 @@ public class Subsystems {
                     // start shooter motor
                     shootPosition();
                     shotsLeft = artifactCount;
+                    initialArtifactCount = artifactCount;
                     currentShootState = ShootState.SPINNING_UP_SHOOTER;
                     delayStarted = false;
                     break;
@@ -295,7 +298,13 @@ public class Subsystems {
                 case ADVANCING_NEXT_BALL:
                     // move spindexer and prep for next ball
                     if (!spindexerMoved) {
-                        SpindexerHelper.moveToNextPosition();
+                        if (initialArtifactCount == 2) {
+                            SpindexerHelper.SpindexerMotor.setDirection(DcMotor.Direction.REVERSE);
+                            SpindexerHelper.moveToNextPosition();
+                            SpindexerHelper.SpindexerMotor.setDirection(DcMotor.Direction.FORWARD);
+                        } else {
+                            SpindexerHelper.moveToNextPosition();
+                        }
                         spindexerMoved = true;
                     }
 
@@ -375,7 +384,13 @@ public class Subsystems {
             case ADVANCING_NEXT_BALL:
                 // move spindexer and prep for next ball
                 if (!spindexerMoved) {
-                    SpindexerHelper.moveToNextPosition();
+                    if (numArtifacts == 2) {
+                        SpindexerHelper.SpindexerMotor.setDirection(DcMotor.Direction.REVERSE);
+                        SpindexerHelper.moveToNextPosition();
+                        SpindexerHelper.SpindexerMotor.setDirection(DcMotor.Direction.FORWARD);
+                    } else {
+                        SpindexerHelper.moveToNextPosition();
+                    }
                     spindexerMoved = true;
                 }
 
