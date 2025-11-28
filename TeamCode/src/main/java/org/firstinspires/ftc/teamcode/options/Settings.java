@@ -76,8 +76,19 @@ public class Settings extends LinearOpMode implements MenuLib.MenuHost {
                         value -> Globals.ForcedArtifacts = value
                 ));
 
+                addOption(new MenuLib.Option(() ->
+                        "Right Stick Driving: " + Globals.isRightStick,
+                        Globals::flipStick));
+
+                addOption(new MenuLib.Option(() ->
+                        "Field Centric: " + Globals.isFieldCentric,
+                        Globals::flipFieldCentric));
+
+                addOption(new MenuLib.InfoOption(() ->
+                        ""));
+
                 addOption(new MenuLib.SubMenu(
-                        "Test",
+                        "Testing",
                         Settings.this,
                         () -> new TestMenu(Settings.this, gamepad1, telemetry, pinpoint)
                 ));

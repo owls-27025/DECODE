@@ -51,7 +51,7 @@ public class V1 extends OpMode {
             SpindexerHelper.shootPosition();
         }
 
-        Subsystems.intake(gamepad2);
+        Subsystems.intake(gamepad1);
 
         Subsystems.shoot(gamepad2);
 
@@ -59,6 +59,8 @@ public class V1 extends OpMode {
             Subsystems.currentShootState = Subsystems.ShootState.COMPLETED;
             Subsystems.currentState = Subsystems.IntakeState.COMPLETED;
         }
+
+
 
         drivetrain(gamepad1);
         telemetry();

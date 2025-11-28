@@ -11,6 +11,25 @@ public class Globals {
 
     public static int ForcedArtifacts = 1;
 
+    public static boolean isFieldCentric = false;
+    public static boolean isRightStick = false;
+
+    public static void flipStick() {
+        if (isRightStick) {
+            isRightStick = false;
+        } else if (!isRightStick) {
+            isRightStick = true;
+        }
+    }
+
+    public static void flipFieldCentric() {
+        if (isFieldCentric) {
+            isFieldCentric = false;
+        } else if (!isFieldCentric) {
+            isFieldCentric = true;
+        }
+    }
+
     public enum Alliances {
         RED,
         BLUE

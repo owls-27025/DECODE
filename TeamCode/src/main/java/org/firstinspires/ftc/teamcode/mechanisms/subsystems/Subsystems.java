@@ -416,29 +416,27 @@ public class Subsystems {
             currentSpeed = Globals.DriveSpeed;
         }
 
-        // field centric toggle
-        if (gamepad1.guideWasPressed()) {
-            if (!V1.isFieldCentric) {
-                V1.isFieldCentric = true;
-                return;
-            } else {
-                V1.isFieldCentric = false;
-                return;
-            }
-        }
-
         // reset imu
         if (gamepad1.startWasPressed()) {
             Drivetrain.resetIMU();
         }
 
         // set variables for driving
-        double y = easeInOutSine(-gamepad1.left_stick_y);
-        double x = easeInOutSine(gamepad1.left_stick_x);
-        double rx = easeInOutSine(gamepad1.right_stick_x);
+        double y = 0;
+        double x = 0;
+        double rx = 0;
+        if (!Globals.isRightStick) {
+            y = easeInOutSine(-gamepad1.left_stick_y);
+            x = easeInOutSine(gamepad1.left_stick_x);
+            rx = easeInOutSine(gamepad1.right_stick_x);
+        } else {
+            y = easeInOutSine (-gamepad1.right_stick_y);
+            x = easeInOutSine(gamepad1.right_stick_x);
+            rx = easeInOutSine(gamepad1.left_stick_x);
+        }
 
         // calculate field centric variables
-        if (V1.isFieldCentric) {
+        if (Globals.isFieldCentric) {
             y = Drivetrain.fieldCentricDrive(x, y)[0];
             x = Drivetrain.fieldCentricDrive(x, y)[1];
         }
