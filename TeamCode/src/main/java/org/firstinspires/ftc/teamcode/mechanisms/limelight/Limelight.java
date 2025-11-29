@@ -20,11 +20,13 @@ public class Limelight {
         LLResult result = limelight.getLatestResult();
 
         List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
-        for (LLResultTypes.FiducialResult fiducial : fiducials) {
-            int id = fiducial.getFiducialId(); // The ID number of the fiducial
-            if (id > 20 && id < 24) {
-                motif = id;
-                break;
+        if (!fiducials.isEmpty()) {
+            for (LLResultTypes.FiducialResult fiducial : fiducials) {
+                int id = fiducial.getFiducialId(); // The ID number of the fiducial
+                if (id > 20 && id < 24) {
+                    motif = id;
+                    break;
+                }
             }
         }
 
