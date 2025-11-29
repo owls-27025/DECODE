@@ -8,8 +8,8 @@ import org.firstinspires.ftc.teamcode.mechanisms.subsystems.intake.IntakeHelper;
 import org.firstinspires.ftc.teamcode.options.MenuLib;
 
 public class IntakeMenu extends MenuLib.Menu {
-    public IntakeMenu(MenuLib.MenuHost host, Gamepad gamepad, Telemetry telemetry, GoBildaPinpointDriver pinpoint) {
-        super(host, gamepad, telemetry, "INTAKE");
+    public IntakeMenu(MenuLib.MenuHost host, Gamepad gamepad1, Gamepad gamepad2, Telemetry telemetry, GoBildaPinpointDriver pinpoint) {
+        super(host, gamepad1, gamepad2, telemetry, "INTAKE");
 
         addOption(new MenuLib.DoubleOption(
                 "Intake Power",
@@ -27,7 +27,7 @@ public class IntakeMenu extends MenuLib.Menu {
         addOption(new MenuLib.SubMenu(
                 "Back",
                 host,
-                () -> new TestMenu(host, gamepad, telemetry, pinpoint)
+                () -> new TestMenu(host, gamepad1, gamepad2, telemetry, pinpoint)
         ));
     }
 }

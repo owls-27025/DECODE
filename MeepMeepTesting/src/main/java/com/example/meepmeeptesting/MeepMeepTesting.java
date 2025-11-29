@@ -20,40 +20,42 @@ public class MeepMeepTesting {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-60, 25, Math.toRadians(90)))
-                // wait while robot is shooting
-                .waitSeconds(2)
-                //go to third spike mark and intake three artifacts
-
-                .splineTo(new Vector2d(-10, 30), Math.toRadians(90))
-                .lineToY(50, new VelConstraint() {
-                    @Override
-                    public double maxRobotVel(@NotNull Pose2dDual<Arclength> pose2dDual, @NotNull PosePath posePath, double v) {
-                        return 9;
-                    }
-                })
-                // go back to goal and shoot
-                .splineTo(new Vector2d(-25, 20), Math.toRadians(135))
-                .waitSeconds(2)
-                // go to second spike mark and intake three artifacts
-                .splineTo(new Vector2d(10, 30), Math.toRadians(90))
-                .lineToY(50, new VelConstraint() {
-                    @Override
-                    public double maxRobotVel(@NotNull Pose2dDual<Arclength> pose2dDual, @NotNull PosePath posePath, double v) {
-                        return 9;
-                    }
-                })
-                // go back to goal and shoot
-                .splineTo(new Vector2d(-25, 20), Math.toRadians(135))
-                .waitSeconds(2)
-                // go to first spike mark and intake three artifacts
-                .splineTo(new Vector2d(35, 30), Math.toRadians(90))
-                .lineToY(50, new VelConstraint() {
-                    @Override
-                    public double maxRobotVel(@NotNull Pose2dDual<Arclength> pose2dDual, @NotNull PosePath posePath, double v) {
-                        return 9;
-                    }
-                })
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(0, 0, 0))
+//                // wait while robot is shooting
+//                .waitSeconds(2)
+//                //go to third spike mark and intake three artifacts
+//
+//                .splineTo(new Vector2d(-10, 30), Math.toRadians(90))
+//                .lineToY(50, new VelConstraint() {
+//                    @Override
+//                    public double maxRobotVel(@NotNull Pose2dDual<Arclength> pose2dDual, @NotNull PosePath posePath, double v) {
+//                        return 9;
+//                    }
+//                })
+//                // go back to goal and shoot
+//                .splineTo(new Vector2d(-25, 20), Math.toRadians(135))
+//                .waitSeconds(2)
+//                // go to second spike mark and intake three artifacts
+//                .splineTo(new Vector2d(10, 30), Math.toRadians(90))
+//                .lineToY(50, new VelConstraint() {
+//                    @Override
+//                    public double maxRobotVel(@NotNull Pose2dDual<Arclength> pose2dDual, @NotNull PosePath posePath, double v) {
+//                        return 9;
+//                    }
+//                })
+//                // go back to goal and shoot
+//                .splineTo(new Vector2d(-25, 20), Math.toRadians(135))
+//                .waitSeconds(2)
+//                // go to first spike mark and intake three artifacts
+//                .splineTo(new Vector2d(35, 30), Math.toRadians(90))
+//                .lineToY(50, new VelConstraint() {
+//                    @Override
+//                    public double maxRobotVel(@NotNull Pose2dDual<Arclength> pose2dDual, @NotNull PosePath posePath, double v) {
+//                        return 9;
+//                    }
+//                })
+                .splineTo(new Vector2d(-10, -10), Math.PI / 2)
+                .splineTo(new Vector2d(0, -20), Math.PI)
                 //stay at spike mark for leave points
                 .build());
 

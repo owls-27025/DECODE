@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems;
 import org.firstinspires.ftc.teamcode.mechanisms.light.Light;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.colorSensor.ColorSensorHelper;
+import org.firstinspires.ftc.teamcode.mechanisms.subsystems.intake.IntakeHelper;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.shooter.ShooterHelper;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.spindexer.SpindexerHelper;
 import org.firstinspires.ftc.teamcode.options.Globals;
@@ -25,6 +26,7 @@ public class V1 extends OpMode {
     public static double currentSpeed = 1;
     public static boolean isFieldCentric = false;
     boolean firing = false;
+    public static boolean inhibitButtons = false;
 
     @Override
     public void init() {
@@ -34,25 +36,38 @@ public class V1 extends OpMode {
     }
 
     public void loop() {
-        // change shooter velocity
-        if (gamepad2.dpadUpWasPressed()) {
-            Subsystems.SHOOTER_VELOCITY += 50;
-        } else if (gamepad2.dpadDownWasPressed()) {
-            Subsystems.SHOOTER_VELOCITY -= 50;
+        // when start is held with a or b buttons
+        if ((gamepad1.start && (gamepad1.a || gamepad1.b)) || (gamepad2.start && (gamepad2.a || gamepad2.b))) {
+            inhibitButtons = true;
         }
 
+        // release inhibit once buttons are lifted
+        if ((!gamepad1.a && !gamepad1.b) || (!gamepad2.a && !gamepad2.b)) {
+            inhibitButtons = false;
+        }
+
+        // change shooter velocity
+        if (gamepad2.dpadUpWasPressed()) {
+            Globals.ShooterVelocity += 50;
+        } else if (gamepad2.dpadDownWasPressed()) {
+            Globals.ShooterVelocity -= 50;
+        }
+
+        // move spindexer CW or CCW
         if (gamepad2.left_bumper) {
             SpindexerHelper.moveHalfPosition(false);
         } else if (gamepad2.right_bumper) {
             SpindexerHelper.moveHalfPosition(true);
         }
 
+        // move to different spindexer positions
         if (gamepad2.left_trigger != 0) {
             SpindexerHelper.intakePosition();
         } else if (gamepad2.right_trigger != 0) {
             SpindexerHelper.shootPosition();
         }
 
+        // rgb light control
         if (artifactCount == 1) {
             Light.red();
         } else if (artifactCount == 2) {
@@ -61,24 +76,38 @@ public class V1 extends OpMode {
             Light.green();
         }
 
+        // intake
         Subsystems.intake(gamepad1);
 
+        // shoot
         Subsystems.shoot(gamepad2);
 
-        if (gamepad2.bWasPressed() && !gamepad1.start && !gamepad2.start) {
+        // human player intake
+//        Subsystems.intakeHuman(gamepad2);
+
+        // cancel functions
+        if ((gamepad2.bWasPressed() || gamepad1.bWasPressed()) && !inhibitButtons) {
             Subsystems.currentShootState = Subsystems.ShootState.COMPLETED;
             Subsystems.currentState = Subsystems.IntakeState.COMPLETED;
         }
 
+        if (gamepad1.backWasPressed()) {
+            if (IntakeHelper.intake.getPower() >= 0) {
+                IntakeHelper.intake.setPower(-1);
+            } else if(IntakeHelper.intake.getPower() < 0) {
+                IntakeHelper.intake.setPower(0);
+            }
+        }
 
-
+        // drive
         drivetrain(gamepad1);
         telemetry();
     }
 
+    // telemetry
     private void telemetry() {
         // shooter telemetry
-        telemetry.addData("Current Velocity", Subsystems.SHOOTER_VELOCITY);
+        telemetry.addData("Current Velocity", Globals.ShooterVelocity);
 
         // color sensor telemetry
         telemetry.addData("Distance", ColorSensorHelper.colorSensor.getDistance(DistanceUnit.MM));

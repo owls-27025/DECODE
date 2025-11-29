@@ -4,14 +4,15 @@ import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.mechanisms.light.Light;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.shooter.ShooterHelper;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.spindexer.SpindexerHelper;
 import org.firstinspires.ftc.teamcode.options.MenuLib;
 import org.firstinspires.ftc.teamcode.options.Globals;
 
 public class ShooterMenu extends MenuLib.Menu {
-    public ShooterMenu(MenuLib.MenuHost host, Gamepad gamepad, Telemetry telemetry, GoBildaPinpointDriver pinpoint) {
-        super(host, gamepad, telemetry, "SHOOTER");
+    public ShooterMenu(MenuLib.MenuHost host, Gamepad gamepad1, Gamepad gamepad2, Telemetry telemetry, GoBildaPinpointDriver pinpoint) {
+        super(host, gamepad1, gamepad2, telemetry, "SHOOTER");
 
         addOption(new MenuLib.Option(
                 "Start Shooter Motor",
@@ -39,13 +40,18 @@ public class ShooterMenu extends MenuLib.Menu {
                 SpindexerHelper::moveServo
         ));
 
+        addOption(new MenuLib.Option(
+                "Light Color: " + Light.color,
+                Light::cycle
+        ));
+
         addOption(new MenuLib.InfoOption(() ->
                 ""));
 
         addOption(new MenuLib.SubMenu(
                 "Back",
                 host,
-                () -> new TestMenu(host, gamepad, telemetry, pinpoint)
+                () -> new TestMenu(host, gamepad1, gamepad2, telemetry, pinpoint)
         ));
     }
 }

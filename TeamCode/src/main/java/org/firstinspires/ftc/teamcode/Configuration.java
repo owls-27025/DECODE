@@ -14,7 +14,9 @@ public class Configuration {
     public static configItem spindexerServo = new configItem("flap", true);
     public static configItem shooter = new configItem("shooter", true);
 
-    public static configItem odometry = new configItem("odometry", false);
+    public static configItem odometry = new configItem("odometry", true);
+
+    public static configItem light  = new configItem("light", true);
 
     public static class configItem {
         public String itemName;

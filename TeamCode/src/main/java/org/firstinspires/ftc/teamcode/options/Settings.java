@@ -25,18 +25,21 @@ public class Settings extends LinearOpMode implements MenuLib.MenuHost {
 
         AtomicBoolean isFinished = new AtomicBoolean(false);
 
-        mainMenu = new MenuLib.Menu(this, gamepad1, telemetry, "SETTINGS") {
+        mainMenu = new MenuLib.Menu(this, gamepad1, gamepad2, telemetry, "SETTINGS") {
             {
+                // add side change
                 addOption(new MenuLib.Option(
                         () -> "Side: " + Globals.side,
                         Globals::flipSide
                 ));
 
+                // add alliance change
                 addOption(new MenuLib.Option(
                         () -> "Alliance: " + Globals.alliance,
                         Globals::flipAlliance
                 ));
 
+                // change spindexer speed
                 addOption(new MenuLib.DoubleOption(
                         "Spindexer Speed: ",
                         Globals.SpindexerSpeed,
@@ -47,6 +50,7 @@ public class Settings extends LinearOpMode implements MenuLib.MenuHost {
                         value -> Globals.SpindexerSpeed = value
                 ));
 
+                // change driving speed
                 addOption(new MenuLib.DoubleOption(
                         "Drive Speed: ",
                         Globals.DriveSpeed,
@@ -57,6 +61,7 @@ public class Settings extends LinearOpMode implements MenuLib.MenuHost {
                         value -> Globals.DriveSpeed = value
                 ));
 
+                // change slow driving speed
                 addOption(new MenuLib.DoubleOption(
                         "Slow Drive Speed: ",
                         Globals.SlowDriveSpeed,
@@ -67,6 +72,7 @@ public class Settings extends LinearOpMode implements MenuLib.MenuHost {
                         value -> Globals.SlowDriveSpeed = value
                 ));
 
+                // change number of forced artifacts for y button
                 addOption(new MenuLib.IntOption(
                         "Forced Artifacts: ",
                         Globals.ForcedArtifacts,
@@ -76,23 +82,47 @@ public class Settings extends LinearOpMode implements MenuLib.MenuHost {
                         value -> Globals.ForcedArtifacts = value
                 ));
 
+                // toggle right stick driving
                 addOption(new MenuLib.Option(() ->
                         "Right Stick Driving: " + Globals.isRightStick,
                         Globals::flipStick));
 
+                // toggle field centric
                 addOption(new MenuLib.Option(() ->
                         "Field Centric: " + Globals.isFieldCentric,
                         Globals::flipFieldCentric));
 
+                // shooter tolerance setting
+                addOption(new MenuLib.IntOption(
+                        "Shooter Tolerance: ",
+                        15,
+                        1,
+                        0,
+                        15,
+                        value -> Globals.ShooterTolerance = value
+                ));
+
+                addOption(new MenuLib.IntOption(
+                        "Human Player Intake: ",
+                        750,
+                        250,
+                        100,
+                        2000,
+                        value -> Globals.humanWait = value
+                ));
+
+                // blank line
                 addOption(new MenuLib.InfoOption(() ->
                         ""));
 
+                // go to testing submenu
                 addOption(new MenuLib.SubMenu(
                         "Testing",
                         Settings.this,
-                        () -> new TestMenu(Settings.this, gamepad1, telemetry, pinpoint)
+                        () -> new TestMenu(Settings.this, gamepad1, gamepad2, telemetry, pinpoint)
                 ));
 
+                // exit opmode
                 addOption(new MenuLib.Option(
                         "Exit",
                         () -> {
@@ -102,6 +132,7 @@ public class Settings extends LinearOpMode implements MenuLib.MenuHost {
             }
         };
 
+        // run menu code
         mainMenu.onSelected();
         currentMenu = mainMenu;
 
@@ -113,6 +144,7 @@ public class Settings extends LinearOpMode implements MenuLib.MenuHost {
             }
         }
 
+        // run when exiting
         telemetry.addLine("exiting...");
         telemetry.update();
         sleep(1500);

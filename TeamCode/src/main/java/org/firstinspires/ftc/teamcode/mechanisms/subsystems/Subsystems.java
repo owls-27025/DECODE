@@ -21,6 +21,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.auto.AutoTest;
 import org.firstinspires.ftc.teamcode.mechanisms.drivetrain.Drivetrain;
+import org.firstinspires.ftc.teamcode.mechanisms.light.Light;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.colorSensor.ColorSensorHelper;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.intake.IntakeHelper;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.shooter.ShooterHelper;
@@ -82,6 +83,18 @@ public class Subsystems {
     }
 
     public static ShootState currentShootState;
+
+
+    public enum HumanState {
+        INIT,
+        WAITING,
+        MOVING,
+        COMPLETED
+    }
+
+    public static HumanState currentHumanState = HumanState.INIT;
+
+
     private static int shotsLeft;
     private static long lastCheckTime;
 
@@ -96,6 +109,7 @@ public class Subsystems {
         ShooterHelper.init(hardwareMap);
         IntakeHelper.init(hardwareMap);
         Drivetrain.init(hardwareMap);
+        Light.init(hardwareMap);
 
         // variables
         artifactCount = 0;
@@ -116,12 +130,12 @@ public class Subsystems {
 
     public static void intake(Gamepad gamepad2) {
         if (currentState == IntakeState.INIT) {
-            if (gamepad2.aWasPressed() && !gamepad2.start) {
+            if (gamepad2.aWasPressed() && !V1.inhibitButtons) {
                 // start intake
                 currentState = IntakeState.MOVING_TO_POSITION;
             }
         } else {
-            if (gamepad2.aWasPressed() && !gamepad2.start) {
+            if (gamepad2.aWasPressed() && !V1.inhibitButtons) {
                 currentState = IntakeState.MOVING_TO_POSITION;
             }
             switch (currentState) {
@@ -193,7 +207,7 @@ public class Subsystems {
                         delayStarted = true;
                         delayTimer.reset();
                     }
-
+                    // sleep for 250 ms
                     if (delayTimer.time(TimeUnit.MILLISECONDS) > 250) {
                         SpindexerHelper.moveToNextPosition();
 
@@ -235,19 +249,24 @@ public class Subsystems {
                 // forced shoot
                 artifactCount = Globals.ForcedArtifacts;
                 currentShootState = ShootState.MOVING_TO_SHOOT_POSITION;
-            } else if (gamepad2.backWasPressed()) {
-                if (ShooterHelper.shooterMotor.getPower() == 0) {
-                    ShooterHelper.shooterMotor.setVelocity(0);
-                    ShooterHelper.shooterMotor.setPower(-0.2);
-                } else {
-                    ShooterHelper.shooterMotor.setPower(0);
-                }
             }
         } else if (currentShootState == ShootState.COMPLETED) {
+            if (gamepad2.xWasPressed()) {
+                // start shooter
+                currentShootState = ShootState.MOVING_TO_SHOOT_POSITION;
+            } else if (gamepad2.yWasPressed()) {
+                // forced shoot
+                artifactCount = Globals.ForcedArtifacts;
+                currentShootState = ShootState.MOVING_TO_SHOOT_POSITION;
+            }
             currentShootState = ShootState.INIT;
         } else if (artifactCount > 0) {
             if (gamepad2.xWasPressed()) {
                 // start shooter
+                currentShootState = ShootState.MOVING_TO_SHOOT_POSITION;
+            } else if (gamepad2.yWasPressed()) {
+                // forced shoot
+                artifactCount = Globals.ForcedArtifacts;
                 currentShootState = ShootState.MOVING_TO_SHOOT_POSITION;
             }
             switch (currentShootState) {
@@ -262,7 +281,7 @@ public class Subsystems {
 
                 case SPINNING_UP_SHOOTER:
                     // wait until shooter is at target velocity
-                    double targetVelocity = SHOOTER_VELOCITY;
+                    double targetVelocity = Globals.ShooterVelocity;
 
                     ShooterHelper.shoot(targetVelocity);
 
@@ -287,6 +306,7 @@ public class Subsystems {
                         delayTimer.reset();
                         delayStarted = true;
                     }
+                    // sleep for 500 ms
                     if (delayTimer.time(TimeUnit.MILLISECONDS) > 500) {
                         SpindexerHelper.moveServo(0.5);
                         delayStarted = false;
@@ -312,7 +332,7 @@ public class Subsystems {
                         delayTimer.reset();
                         delayStarted = true;
                     }
-
+                    // sleep for 100 ms
                     if (delayTimer.time(TimeUnit.MILLISECONDS) > 100) {
                         delayTimer.reset();
                         if (!SpindexerHelper.SpindexerMotor.isBusy()) {
@@ -336,6 +356,41 @@ public class Subsystems {
         }
     }
 
+//    public static void intakeHuman(Gamepad gamepad2) {
+//        if (currentHumanState == HumanState.INIT) {
+//            if (gamepad2.backWasPressed()) {
+//                delayStarted = false;
+//                currentHumanState = HumanState.WAITING;
+//            }
+//        } else {
+//            switch (currentHumanState) {
+//                case WAITING:
+//                    ShooterHelper.shooterMotor.setVelocity(0);
+//                    ShooterHelper.shooterMotor.setPower(-0.2);
+//                    if (!delayStarted) {
+//                        delayStarted = true;
+//                        delayTimer.reset();
+//                    }
+//                    if (delayTimer.time(TimeUnit.MILLISECONDS) > Globals.humanWait) {
+//                        currentHumanState = HumanState.MOVING;
+//                        break;
+//                    }
+//                case MOVING:
+//                    SpindexerHelper.moveToNextPosition();
+//                    artifactCount++;
+//                    if (artifactCount >= 3) {
+//                        currentHumanState = HumanState.COMPLETED;
+//                    } else {
+//                        currentHumanState = HumanState.WAITING;
+//                    }
+//                    break;
+//                case COMPLETED:
+//                    ShooterHelper.shooterMotor.setPower(0);
+//                    ShooterHelper.shooterMotor.setVelocity(750);
+//            }
+//        }
+//    }
+
     public static boolean shootAuto(int numArtifacts) {
         switch (currentShootState) {
             case MOVING_TO_SHOOT_POSITION:
@@ -348,7 +403,7 @@ public class Subsystems {
 
             case SPINNING_UP_SHOOTER:
                 // wait until shooter is at target velocity
-                double targetVelocity = SHOOTER_VELOCITY;
+                double targetVelocity = Globals.ShooterVelocity;
 
                 ShooterHelper.shoot(targetVelocity);
 
@@ -356,10 +411,10 @@ public class Subsystems {
                     delayTimer.reset();
                     delayStarted = true;
                 }
-
+                // sleep for 100 ms
                 if (delayTimer.time(TimeUnit.MILLISECONDS) > 100) {
                     delayTimer.reset();
-                    if (Math.abs(ShooterHelper.shooterMotor.getVelocity() - targetVelocity) <= 15) {
+                    if (Math.abs(ShooterHelper.shooterMotor.getVelocity() - targetVelocity) <= Globals.ShooterTolerance) {
                         delayStarted = false;
                         currentShootState = ShootState.FIRING;
                     }
@@ -373,6 +428,7 @@ public class Subsystems {
                     delayTimer.reset();
                     delayStarted = true;
                 }
+                // sleep for 500 ms
                 if (delayTimer.time(TimeUnit.MILLISECONDS) > 500) {
                     SpindexerHelper.moveServo(0.5);
                     delayStarted = false;
@@ -398,7 +454,7 @@ public class Subsystems {
                     delayTimer.reset();
                     delayStarted = true;
                 }
-
+                // sleep for 100 ms
                 if (delayTimer.time(TimeUnit.MILLISECONDS) > 100) {
                     delayTimer.reset();
                     if (!SpindexerHelper.SpindexerMotor.isBusy()) {

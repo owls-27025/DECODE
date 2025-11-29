@@ -11,8 +11,8 @@ import org.firstinspires.ftc.teamcode.options.MenuLib;
 
 public class SpindexerMenu extends MenuLib.Menu {
 
-    public SpindexerMenu(MenuLib.MenuHost host, Gamepad gamepad, Telemetry telemetry, GoBildaPinpointDriver pinpoint) {
-        super(host, gamepad, telemetry, "SPINDEXER");
+    public SpindexerMenu(MenuLib.MenuHost host, Gamepad gamepad1, Gamepad gamepad2, Telemetry telemetry, GoBildaPinpointDriver pinpoint) {
+        super(host, gamepad1, gamepad2, telemetry, "SPINDEXER");
 
         addOption(new MenuLib.Option(
                 "Move Spindexer Forwards",
@@ -42,7 +42,7 @@ public class SpindexerMenu extends MenuLib.Menu {
         addOption(new MenuLib.SubMenu(
                 "Back",
                 host,
-                () -> new TestMenu(host, gamepad, telemetry, pinpoint)
+                () -> new TestMenu(host, gamepad1, gamepad2, telemetry, pinpoint)
         ));
     }
 }

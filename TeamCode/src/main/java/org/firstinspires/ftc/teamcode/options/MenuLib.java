@@ -190,16 +190,18 @@ public class MenuLib {
 
     public static abstract class Menu {
         protected final MenuHost host;
-        protected final Gamepad gamepad;
+        protected final Gamepad gamepad1;
+        protected final Gamepad gamepad2;
         protected final Telemetry telemetry;
         private final String title;
 
         private final List<Option> options = new ArrayList<>();
         private int pointer = 0;
 
-        public Menu(MenuHost host, Gamepad gamepad, Telemetry telemetry, String title) {
+        public Menu(MenuHost host, Gamepad gamepad1, Gamepad gamepad2, Telemetry telemetry, String title) {
             this.host = host;
-            this.gamepad = gamepad;
+            this.gamepad1 = gamepad1;
+            this.gamepad2 = gamepad2;
             this.telemetry = telemetry;
             this.title = title;
         }
@@ -221,24 +223,35 @@ public class MenuLib {
                 return;
             }
 
-            if (!gamepad.start) {
-                if (gamepad.dpadDownWasPressed()) {
-                    pointer = (pointer + 1) % options.size();
-                }
-                if (gamepad.dpadUpWasPressed()) {
-                    pointer = (pointer - 1 + options.size()) % options.size();
-                }
+            boolean inhibitButtons = false;
 
-                if (gamepad.dpadLeftWasPressed()) {
-                    options.get(pointer).onLeft();
-                }
-                if (gamepad.dpadRightWasPressed()) {
-                    options.get(pointer).onRight();
-                }
+            // when start is held with a or b buttons
+            if ((gamepad1.start && (gamepad1.a || gamepad1.b)) || (gamepad2.start && (gamepad2.a || gamepad2.b))) {
+                inhibitButtons = true;
+            }
 
-                if (gamepad.aWasPressed()) {
-                    options.get(pointer).run();
-                }
+            // release inhibit once buttons are lifted
+            if ((!gamepad1.a && !gamepad1.b) || (!gamepad2.a && !gamepad2.b)) {
+                inhibitButtons = false;
+            }
+
+
+            if (gamepad1.dpadDownWasPressed() || gamepad2.dpadDownWasPressed()) {
+                pointer = (pointer + 1) % options.size();
+            }
+            if (gamepad1.dpadUpWasPressed() || gamepad2.dpadUpWasPressed()) {
+                pointer = (pointer - 1 + options.size()) % options.size();
+            }
+
+            if (gamepad1.dpadLeftWasPressed() || gamepad2.dpadLeftWasPressed()) {
+                options.get(pointer).onLeft();
+            }
+            if (gamepad1.dpadRightWasPressed() || gamepad2.dpadRightWasPressed()) {
+                options.get(pointer).onRight();
+            }
+
+            if ((gamepad1.aWasPressed() || gamepad2.aWasPressed()) && !inhibitButtons) {
+                options.get(pointer).run();
             }
 
             telemetry.clearAll();

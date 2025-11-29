@@ -23,10 +23,6 @@ public class SpindexerHelper {
     public static final int TPR = 145; // for new spindexer, 1150 rpm motor
     private static final int SLOTS = 3;
     private static final int SINGLE = HALF_SLOT_TICKS * 2;
-    private static final int INTAKE_OFFSET = 48;
-    private static final int SHOOTING_OFFSET = 0;
-    private static final int COLOR_SENSOR_OFFSET = 0;
-    public static double SPEED = 0.1;
     private static String[] colors = new String[SLOTS];
 
     public static void init(HardwareMap hardwareMap) {
@@ -63,27 +59,7 @@ public class SpindexerHelper {
 
     public static void moveHalfPosition(boolean forward) {
         int current = SpindexerMotor.getCurrentPosition();
-        int subtraction = current % TPR;
-        int target = 0;
-        if (forward) {
-            target = current + HALF_SLOT_TICKS - subtraction;
-        } else {
-            target = current - HALF_SLOT_TICKS + subtraction;
-        }
-        SpindexerMotor.setTargetPosition(target);
-        SpindexerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        SpindexerMotor.setPower(Globals.SpindexerSpeed);
-    }
-
-    public static void moveToPosition(int index) {
-        if (index < 0) return;
-
-        int currIdx = findPosition();
-        int deltaSlots = Math.floorMod(index - currIdx, SLOTS);
-
-        int currentTicks = SpindexerMotor.getCurrentPosition();
-        int target = currentTicks + deltaSlots * SINGLE;
-
+        int target = (forward) ? current + HALF_SLOT_TICKS : current - HALF_SLOT_TICKS;
         SpindexerMotor.setTargetPosition(target);
         SpindexerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         SpindexerMotor.setPower(Globals.SpindexerSpeed);
@@ -92,13 +68,6 @@ public class SpindexerHelper {
     public static void moveServo(double pos) {
         if (SpindexerServo == null) return;
         SpindexerServo.setPosition(pos);
-    }
-
-
-    public static void moveSpindexer(int ticks) {
-        int targetTicks = SpindexerMotor.getCurrentPosition() + ticks;
-        moveSpindexerTo(targetTicks);
-
     }
 
     public static void moveSpindexerTo(int targetPosition){

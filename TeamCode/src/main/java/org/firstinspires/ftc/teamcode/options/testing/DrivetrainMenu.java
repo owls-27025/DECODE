@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.options.testing;
 
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.Gamepad;
-import kotlin._Assertions;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -10,8 +9,8 @@ import org.firstinspires.ftc.teamcode.mechanisms.drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.options.MenuLib;
 
 public class DrivetrainMenu extends MenuLib.Menu {
-    public DrivetrainMenu(MenuLib.MenuHost host, Gamepad gamepad, Telemetry telemetry, GoBildaPinpointDriver pinpoint) {
-        super(host, gamepad, telemetry, "DRIVETRAIN");
+    public DrivetrainMenu(MenuLib.MenuHost host, Gamepad gamepad1, Gamepad gamepad2, Telemetry telemetry, GoBildaPinpointDriver pinpoint) {
+        super(host, gamepad1, gamepad2, telemetry, "DRIVETRAIN");
 
         addOption(new MenuLib.InfoOption(() ->
                 "FL Position: " + Drivetrain.FL.getCurrentPosition()));
@@ -40,7 +39,7 @@ public class DrivetrainMenu extends MenuLib.Menu {
         addOption(new MenuLib.SubMenu(
                 "Back",
                 host,
-                () -> new TestMenu(host, gamepad, telemetry, pinpoint)
+                () -> new TestMenu(host, gamepad1, gamepad2, telemetry, pinpoint)
         ));
     }
 }
