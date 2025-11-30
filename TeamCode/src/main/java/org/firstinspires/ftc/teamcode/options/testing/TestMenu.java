@@ -4,14 +4,12 @@ import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.mechanisms.subsystems.spindexer.SpindexerHelper;
-import org.firstinspires.ftc.teamcode.options.MenuLib;
-import org.firstinspires.ftc.teamcode.options.Settings;
+import org.firstinspires.ftc.teamcode.helpers.MenuLib;
 
 public class TestMenu extends MenuLib.Menu {
 
     public TestMenu(MenuLib.MenuHost host, Gamepad gamepad1, Gamepad gamepad2, Telemetry telemetry, GoBildaPinpointDriver pinpoint) {
-        super(host, gamepad1, gamepad2, telemetry, "TEST MENU");
+        super(host, gamepad1, gamepad2, telemetry, "TESTING");
 
         addOption(new MenuLib.SubMenu(
                 "Spindexer",
@@ -37,12 +35,11 @@ public class TestMenu extends MenuLib.Menu {
                 () -> new DrivetrainMenu(host, gamepad1, gamepad2, telemetry, pinpoint)
         ));
 
-        addOption(new MenuLib.InfoOption(() ->
-                ""));
+        addOption(new MenuLib.InfoOption(() -> ""));
 
         addOption(new MenuLib.Option(
                 "Back",
-                host::goToMainMenu
+                host::goBack
         ));
     }
 }

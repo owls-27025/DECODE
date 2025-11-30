@@ -7,8 +7,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.mechanisms.light.Light;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.shooter.ShooterHelper;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.spindexer.SpindexerHelper;
-import org.firstinspires.ftc.teamcode.options.MenuLib;
-import org.firstinspires.ftc.teamcode.options.Globals;
+import org.firstinspires.ftc.teamcode.helpers.MenuLib;
+import org.firstinspires.ftc.teamcode.helpers.Globals;
 
 public class ShooterMenu extends MenuLib.Menu {
     public ShooterMenu(MenuLib.MenuHost host, Gamepad gamepad1, Gamepad gamepad2, Telemetry telemetry, GoBildaPinpointDriver pinpoint) {
@@ -45,13 +45,11 @@ public class ShooterMenu extends MenuLib.Menu {
                 Light::cycle
         ));
 
-        addOption(new MenuLib.InfoOption(() ->
-                ""));
+        addOption(new MenuLib.InfoOption(() -> ""));
 
-        addOption(new MenuLib.SubMenu(
+        addOption(new MenuLib.Option(
                 "Back",
-                host,
-                () -> new TestMenu(host, gamepad1, gamepad2, telemetry, pinpoint)
+                host::goBack
         ));
     }
 }

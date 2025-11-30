@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.Configuration;
-import org.firstinspires.ftc.teamcode.options.Globals;
+import org.firstinspires.ftc.teamcode.helpers.Globals;
 
 import java.util.Arrays;
 import java.util.stream.DoubleStream;

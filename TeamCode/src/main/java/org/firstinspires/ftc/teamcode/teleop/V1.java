@@ -2,21 +2,17 @@ package org.firstinspires.ftc.teamcode.teleop;
 
 import static org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems.artifactCount;
 import static org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems.drivetrain;
-import static org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems.intake;
-import static org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems.shoot;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.mechanisms.drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems;
 import org.firstinspires.ftc.teamcode.mechanisms.light.Light;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.colorSensor.ColorSensorHelper;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.intake.IntakeHelper;
-import org.firstinspires.ftc.teamcode.mechanisms.subsystems.shooter.ShooterHelper;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.spindexer.SpindexerHelper;
-import org.firstinspires.ftc.teamcode.options.Globals;
+import org.firstinspires.ftc.teamcode.helpers.Globals;
 
 import java.util.concurrent.TimeUnit;
 

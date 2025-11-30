@@ -8,6 +8,10 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.auto.paths.AutoPath;
+import org.firstinspires.ftc.teamcode.auto.paths.FourCycle;
+import org.firstinspires.ftc.teamcode.auto.paths.Leave;
+import org.firstinspires.ftc.teamcode.helpers.Globals;
 import org.firstinspires.ftc.teamcode.mechanisms.drivetrain.roadrunner.MecanumDrive;
 import org.firstinspires.ftc.teamcode.mechanisms.limelight.Limelight;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems;
@@ -18,121 +22,36 @@ import java.lang.Math;
 @Autonomous(name = "Auto", group = "OpModes")
 public class V1 extends LinearOpMode {
 
-    public class Subsystems {
-
-        public class Shoot implements Action {
-            public int artifacts;
-            public boolean initialized;
-
-            public Shoot(int numArtifacts) {
-                artifacts = numArtifacts;
-                initialized = false;
-            }
-
-            @Override
-            public boolean run(@NonNull TelemetryPacket packet) {
-                if (!initialized) {
-                    org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems.currentShootState = org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems.ShootState.MOVING_TO_SHOOT_POSITION;
-                    initialized = true;
-                }
-                return org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems.shootAuto(artifacts);
-            }
-        }
-
-        public Action shoot(int artifacts) {
-            return new Shoot(artifacts);
-        }
-
-        public class Intake implements Action {
-            public boolean initialized;
-
-            public Intake() {
-                initialized = false;
-            }
-
-            @Override
-            public boolean run(@NonNull TelemetryPacket packet) {
-                if (!initialized) {
-                    org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems.currentState = org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems.IntakeState.MOVING_TO_POSITION;
-                    initialized = true;
-                }
-                return org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems.intakeAuto();
-            }
-        }
-
-        public Action intake() {
-            return new Intake();
-        }
-
-        public class ReadMotif implements Action {
-            int motif;
-
-            public ReadMotif() { motif = 0; }
-
-            @Override
-            public boolean run(@NonNull TelemetryPacket packet) {
-                if (Limelight.getMotif() != 0) {
-                    motif = Limelight.getMotif();
-                    return true;
-                }
-                return false;
-            }
-        }
-
-        public Action readMotif() { return new ReadMotif(); }
-    }
-
     @Override
-    public void runOpMode() throws InterruptedException {
-        org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems.init(hardwareMap, telemetry);
+    public void runOpMode() {
+        Subsystems.init(hardwareMap, telemetry);
 //        Limelight.init(hardwareMap);
 
-        Subsystems subsystems = new Subsystems();
+        AutoPath path;
 
-        Pose2d initialPose = new Pose2d(-50, 50, Math.toRadians(135));
+        switch (Globals.autoStrategy) {
+            case LEAVE:
+                path = new Leave(Globals.alliance);
+                break;
+            case FOURCYCLE:
+                path = new FourCycle(Globals.alliance);
+            default:
+                path = new Leave(Globals.alliance);
+                break;
+        }
+
+        Pose2d initialPose = path.getInitialPose();
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
 
-        TrajectoryActionBuilder path1 = drive.actionBuilder(initialPose)
-                .strafeTo(new Vector2d(-12, 12));
-
-        TrajectoryActionBuilder path2 = path1.endTrajectory().fresh()
-                .waitSeconds(5)
-                .turnTo(Math.toRadians(90))
-                .lineToY(30);
-
-        TrajectoryActionBuilder path3 = path2.endTrajectory().fresh()
-                .lineToY(38, new VelConstraint() {
-                    @Override
-                    public double maxRobotVel(@NotNull Pose2dDual<Arclength> pose2dDual, @NotNull PosePath posePath, double v) {
-                        return 8;
-                    }
-                })
-                .waitSeconds(1)
-                .lineToY(44, new VelConstraint() {
-                    @Override
-                    public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
-                        return 8;
-                    }
-                })
-                .waitSeconds(1)
-                .lineToY(50, new VelConstraint() {
-                    @Override
-                    public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
-                        return 8;
-                    }
-                })
-                .strafeTo(new Vector2d(drive.localizer.getPose().position.x, 12))
-                .turnTo(Math.toRadians(135));
+        telemetry.addLine("Auto ready");
+        telemetry.update();
 
         waitForStart();
+        if (isStopRequested()) return;
 
-        Actions.runBlocking(new SequentialAction(
-                    path1.build(),
-                    subsystems.shoot(3),
-                    path2.build(),
-                    path3.build()
-                )
+        Actions.runBlocking(
+                path.build(drive)
         );
     }
 }

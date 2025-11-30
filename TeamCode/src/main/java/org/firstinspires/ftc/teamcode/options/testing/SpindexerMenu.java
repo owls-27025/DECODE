@@ -7,7 +7,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.colorSensor.ColorSensorHelper;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.spindexer.SpindexerHelper;
-import org.firstinspires.ftc.teamcode.options.MenuLib;
+import org.firstinspires.ftc.teamcode.helpers.MenuLib;
 
 public class SpindexerMenu extends MenuLib.Menu {
 
@@ -24,8 +24,7 @@ public class SpindexerMenu extends MenuLib.Menu {
                 () -> SpindexerHelper.moveHalfPosition(false)
         ));
 
-        addOption(new MenuLib.InfoOption(() ->
-                ""));
+        addOption(new MenuLib.InfoOption(() -> ""));
 
         addOption(new MenuLib.InfoOption(() ->
                 "Position: " + SpindexerHelper.SpindexerMotor.getCurrentPosition()));
@@ -38,13 +37,11 @@ public class SpindexerMenu extends MenuLib.Menu {
         addOption(new MenuLib.InfoOption(() ->
                         "Distance: " + ColorSensorHelper.colorSensor.getDistance(DistanceUnit.MM)));
 
-        addOption(new MenuLib.InfoOption(() ->
-                ""));
+        addOption(new MenuLib.InfoOption(() -> ""));
 
-        addOption(new MenuLib.SubMenu(
+        addOption(new MenuLib.Option(
                 "Back",
-                host,
-                () -> new TestMenu(host, gamepad1, gamepad2, telemetry, pinpoint)
+                host::goBack
         ));
     }
 }

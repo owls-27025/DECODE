@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.intake.IntakeHelper;
-import org.firstinspires.ftc.teamcode.options.MenuLib;
+import org.firstinspires.ftc.teamcode.helpers.MenuLib;
 
 public class IntakeMenu extends MenuLib.Menu {
     public IntakeMenu(MenuLib.MenuHost host, Gamepad gamepad1, Gamepad gamepad2, Telemetry telemetry, GoBildaPinpointDriver pinpoint) {
@@ -21,13 +21,11 @@ public class IntakeMenu extends MenuLib.Menu {
                 value -> IntakeHelper.intake.setPower(value)
         ));
 
-        addOption(new MenuLib.InfoOption(() ->
-                ""));
+        addOption(new MenuLib.InfoOption(() -> ""));
 
-        addOption(new MenuLib.SubMenu(
+        addOption(new MenuLib.Option(
                 "Back",
-                host,
-                () -> new TestMenu(host, gamepad1, gamepad2, telemetry, pinpoint)
+                host::goBack
         ));
     }
 }

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.helpers;
 
 public class Helpers {
     public static double easeInOutSine(double x) {

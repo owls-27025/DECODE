@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.options;
+package org.firstinspires.ftc.teamcode.helpers;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -13,56 +13,47 @@ public class MenuLib {
     public interface MenuHost {
         void setCurrentMenu(Menu menu);
         void goToMainMenu();
+        void goBack();
     }
 
     public static class Option {
         private final Supplier<String> labelSupplier;
         private final Runnable action;
+        private final boolean selectable;
 
         public Option(String label, Runnable action) {
-            this(() -> label, action);
+            this(() -> label, action, true);
         }
 
         public Option(Supplier<String> labelSupplier, Runnable action) {
+            this(labelSupplier, action, true);
+        }
+
+        public Option(Supplier<String> labelSupplier, Runnable action, boolean selectable) {
             this.labelSupplier = labelSupplier;
             this.action = action;
+            this.selectable = selectable;
         }
 
-        public String getLabel() {
-            return labelSupplier.get();
+        public boolean isSelectable() {
+            return selectable;
         }
 
-        public void run() {
-            action.run();
-        }
-
-        public void onLeft() {
-            // nothing
-        }
-
-        public void onRight() {
-            // nothing
-        }
+        public String getLabel() { return labelSupplier.get(); }
+        public void run() { action.run(); }
+        public void onLeft() {}
+        public void onRight() {}
     }
 
-    public static class InfoOption extends Option {
 
+    public static class InfoOption extends Option {
         public InfoOption(String label) {
-            super(label, () -> {});
+            super(() -> label, () -> {}, false);
         }
 
         public InfoOption(Supplier<String> labelSupplier) {
-            super(labelSupplier, () -> {});
+            super(labelSupplier, () -> {}, false);
         }
-
-        @Override
-        public void run() {}
-
-        @Override
-        public void onLeft() {}
-
-        @Override
-        public void onRight() {}
     }
 
 
@@ -197,6 +188,23 @@ public class MenuLib {
 
         private final List<Option> options = new ArrayList<>();
         private int pointer = 0;
+        private static final double STICK_DEADZONE = 0.5;  // how far the stick needs to be pushed
+        private static final long INITIAL_REPEAT_DELAY_NANOS = 800_000_000L;
+        private static final long REPEAT_INTERVAL_NANOS = 200_000_000L;
+
+        // up/down/left/right repeat state
+        private boolean upHeld = false;
+        private boolean downHeld = false;
+        private boolean leftHeld = false;
+        private boolean rightHeld = false;
+        private long upPressStartTime;
+        private long downPressStartTime;
+        private long leftPressStartTime;
+        private long rightPressStartTime;
+        private long upLastRepeatTime;
+        private long downLastRepeatTime;
+        private long leftLastRepeatTime;
+        private long rightLastRepeatTime;
 
         public Menu(MenuHost host, Gamepad gamepad1, Gamepad gamepad2, Telemetry telemetry, String title) {
             this.host = host;
@@ -235,25 +243,128 @@ public class MenuLib {
                 inhibitButtons = false;
             }
 
+            // inputs
+            double lsx1 = gamepad1.left_stick_x;
+            double lsy1 = gamepad1.left_stick_y;
+            double lsx2 = gamepad2.left_stick_x;
+            double lsy2 = gamepad2.left_stick_y;
 
-            if (gamepad1.dpadDownWasPressed() || gamepad2.dpadDownWasPressed()) {
-                pointer = (pointer + 1) % options.size();
-            }
-            if (gamepad1.dpadUpWasPressed() || gamepad2.dpadUpWasPressed()) {
-                pointer = (pointer - 1 + options.size()) % options.size();
+            boolean upActive =
+                    gamepad1.dpad_up || gamepad2.dpad_up ||
+                            (lsy1 < -STICK_DEADZONE) || (lsy2 < -STICK_DEADZONE);
+
+            boolean downActive =
+                    gamepad1.dpad_down || gamepad2.dpad_down ||
+                            (lsy1 > STICK_DEADZONE) || (lsy2 > STICK_DEADZONE);
+
+            boolean leftActive =
+                    gamepad1.dpad_left || gamepad2.dpad_left ||
+                            (lsx1 < -STICK_DEADZONE) || (lsx2 < -STICK_DEADZONE);
+
+            boolean rightActive =
+                    gamepad1.dpad_right || gamepad2.dpad_right ||
+                            (lsx1 > STICK_DEADZONE) || (lsx2 > STICK_DEADZONE);
+
+            long now = System.nanoTime();
+
+            // up
+            if (upActive) {
+                if (!upHeld) {
+                    upHeld = true;
+                    upPressStartTime = now;
+                    upLastRepeatTime = now;
+
+                    do {
+                        pointer = (pointer - 1 + options.size()) % options.size();
+                    } while (!options.get(pointer).isSelectable());
+
+                } else {
+                    if (now - upPressStartTime >= INITIAL_REPEAT_DELAY_NANOS &&
+                            now - upLastRepeatTime >= REPEAT_INTERVAL_NANOS) {
+
+                        upLastRepeatTime = now;
+
+                        do {
+                            pointer = (pointer - 1 + options.size()) % options.size();
+                        } while (!options.get(pointer).isSelectable());
+                    }
+                }
             }
 
-            if (gamepad1.dpadLeftWasPressed() || gamepad2.dpadLeftWasPressed()) {
-                options.get(pointer).onLeft();
-            }
-            if (gamepad1.dpadRightWasPressed() || gamepad2.dpadRightWasPressed()) {
-                options.get(pointer).onRight();
+
+            // down
+            if (downActive) {
+                if (!downHeld) {
+                    downHeld = true;
+                    downPressStartTime = now;
+                    downLastRepeatTime = now;
+
+                    do {
+                        pointer = (pointer + 1) % options.size();
+                    } while (!options.get(pointer).isSelectable());
+
+                } else {
+                    if (now - downPressStartTime >= INITIAL_REPEAT_DELAY_NANOS &&
+                            now - downLastRepeatTime >= REPEAT_INTERVAL_NANOS) {
+
+                        downLastRepeatTime = now;
+
+                        do {
+                            pointer = (pointer + 1) % options.size();
+                        } while (!options.get(pointer).isSelectable());
+                    }
+                }
             }
 
+
+            // left
+            if (leftActive) {
+                if (!leftHeld) {
+                    leftHeld = true;
+                    leftPressStartTime = now;
+                    leftLastRepeatTime = now;
+                    options.get(pointer).onLeft();
+                } else {
+                    if (now - leftPressStartTime >= INITIAL_REPEAT_DELAY_NANOS &&
+                            now - leftLastRepeatTime >= REPEAT_INTERVAL_NANOS) {
+                        leftLastRepeatTime = now;
+                        options.get(pointer).onLeft();
+                    }
+                }
+            } else {
+                leftHeld = false;
+            }
+
+            // right
+            if (rightActive) {
+                if (!rightHeld) {
+                    rightHeld = true;
+                    rightPressStartTime = now;
+                    rightLastRepeatTime = now;
+                    options.get(pointer).onRight();
+                } else {
+                    if (now - rightPressStartTime >= INITIAL_REPEAT_DELAY_NANOS &&
+                            now - rightLastRepeatTime >= REPEAT_INTERVAL_NANOS) {
+                        rightLastRepeatTime = now;
+                        options.get(pointer).onRight();
+                    }
+                }
+            } else {
+                rightHeld = false;
+            }
+
+            // a button
             if ((gamepad1.aWasPressed() || gamepad2.aWasPressed()) && !inhibitButtons) {
-                options.get(pointer).run();
+                if (options.get(pointer).isSelectable())
+                    options.get(pointer).run();
             }
 
+            // b button
+            if ((gamepad1.bWasPressed() || gamepad2.bWasPressed()) && !inhibitButtons) {
+                host.goBack();
+            }
+
+            // telemetry/rendering
             telemetry.clearAll();
             telemetry.addLine("====== " + title + " ======");
             telemetry.addLine();

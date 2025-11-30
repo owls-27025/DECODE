@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.options;
+package org.firstinspires.ftc.teamcode.helpers;
 
 public class Globals {
     public static double SpindexerSpeed = 0.5;
@@ -59,6 +59,21 @@ public class Globals {
             side = Sides.WALL;
         } else if (side == Sides.WALL) {
             side = Sides.GOAL;
+        }
+    }
+
+    public enum AutoStrategies {
+        LEAVE,
+        FOURCYCLE
+    }
+
+    public static AutoStrategies autoStrategy = AutoStrategies.LEAVE;
+
+    public static void cycleStrategy() {
+        if (autoStrategy == AutoStrategies.LEAVE) {
+            autoStrategy = AutoStrategies.FOURCYCLE;
+        } else if (autoStrategy == AutoStrategies.FOURCYCLE) {
+            autoStrategy = AutoStrategies.LEAVE;
         }
     }
 }
