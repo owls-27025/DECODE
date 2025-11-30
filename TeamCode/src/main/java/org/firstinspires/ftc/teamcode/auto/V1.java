@@ -1,13 +1,22 @@
 package org.firstinspires.ftc.teamcode.auto;
 
+import androidx.annotation.NonNull;
+
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.*;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.auto.actions.RRActions;
+import org.firstinspires.ftc.teamcode.auto.paths.AutoPath;
+import org.firstinspires.ftc.teamcode.auto.paths.FourCycle;
+import org.firstinspires.ftc.teamcode.auto.paths.Leave;
+import org.firstinspires.ftc.teamcode.helpers.Globals;
 import org.firstinspires.ftc.teamcode.mechanisms.drivetrain.roadrunner.MecanumDrive;
+import org.firstinspires.ftc.teamcode.mechanisms.limelight.Limelight;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.Math;
 
@@ -19,20 +28,20 @@ public class V1 extends LinearOpMode {
         Subsystems.init(hardwareMap, telemetry);
 //        Limelight.init(hardwareMap);
 
-//        AutoPath path;
-//
-//        switch (Globals.autoStrategy) {
-//            case LEAVE:
-//                path = new Leave(Globals.alliance);
-//                break;
-//            case FOURCYCLE:
-//                path = new FourCycle(Globals.alliance);
-//            default:
-//                path = new Leave(Globals.alliance);
-//                break;
-//        }
+        AutoPath path;
 
-        Pose2d initialPose = new Pose2d(-50, 50, Math.toRadians(135));
+
+        switch (Globals.autoStrategy) {
+            case FOURCYCLE:
+                path = new FourCycle(Globals.alliance);
+                break;
+            case LEAVE:
+            default:
+                path = new Leave(Globals.alliance);
+                break;
+        }
+
+        Pose2d initialPose = path.getInitialPose();
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
 
@@ -49,10 +58,7 @@ public class V1 extends LinearOpMode {
         if (isStopRequested()) return;
 
         Actions.runBlocking(
-                new SequentialAction(
-                        path1.build(),
-                        RRActions.shoot(3)
-                )
+                path.build(drive)
         );
     }
 }
