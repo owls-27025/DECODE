@@ -21,7 +21,4 @@ public class Intake implements Action {
         return Subsystems.intakeAuto();
     }
 
-    public Action intake() {
-        return new Intake();
-    }
 }

@@ -23,8 +23,4 @@ public class Shoot implements Action {
         }
         return Subsystems.shootAuto(artifacts);
     }
-
-    public Action shoot(int artifacts) {
-        return new Shoot(artifacts);
-    }
 }

@@ -18,7 +18,5 @@ public class ReadMotif implements Action {
         }
         return false;
     }
-
-    public Action readMotif() { return new ReadMotif(); }
 }
 
