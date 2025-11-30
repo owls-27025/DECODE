@@ -45,6 +45,7 @@ public class V1 extends LinearOpMode {
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
 
         telemetry.addLine("Auto ready");
+        telemetry.addData("Path: ", path.getInitialPose());
         telemetry.update();
 
         waitForStart();

@@ -46,6 +46,11 @@ public class LimelightMenu extends MenuLib.Menu {
             }
         }
 
+        //noinspection ConstantValue
+        if (result != null && !result.isValid()) {
+            addOption(new MenuLib.InfoOption(() -> "No AprilTags found"));
+        }
+
         addOption(new MenuLib.InfoOption(() -> ""));
 
         addOption(new MenuLib.Option(

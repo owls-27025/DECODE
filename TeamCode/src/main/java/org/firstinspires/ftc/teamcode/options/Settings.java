@@ -8,7 +8,9 @@ import org.firstinspires.ftc.teamcode.Configuration;
 import org.firstinspires.ftc.teamcode.helpers.Globals;
 import org.firstinspires.ftc.teamcode.helpers.MenuLib;
 import org.firstinspires.ftc.teamcode.mechanisms.drivetrain.Drivetrain;
+import org.firstinspires.ftc.teamcode.mechanisms.limelight.Limelight;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems;
+import org.firstinspires.ftc.teamcode.options.opmodes.AutoMenu;
 import org.firstinspires.ftc.teamcode.options.opmodes.TeleOpMenu;
 import org.firstinspires.ftc.teamcode.options.testing.TestMenu;
 
@@ -30,6 +32,7 @@ public class Settings extends LinearOpMode implements MenuLib.MenuHost {
     public void runOpMode() {
         Subsystems.init(hardwareMap, telemetry);
         Drivetrain.init(hardwareMap);
+        Limelight.init(hardwareMap);
 
         GoBildaPinpointDriver pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, Configuration.odometry.itemName);
 
@@ -57,6 +60,12 @@ public class Settings extends LinearOpMode implements MenuLib.MenuHost {
                         "TeleOp",
                         Settings.this,
                         () -> new TeleOpMenu(Settings.this, gamepad1, gamepad2, telemetry, pinpoint)
+                ));
+
+                addOption(new MenuLib.SubMenu(
+                        "Auto",
+                        Settings.this,
+                        () -> new AutoMenu(Settings.this, gamepad1, gamepad2, telemetry, pinpoint)
                 ));
 
                 // go to testing submenu

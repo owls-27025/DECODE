@@ -72,13 +72,13 @@ public class V1 extends OpMode {
         }
 
         // rgb light control
-        if (artifactCount == 1) {
-            Light.red();
-        } else if (artifactCount == 2) {
-            Light.yellow();
-        } else if (artifactCount == 3) {
-            Light.green();
-        }
+//        if (artifactCount == 1) {
+//            Light.red();
+//        } else if (artifactCount == 2) {
+//            Light.yellow();
+//        } else if (artifactCount == 3) {
+//            Light.green();
+//        }
 
         // intake
         Subsystems.intake(gamepad1);

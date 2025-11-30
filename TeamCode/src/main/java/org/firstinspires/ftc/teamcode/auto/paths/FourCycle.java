@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 
+import org.firstinspires.ftc.teamcode.auto.actions.Shoot;
 import org.firstinspires.ftc.teamcode.helpers.Globals;
 import org.firstinspires.ftc.teamcode.mechanisms.drivetrain.roadrunner.MecanumDrive;
 import org.jetbrains.annotations.NotNull;
@@ -48,9 +49,10 @@ public class FourCycle implements AutoPath {
                 .turnTo(Math.toRadians(135));
 
         return new SequentialAction(
-                path1.build(),
-                path2.build(),
-                path3.build()
+                path1.build()
+//                new Shoot(3).shoot(3),
+//                path2.build(),
+//                path3.build()
         );
     }
 }

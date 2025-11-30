@@ -12,7 +12,9 @@ public class Light {
     public static String color;
 
     public static void init(HardwareMap hardwareMap) {
-        light = hardwareMap.get(Servo.class, Configuration.light.itemName);
+        if (Configuration.light.itemActive) {
+            light = hardwareMap.get(Servo.class, Configuration.light.itemName);
+        }
     }
 
     // red

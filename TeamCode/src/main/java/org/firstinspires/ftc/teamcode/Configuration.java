@@ -16,7 +16,7 @@ public class Configuration {
 
     public static configItem odometry = new configItem("odometry", true);
 
-    public static configItem light  = new configItem("light", true);
+    public static configItem light  = new configItem("light", false);
 
     public static class configItem {
         public String itemName;

@@ -35,6 +35,12 @@ public class TestMenu extends MenuLib.Menu {
                 () -> new DrivetrainMenu(host, gamepad1, gamepad2, telemetry, pinpoint)
         ));
 
+        addOption(new MenuLib.SubMenu(
+                "Limelight",
+                host,
+                () -> new LimelightMenu(host, gamepad1, gamepad2, telemetry)
+        ));
+
         addOption(new MenuLib.InfoOption(() -> ""));
 
         addOption(new MenuLib.Option(
