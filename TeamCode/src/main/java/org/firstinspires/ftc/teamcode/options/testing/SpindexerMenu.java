@@ -30,9 +30,11 @@ public class SpindexerMenu extends MenuLib.Menu {
         addOption(new MenuLib.InfoOption(() ->
                 "Position: " + SpindexerHelper.SpindexerMotor.getCurrentPosition()));
         addOption(new MenuLib.InfoOption(() ->
+                "Target Position: " + SpindexerHelper.SpindexerMotor.getTargetPosition()));
+        addOption(new MenuLib.InfoOption(() ->
                 "Relative Position: " + SpindexerHelper.SpindexerMotor.getCurrentPosition() % SpindexerHelper.TPR));
         addOption(new MenuLib.InfoOption(() ->
-                "Error: " + Math.abs(SpindexerHelper.SpindexerMotor.getCurrentPosition() - SpindexerHelper.TPR)));
+                "Relative Target Position: " + SpindexerHelper.SpindexerMotor.getTargetPosition() % SpindexerHelper.TPR));
         addOption(new MenuLib.InfoOption(() ->
                         "Distance: " + ColorSensorHelper.colorSensor.getDistance(DistanceUnit.MM)));
 

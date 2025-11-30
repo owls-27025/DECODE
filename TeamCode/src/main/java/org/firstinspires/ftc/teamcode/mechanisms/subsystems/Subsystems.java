@@ -102,6 +102,8 @@ public class Subsystems {
 
     private static boolean shootStarted;
 
+    public static boolean isHumanIntake;
+
     public static void init(HardwareMap hardwareMap, Telemetry telemetry) {
         // init subsystems
         SpindexerHelper.init(hardwareMap);
@@ -125,6 +127,8 @@ public class Subsystems {
         delayTimer = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
 
         shootStarted = false;
+
+        isHumanIntake = false;
     }
 
 
@@ -184,12 +188,11 @@ public class Subsystems {
     }
 
     public static boolean intakeAuto() {
-        boolean moved = false;
-
         switch (currentState) {
             case MOVING_TO_POSITION:
                 // start intake motor
                 isDetected = false;
+                artifactCount = 0;
                 intakePosition();
                 IntakeHelper.start();
 
@@ -200,9 +203,7 @@ public class Subsystems {
 
             case WAITING_FOR_BALL:
                 // wait for color sensor to detect ball
-                if (ColorSensorHelper.isBall() && !isDetected && artifactCount < 3) {
-                    isDetected = true;
-
+                if (ColorSensorHelper.isBall() && artifactCount < 3) {
                     if (!delayStarted) {
                         delayStarted = true;
                         delayTimer.reset();
@@ -210,6 +211,8 @@ public class Subsystems {
                     // sleep for 250 ms
                     if (delayTimer.time(TimeUnit.MILLISECONDS) > 250) {
                         SpindexerHelper.moveToNextPosition();
+                        subsystemTelemetry.addLine("yo");
+                        subsystemTelemetry.update();
 
                         artifactCount++;
 
@@ -227,6 +230,7 @@ public class Subsystems {
                     currentState = IntakeState.WAITING_FOR_BALL;
                 }
 
+                delayStarted = false;
                 isDetected = false;
                 break;
 
@@ -241,6 +245,9 @@ public class Subsystems {
     }
 
     public static void shoot(Gamepad gamepad2) {
+        if (!isHumanIntake) {
+            ShooterHelper.shooterMotor.setVelocity(1100);
+        }
         if (currentShootState == ShootState.INIT) {
             if (gamepad2.xWasPressed()) {
                 // start shooter
@@ -356,40 +363,19 @@ public class Subsystems {
         }
     }
 
-//    public static void intakeHuman(Gamepad gamepad2) {
-//        if (currentHumanState == HumanState.INIT) {
-//            if (gamepad2.backWasPressed()) {
-//                delayStarted = false;
-//                currentHumanState = HumanState.WAITING;
-//            }
-//        } else {
-//            switch (currentHumanState) {
-//                case WAITING:
-//                    ShooterHelper.shooterMotor.setVelocity(0);
-//                    ShooterHelper.shooterMotor.setPower(-0.2);
-//                    if (!delayStarted) {
-//                        delayStarted = true;
-//                        delayTimer.reset();
-//                    }
-//                    if (delayTimer.time(TimeUnit.MILLISECONDS) > Globals.humanWait) {
-//                        currentHumanState = HumanState.MOVING;
-//                        break;
-//                    }
-//                case MOVING:
-//                    SpindexerHelper.moveToNextPosition();
-//                    artifactCount++;
-//                    if (artifactCount >= 3) {
-//                        currentHumanState = HumanState.COMPLETED;
-//                    } else {
-//                        currentHumanState = HumanState.WAITING;
-//                    }
-//                    break;
-//                case COMPLETED:
-//                    ShooterHelper.shooterMotor.setPower(0);
-//                    ShooterHelper.shooterMotor.setVelocity(750);
-//            }
-//        }
-//    }
+    public static void intakeHuman(Gamepad gamepad2) {
+        if (gamepad2.backWasPressed()) {
+            if (ShooterHelper.shooterMotor.getVelocity() > 0) {
+                ShooterHelper.shooterMotor.setVelocity(0);
+                ShooterHelper.shooterMotor.setPower(-0.2);
+                isHumanIntake = true;
+            } else {
+                ShooterHelper.shooterMotor.setPower(0);
+                ShooterHelper.shooterMotor.setVelocity(1100);
+                isHumanIntake = false;
+            }
+        }
+    }
 
     public static boolean shootAuto(int numArtifacts) {
         switch (currentShootState) {
@@ -407,17 +393,8 @@ public class Subsystems {
 
                 ShooterHelper.shoot(targetVelocity);
 
-                if (!delayStarted) {
-                    delayTimer.reset();
-                    delayStarted = true;
-                }
-                // sleep for 100 ms
-                if (delayTimer.time(TimeUnit.MILLISECONDS) > 100) {
-                    delayTimer.reset();
-                    if (Math.abs(ShooterHelper.shooterMotor.getVelocity() - targetVelocity) <= Globals.ShooterTolerance) {
-                        delayStarted = false;
-                        currentShootState = ShootState.FIRING;
-                    }
+                if (Math.abs(ShooterHelper.shooterMotor.getVelocity() - targetVelocity) <= Globals.ShooterTolerance) {
+                    currentShootState = ShootState.FIRING;
                 }
                 break;
 

@@ -3,20 +3,26 @@ package org.firstinspires.ftc.teamcode.auto;
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.acmerobotics.roadrunner.*;
+import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.Arclength;
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.Pose2dDual;
+import com.acmerobotics.roadrunner.PosePath;
+import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
+import com.acmerobotics.roadrunner.Vector2d;
+import com.acmerobotics.roadrunner.VelConstraint;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.mechanisms.drivetrain.roadrunner.MecanumDrive;
 import org.firstinspires.ftc.teamcode.mechanisms.limelight.Limelight;
-import org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems;
+import org.firstinspires.ftc.teamcode.options.Globals;
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.Math;
-
-@Autonomous(name = "Auto", group = "OpModes")
-public class V1 extends LinearOpMode {
+@Autonomous(name = "Auto (Leave)", group = "OpModes")
+public class Backup extends LinearOpMode {
 
     public class Subsystems {
 
@@ -89,49 +95,27 @@ public class V1 extends LinearOpMode {
 
         Subsystems subsystems = new Subsystems();
 
-        Pose2d initialPose = new Pose2d(-50, 50, Math.toRadians(135));
+        Pose2d initialRedPose = new Pose2d(60, 10, Math.toRadians(0));
+        Pose2d initialBluePose = new Pose2d(60, -10, Math.toRadians(0));
 
-        MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
+        MecanumDrive drive = new MecanumDrive(hardwareMap, initialRedPose);
+        TrajectoryActionBuilder path = drive.actionBuilder(initialRedPose)
+                .strafeTo(new Vector2d(57, 30));
 
-        TrajectoryActionBuilder path1 = drive.actionBuilder(initialPose)
-                .strafeTo(new Vector2d(-12, 12));
-
-        TrajectoryActionBuilder path2 = path1.endTrajectory().fresh()
-                .waitSeconds(5)
-                .turnTo(Math.toRadians(90))
-                .lineToY(30);
-
-        TrajectoryActionBuilder path3 = path2.endTrajectory().fresh()
-                .lineToY(38, new VelConstraint() {
-                    @Override
-                    public double maxRobotVel(@NotNull Pose2dDual<Arclength> pose2dDual, @NotNull PosePath posePath, double v) {
-                        return 8;
-                    }
-                })
-                .waitSeconds(1)
-                .lineToY(44, new VelConstraint() {
-                    @Override
-                    public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
-                        return 8;
-                    }
-                })
-                .waitSeconds(1)
-                .lineToY(50, new VelConstraint() {
-                    @Override
-                    public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
-                        return 8;
-                    }
-                })
-                .strafeTo(new Vector2d(drive.localizer.getPose().position.x, 12))
-                .turnTo(Math.toRadians(135));
-
+        if (Globals.alliance == Globals.Alliances.BLUE) {
+            drive = new MecanumDrive(hardwareMap, initialBluePose);
+            path = drive.actionBuilder(initialBluePose)
+                    .strafeTo(new Vector2d(57, -30));
+        } else if (Globals.alliance == Globals.Alliances.RED) {
+            drive = new MecanumDrive(hardwareMap, initialRedPose);
+            path = drive.actionBuilder(initialRedPose)
+                    .strafeTo(new Vector2d(57, 30));
+        }
+        
         waitForStart();
 
         Actions.runBlocking(new SequentialAction(
-                    path1.build(),
-                    subsystems.shoot(3),
-                    path2.build(),
-                    path3.build()
+                    path.build()
                 )
         );
     }

@@ -1,13 +1,13 @@
 package org.firstinspires.ftc.teamcode.options;
 
 public class Globals {
-    public static double SpindexerSpeed = 0.1;
+    public static double SpindexerSpeed = 0.5;
 
     public static double DriveSpeed = 1.0;
 
     public static double SlowDriveSpeed = 0.35;
 
-    public static int ShooterVelocity = 1100;
+    public static int ShooterVelocity = 1400;
     public static int ShooterTolerance = 15;
 
     public static int ForcedArtifacts = 1;

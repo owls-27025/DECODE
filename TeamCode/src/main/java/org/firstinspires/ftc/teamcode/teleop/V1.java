@@ -54,10 +54,18 @@ public class V1 extends OpMode {
         }
 
         // move spindexer CW or CCW
-        if (gamepad2.left_bumper) {
-            SpindexerHelper.moveHalfPosition(false);
-        } else if (gamepad2.right_bumper) {
-            SpindexerHelper.moveHalfPosition(true);
+        if (gamepad2.leftBumperWasPressed()) {
+            if (Subsystems.isHumanIntake) {
+                SpindexerHelper.moveToNextPosition();
+            } else {
+                SpindexerHelper.moveHalfPosition(false);
+            }
+        } else if (gamepad2.rightBumperWasPressed()) {
+            if (Subsystems.isHumanIntake) {
+                SpindexerHelper.moveToNextPosition();
+            } else {
+                SpindexerHelper.moveHalfPosition(true);
+            }
         }
 
         // move to different spindexer positions
@@ -83,7 +91,7 @@ public class V1 extends OpMode {
         Subsystems.shoot(gamepad2);
 
         // human player intake
-//        Subsystems.intakeHuman(gamepad2);
+        Subsystems.intakeHuman(gamepad2);
 
         // cancel functions
         if ((gamepad2.bWasPressed() || gamepad1.bWasPressed()) && !inhibitButtons) {

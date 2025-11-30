@@ -8,13 +8,13 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import java.util.List;
 
 public class Limelight {
-    public Limelight3A limelight;
+    public static Limelight3A limelight;
 
-    public void init(HardwareMap hardwareMap) {
+    public static void init(HardwareMap hardwareMap) {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
     }
 
-    public int getMotif() {
+    public static int getMotif() {
         int motif = 0;
 
         LLResult result = limelight.getLatestResult();
