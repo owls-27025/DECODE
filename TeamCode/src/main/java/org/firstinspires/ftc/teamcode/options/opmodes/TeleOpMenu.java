@@ -1,58 +1,59 @@
 package org.firstinspires.ftc.teamcode.options.opmodes;
 
-import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.helpers.Globals;
 import org.firstinspires.ftc.teamcode.helpers.MenuLib;
+import org.firstinspires.ftc.teamcode.Robot;
 
 public class TeleOpMenu extends MenuLib.Menu {
 
-    public TeleOpMenu(MenuLib.MenuHost host, Gamepad gamepad1, Gamepad gamepad2, Telemetry telemetry, GoBildaPinpointDriver pinpoint) {
+    public TeleOpMenu(MenuLib.MenuHost host, Gamepad gamepad1, Gamepad gamepad2, Telemetry telemetry, Robot robot) {
         super(host, gamepad1, gamepad2, telemetry, "TELEOP");
 
         // change driving speed
         addOption(new MenuLib.DoubleOption(
                 "Drive Speed: ",
-                Globals.DriveSpeed,
+                robot.driveSpeed,
                 0.05,
                 0.0,
                 1.0,
                 2,
-                value -> Globals.DriveSpeed = value
+                value -> robot.driveSpeed = value
         ));
 
         // change slow driving speed
         addOption(new MenuLib.DoubleOption(
                 "Slow Drive Speed: ",
-                Globals.SlowDriveSpeed,
+                robot.slowDriveSpeed,
                 0.05,
                 0.0,
                 1.0,
                 2,
-                value -> Globals.SlowDriveSpeed = value
+                value -> robot.slowDriveSpeed = value
         ));
 
         // change number of forced artifacts for y button
         addOption(new MenuLib.IntOption(
                 "Forced Artifacts: ",
-                Globals.ForcedArtifacts,
+                robot.forcedArtifacts,
                 1,
                 1,
                 3,
-                value -> Globals.ForcedArtifacts = value
+                value -> robot.forcedArtifacts = value
         ));
 
         // toggle right stick driving
         addOption(new MenuLib.Option(() ->
-                "Right Stick Driving: " + Globals.isRightStick,
-                Globals::flipStick));
+                "Right Stick Driving: " + robot.isRightStick,
+                () -> robot.isRightStick = (!robot.isRightStick)));
 
         // toggle field centric
-        addOption(new MenuLib.Option(() ->
-                "Field Centric: " + Globals.isFieldCentric,
-                Globals::flipFieldCentric));
+        addOption(new MenuLib.Option(
+                () -> "Field Centric: " + robot.isFieldCentric,
+                () -> robot.isFieldCentric = (!robot.isFieldCentric)
+        ));
+
 
         // shooter tolerance setting
         addOption(new MenuLib.IntOption(
@@ -61,16 +62,7 @@ public class TeleOpMenu extends MenuLib.Menu {
                 1,
                 0,
                 15,
-                value -> Globals.ShooterTolerance = value
-        ));
-
-        addOption(new MenuLib.IntOption(
-                "Human Player Intake: ",
-                750,
-                250,
-                100,
-                2000,
-                value -> Globals.humanWait = value
+                value -> robot.shooterTolerance = value
         ));
 
         addOption(new MenuLib.InfoOption(() -> ""));

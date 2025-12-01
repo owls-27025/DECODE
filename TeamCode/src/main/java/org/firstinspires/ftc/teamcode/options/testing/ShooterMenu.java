@@ -1,23 +1,19 @@
 package org.firstinspires.ftc.teamcode.options.testing;
 
-import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.mechanisms.light.Light;
-import org.firstinspires.ftc.teamcode.mechanisms.subsystems.shooter.ShooterHelper;
-import org.firstinspires.ftc.teamcode.mechanisms.subsystems.spindexer.SpindexerHelper;
+import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.helpers.MenuLib;
-import org.firstinspires.ftc.teamcode.helpers.Globals;
 
 public class ShooterMenu extends MenuLib.Menu {
-    public ShooterMenu(MenuLib.MenuHost host, Gamepad gamepad1, Gamepad gamepad2, Telemetry telemetry, GoBildaPinpointDriver pinpoint) {
+    public ShooterMenu(MenuLib.MenuHost host, Gamepad gamepad1, Gamepad gamepad2, Telemetry telemetry, Robot robot) {
         super(host, gamepad1, gamepad2, telemetry, "SHOOTER");
 
         addOption(new MenuLib.Option(
                 "Start Shooter Motor",
                 () -> {
-                    ShooterHelper.shooterMotor.setVelocity(Globals.ShooterVelocity);
+                    robot.shooter.shooterMotor.setVelocity(robot.shooterVelocity);
                 }
         ));
 
@@ -27,7 +23,7 @@ public class ShooterMenu extends MenuLib.Menu {
                 50,
                 0,
                 1600,
-                value -> Globals.ShooterVelocity = value
+                value -> robot.shooterVelocity = value
         ));
 
         addOption(new MenuLib.DoubleOption(
@@ -37,12 +33,12 @@ public class ShooterMenu extends MenuLib.Menu {
                 0.0,
                 1.0,
                 2,
-                SpindexerHelper::moveServo
+                robot.spindexer::moveServo
         ));
 
         addOption(new MenuLib.Option(
-                "Light Color: " + Light.color,
-                Light::cycle
+                "Light Color: " + robot.light.color,
+                robot.light::cycle
         ));
 
         addOption(new MenuLib.InfoOption(() -> ""));

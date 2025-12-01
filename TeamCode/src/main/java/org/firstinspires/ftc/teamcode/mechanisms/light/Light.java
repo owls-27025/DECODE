@@ -3,42 +3,53 @@ package org.firstinspires.ftc.teamcode.mechanisms.light;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.Configuration;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.helpers.Configuration.ItemConfig;
+import org.firstinspires.ftc.teamcode.helpers.BaseSubsystem;
 
-import java.util.Objects;
+public class Light extends BaseSubsystem {
+    private Servo light;
+    public String color = null;
 
-public class Light {
-    public static Servo light;
-    public static String color;
+    public Light(HardwareMap hardwareMap,
+                 Telemetry telemetry,
+                 ItemConfig cfg) {
+        super(hardwareMap, telemetry, cfg.itemActive);
 
-    public static void init(HardwareMap hardwareMap) {
-        if (Configuration.light.itemActive) {
-            light = hardwareMap.get(Servo.class, Configuration.light.itemName);
-        }
+        ifActive(() -> {
+            light = hardwareMap.get(Servo.class, cfg.itemName);
+        });
     }
 
-    // red
-    public static void red() {
-        light.setPosition(0.3);
-        color = "Red";
-    }
-    // yellow
-    public static void yellow() {
-        light.setPosition(0.388);
-        color = "Yellow";
-    }
-    // green
-    public static void green() {
-        light.setPosition(0.5);
-        color = "Green";
+    public void red() {
+        ifActive(() -> {
+            light.setPosition(0.3);
+            color = "Red";
+        });
     }
 
-    public static void cycle() {
-        if (Objects.equals(color, "Red")) {
+    public void yellow() {
+        ifActive(() -> {
+            light.setPosition(0.388);
+            color = "Yellow";
+        });
+    }
+
+    public void green() {
+        ifActive(() -> {
+            light.setPosition(0.5);
+            color = "Green";
+        });
+    }
+
+    public void cycle() {
+        if (!active || light == null) return;
+
+        if ("Red".equals(color)) {
             yellow();
-        } else if (Objects.equals(color, "Yellow")) {
+        } else if ("Yellow".equals(color)) {
             green();
-        } else if (Objects.equals(color, "Green")) {
+        } else if ("Green".equals(color)) {
             red();
         } else {
             red();

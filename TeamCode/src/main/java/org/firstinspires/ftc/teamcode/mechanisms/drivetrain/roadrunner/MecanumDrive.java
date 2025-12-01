@@ -41,7 +41,8 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
-import org.firstinspires.ftc.teamcode.Configuration;
+import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.helpers.Configuration;
 import org.firstinspires.ftc.teamcode.mechanisms.drivetrain.roadrunner.messages.DriveCommandMessage;
 import org.firstinspires.ftc.teamcode.mechanisms.drivetrain.roadrunner.messages.MecanumCommandMessage;
 import org.firstinspires.ftc.teamcode.mechanisms.drivetrain.roadrunner.messages.MecanumLocalizerInputsMessage;
@@ -54,6 +55,8 @@ import java.util.List;
 
 @Config
 public final class MecanumDrive {
+    private Robot robot;
+
     public static class Params {
         // IMU orientation
         // TODO: fill in these values based on
@@ -218,7 +221,7 @@ public final class MecanumDrive {
         }
     }
 
-    public MecanumDrive(HardwareMap hardwareMap, Pose2d pose) {
+    public MecanumDrive(HardwareMap hardwareMap, Pose2d pose, Configuration config) {
         LynxFirmware.throwIfModulesAreOutdated(hardwareMap);
 
         for (LynxModule module : hardwareMap.getAll(LynxModule.class)) {
@@ -227,10 +230,10 @@ public final class MecanumDrive {
 
         // TODO: make sure your config has motors with these names (or change them)
         //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
-        leftFront = hardwareMap.get(DcMotorEx.class, Configuration.FL.itemName);
-        leftBack = hardwareMap.get(DcMotorEx.class, Configuration.BL.itemName);
-        rightBack = hardwareMap.get(DcMotorEx.class, Configuration.BR.itemName);
-        rightFront = hardwareMap.get(DcMotorEx.class, Configuration.FR.itemName);
+        leftFront = hardwareMap.get(DcMotorEx.class, config.FL.itemName);
+        leftBack = hardwareMap.get(DcMotorEx.class, config.BL.itemName);
+        rightBack = hardwareMap.get(DcMotorEx.class, config.BR.itemName);
+        rightFront = hardwareMap.get(DcMotorEx.class, config.FR.itemName);
 
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

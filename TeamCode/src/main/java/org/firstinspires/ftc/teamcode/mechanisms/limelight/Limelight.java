@@ -5,31 +5,39 @@ import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.helpers.Configuration.ItemConfig;
+import org.firstinspires.ftc.teamcode.helpers.BaseSubsystem;
+
 import java.util.List;
 
-public class Limelight {
-    public static Limelight3A limelight;
+public class Limelight extends BaseSubsystem {
+    public Limelight3A limelight;
 
-    public static void init(HardwareMap hardwareMap) {
-        limelight = hardwareMap.get(Limelight3A.class, "limelight");
+    public Limelight(HardwareMap hardwareMap,
+                     Telemetry telemetry,
+                     ItemConfig cfg) {
+        super(hardwareMap, telemetry, cfg.itemActive);
+
+        ifActive(() -> limelight = hardwareMap.get(Limelight3A.class, cfg.itemName));
     }
 
-    public static int getMotif() {
-        int motif = 0;
+    public int getMotif() {
+        if (!active || limelight == null) return 0;
 
         LLResult result = limelight.getLatestResult();
+        if (result == null) return 0;
 
         List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
-        if (!fiducials.isEmpty()) {
-            for (LLResultTypes.FiducialResult fiducial : fiducials) {
-                int id = fiducial.getFiducialId(); // The ID number of the fiducial
-                if (id > 20 && id < 24) {
-                    motif = id;
-                    break;
-                }
+        if (fiducials == null || fiducials.isEmpty()) return 0;
+
+        for (LLResultTypes.FiducialResult fiducial : fiducials) {
+            int id = fiducial.getFiducialId();
+            if (id > 20 && id < 24) {
+                return id;
             }
         }
 
-        return motif;
+        return 0;
     }
 }

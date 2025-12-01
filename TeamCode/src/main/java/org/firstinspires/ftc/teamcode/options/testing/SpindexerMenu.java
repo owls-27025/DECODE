@@ -1,41 +1,38 @@
 package org.firstinspires.ftc.teamcode.options.testing;
 
-import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.Gamepad;
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.mechanisms.subsystems.colorSensor.ColorSensorHelper;
-import org.firstinspires.ftc.teamcode.mechanisms.subsystems.spindexer.SpindexerHelper;
+import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.helpers.MenuLib;
 
 public class SpindexerMenu extends MenuLib.Menu {
 
-    public SpindexerMenu(MenuLib.MenuHost host, Gamepad gamepad1, Gamepad gamepad2, Telemetry telemetry, GoBildaPinpointDriver pinpoint) {
+    public SpindexerMenu(MenuLib.MenuHost host, Gamepad gamepad1, Gamepad gamepad2, Telemetry telemetry, Robot robot) {
         super(host, gamepad1, gamepad2, telemetry, "SPINDEXER");
 
         addOption(new MenuLib.Option(
                 "Move Spindexer Forwards",
-                () -> SpindexerHelper.moveHalfPosition(true)
+                () -> robot.spindexer.moveHalfPosition(true)
         ));
 
         addOption(new MenuLib.Option(
                 "Move Spindexer Backwards",
-                () -> SpindexerHelper.moveHalfPosition(false)
+                () -> robot.spindexer.moveHalfPosition(false)
         ));
 
         addOption(new MenuLib.InfoOption(() -> ""));
 
         addOption(new MenuLib.InfoOption(() ->
-                "Position: " + SpindexerHelper.SpindexerMotor.getCurrentPosition()));
+                "Position: " + robot.spindexer.spindexerMotor.getCurrentPosition()));
         addOption(new MenuLib.InfoOption(() ->
-                "Target Position: " + SpindexerHelper.SpindexerMotor.getTargetPosition()));
+                "Target Position: " + robot.spindexer.spindexerMotor.getTargetPosition()));
         addOption(new MenuLib.InfoOption(() ->
-                "Relative Position: " + SpindexerHelper.SpindexerMotor.getCurrentPosition() % SpindexerHelper.TPR));
+                "Relative Position: " + robot.spindexer.spindexerMotor.getCurrentPosition() % robot.spindexer.halfSlot));
         addOption(new MenuLib.InfoOption(() ->
-                "Relative Target Position: " + SpindexerHelper.SpindexerMotor.getTargetPosition() % SpindexerHelper.TPR));
+                "Relative Target Position: " + robot.spindexer.spindexerMotor.getTargetPosition() % robot.spindexer.halfSlot));
         addOption(new MenuLib.InfoOption(() ->
-                        "Distance: " + ColorSensorHelper.colorSensor.getDistance(DistanceUnit.MM)));
+                        "Distance: " + robot.distanceSensor.distanceSensor.getDistance(DistanceUnit.MM)));
 
         addOption(new MenuLib.InfoOption(() -> ""));
 
