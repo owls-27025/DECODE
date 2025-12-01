@@ -38,14 +38,14 @@ public class FourCycle implements AutoPath {
         TrajectoryActionBuilder path2 = path1.endTrajectory().fresh()
                 .waitSeconds(10);
 
-        TrajectoryActionBuilder path3 = path2.endTrajectory().fresh()
-                .lineToY(38, (pose2dDual, posePath, v) -> 8)
-                .waitSeconds(1)
-                .lineToY(44, (pose2dDual, posePath, v) -> 8)
-                .waitSeconds(1)
-                .lineToY(50, (pose2dDual, posePath, v) -> 8)
-                .strafeTo(new Vector2d(drive.localizer.getPose().position.x, 12)) // TODO: replace drive.localizer.getPose() because no work
-                .turnTo(Math.toRadians(135));
+//        TrajectoryActionBuilder path3 = path2.endTrajectory().fresh()
+//                .lineToY(38, (pose2dDual, posePath, v) -> 8)
+//                .waitSeconds(1)
+//                .lineToY(44, (pose2dDual, posePath, v) -> 8)
+//                .waitSeconds(1)
+//                .lineToY(50, (pose2dDual, posePath, v) -> 8)
+//                .strafeTo(new Vector2d(drive.localizer.getPose().position.x, 12)) // TODO: replace drive.localizer.getPose() because no work
+//                .turnTo(Math.toRadians(135));
 
         return new SequentialAction(
                 path1.build(),
