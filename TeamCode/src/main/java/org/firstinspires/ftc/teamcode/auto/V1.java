@@ -47,18 +47,15 @@ public class V1 extends LinearOpMode {
 
         RRActions RRActions = new RRActions();
 
-//        telemetry.addLine("Auto ready");
-//        telemetry.addData("Path: ", path.getInitialPose());
-//        telemetry.update();
-
-        TrajectoryActionBuilder path1 = drive.actionBuilder(initialPose)
-                .strafeTo(new Vector2d(-12, 12));
+        telemetry.addLine("Auto ready");
+        telemetry.addData("Path: ", path.getInitialPose());
+        telemetry.update();
 
         waitForStart();
         if (isStopRequested()) return;
 
         Actions.runBlocking(
-                path.build(drive)
+                path.build(drive, RRActions)
         );
     }
 }

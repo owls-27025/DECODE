@@ -77,6 +77,17 @@ public class Subsystems {
 
     public static ShootState currentShootState;
 
+    public enum AutoShootState {
+        INIT,
+        MOVING_TO_SHOOT_POSITION,
+        SPINNING_UP_SHOOTER,
+        FIRING,
+        ADVANCING_NEXT_BALL,
+        COMPLETED
+    }
+
+    public static AutoShootState currentAutoShootState;
+
 
     public enum HumanState {
         INIT,
@@ -85,7 +96,7 @@ public class Subsystems {
         COMPLETED
     }
 
-    public static HumanState currentHumanState = HumanState.INIT;
+    public static HumanState currentHumanState;
 
 
     private static int shotsLeft;
@@ -110,6 +121,8 @@ public class Subsystems {
         artifactCount = 0;
         currentState = IntakeState.INIT;
         currentShootState = ShootState.INIT;
+        currentAutoShootState = AutoShootState.INIT;
+        currentHumanState = HumanState.INIT;
         shotsLeft = 0;
 
         subsystemTelemetry = telemetry;
@@ -371,23 +384,27 @@ public class Subsystems {
     }
 
     public static boolean shootAuto(int numArtifacts) {
-        switch (currentShootState) {
+        switch (currentAutoShootState) {
             case MOVING_TO_SHOOT_POSITION:
+                subsystemTelemetry.addLine("running");
+                subsystemTelemetry.update();
                 // start shooter motor
                 shootPosition();
                 shotsLeft = numArtifacts;
-                currentShootState = ShootState.SPINNING_UP_SHOOTER;
+                currentAutoShootState = AutoShootState.SPINNING_UP_SHOOTER;
                 delayStarted = false;
                 break;
 
             case SPINNING_UP_SHOOTER:
+                subsystemTelemetry.addLine("spinning up shooter");
+                subsystemTelemetry.update();
                 // wait until shooter is at target velocity
                 double targetVelocity = Globals.ShooterVelocity;
 
                 ShooterHelper.shoot(targetVelocity);
 
                 if (Math.abs(ShooterHelper.shooterMotor.getVelocity() - targetVelocity) <= Globals.ShooterTolerance) {
-                    currentShootState = ShootState.FIRING;
+                    currentAutoShootState = AutoShootState.FIRING;
                 }
                 break;
 
@@ -403,7 +420,7 @@ public class Subsystems {
                     SpindexerHelper.moveServo(0.5);
                     delayStarted = false;
                     spindexerMoved = false;
-                    currentShootState = ShootState.ADVANCING_NEXT_BALL;
+                    currentAutoShootState = AutoShootState.ADVANCING_NEXT_BALL;
                 }
                 break;
 
@@ -432,9 +449,9 @@ public class Subsystems {
                         shotsLeft--;
 
                         if (shotsLeft <= 0) {
-                            currentShootState = ShootState.COMPLETED;
+                            currentAutoShootState = AutoShootState.COMPLETED;
                         } else {
-                            currentShootState = ShootState.SPINNING_UP_SHOOTER;
+                            currentAutoShootState = AutoShootState.SPINNING_UP_SHOOTER;
                         }
 
                     }
@@ -442,10 +459,10 @@ public class Subsystems {
                 break;
 
             case COMPLETED:
-                currentShootState = ShootState.INIT;
-                return true;
+                currentAutoShootState = AutoShootState.INIT;
+                return false;
         }
-        return false;
+        return true;
     }
 
 

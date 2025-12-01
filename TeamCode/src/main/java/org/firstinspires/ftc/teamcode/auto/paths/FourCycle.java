@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 
+import org.firstinspires.ftc.teamcode.auto.actions.RRActions;
 import org.firstinspires.ftc.teamcode.auto.actions.Shoot;
 import org.firstinspires.ftc.teamcode.helpers.Globals;
 import org.firstinspires.ftc.teamcode.mechanisms.drivetrain.roadrunner.MecanumDrive;
@@ -28,16 +29,14 @@ public class FourCycle implements AutoPath {
     }
 
     @Override
-    public Action build(MecanumDrive drive) {
+    public Action build(MecanumDrive drive, RRActions rractions) {
         Pose2d initialPose = getInitialPose();
 
         TrajectoryActionBuilder path1 = drive.actionBuilder(initialPose)
                 .strafeTo(new Vector2d(-12, 12));
 
         TrajectoryActionBuilder path2 = path1.endTrajectory().fresh()
-                .waitSeconds(5)
-                .turnTo(Math.toRadians(90))
-                .lineToY(30);
+                .waitSeconds(10);
 
         TrajectoryActionBuilder path3 = path2.endTrajectory().fresh()
                 .lineToY(38, (pose2dDual, posePath, v) -> 8)
@@ -49,9 +48,9 @@ public class FourCycle implements AutoPath {
                 .turnTo(Math.toRadians(135));
 
         return new SequentialAction(
-                path1.build()
-//                new Shoot(3).shoot(3),
-//                path2.build(),
+                path1.build(),
+                rractions.shoot(3),
+                path2.build()
 //                path3.build()
         );
     }

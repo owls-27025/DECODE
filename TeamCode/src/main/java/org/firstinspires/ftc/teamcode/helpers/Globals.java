@@ -67,7 +67,7 @@ public class Globals {
         FOURCYCLE
     }
 
-    public static AutoStrategies autoStrategy = AutoStrategies.LEAVE;
+    public static AutoStrategies autoStrategy = AutoStrategies.FOURCYCLE;
 
     public static void cycleStrategy() {
         if (autoStrategy == AutoStrategies.LEAVE) {
