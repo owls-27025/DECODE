@@ -188,7 +188,7 @@ public class MenuLib {
 
         private final List<Option> options = new ArrayList<>();
         private int pointer = 0;
-        private static final double STICK_DEADZONE = 0.5;  // how far the stick needs to be pushed
+        private static final double STICK_DEADZONE = 0.25;  // how far the stick needs to be pushed
         private static final long INITIAL_REPEAT_DELAY_NANOS = 800_000_000L;
         private static final long REPEAT_INTERVAL_NANOS = 200_000_000L;
 

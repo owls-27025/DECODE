@@ -1,10 +1,10 @@
-package org.firstinspires.ftc.teamcode.opmodes.V1.auto.actions;
+package org.firstinspires.ftc.teamcode.opmodes.V1.actions;
 
 import com.acmerobotics.roadrunner.Action;
 import org.firstinspires.ftc.teamcode.Robot;
 
 public class RRActions {
-    private Robot robot;
+    private final Robot robot;
 
     public RRActions(Robot robot) {
         this.robot = robot;
@@ -17,5 +17,11 @@ public class RRActions {
         return new Intake(robot);
     }
 
-    public Action readMotif() { return new ReadMotif(robot); }
+    public Action readMotif() {
+        return new ReadMotif(robot);
+    }
+
+    public Action humanPlayerIntake() {
+        return new HumanPlayerIntake(robot);
+    }
 }

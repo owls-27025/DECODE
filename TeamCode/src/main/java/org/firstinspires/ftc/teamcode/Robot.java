@@ -3,10 +3,10 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
+import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.helpers.Configuration;
 import org.firstinspires.ftc.teamcode.helpers.Controls;
-import org.firstinspires.ftc.teamcode.mechanisms.Mechanisms;
 import org.firstinspires.ftc.teamcode.mechanisms.distanceSensor.DistanceSensor;
 import org.firstinspires.ftc.teamcode.mechanisms.drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.mechanisms.intake.Intake;
@@ -24,7 +24,6 @@ public class Robot {
     public final Spindexer spindexer;
     public final Drivetrain drivetrain;
     public final Light light;
-    public final Mechanisms mechanisms;
     public final Limelight limelight;
 
     public double SpindexerSpeed = 0.5;
@@ -34,7 +33,9 @@ public class Robot {
     public boolean isFieldCentric = false;
     public double shooterVelocity = 1100;
     public double shooterTolerance = 15;
+    public int artifactCount = 3;
     public int forcedArtifacts = 3;
+    public boolean isHumanIntake;
 
     public enum AutoStrategies {
         LEAVE,
@@ -58,28 +59,9 @@ public class Robot {
         drivetrain     = new Drivetrain(hw, telemetry, config, this);
         light          = new Light(hw, telemetry, config.light);
         limelight      = new Limelight(hw, telemetry, config.limelight);
-
-        mechanisms = new Mechanisms(
-                spindexer,
-                distanceSensor,
-                shooter,
-                intake,
-                drivetrain,
-                light,
-                telemetry,
-                shooterVelocity,
-                shooterTolerance,
-                forcedArtifacts
-        );
     }
 
     public void loop(Gamepad gamepad1, Gamepad gamepad2) {
-        controls.update(gamepad1, gamepad2);
-
-        mechanisms.intake(controls);
-        mechanisms.shoot(controls);
-        mechanisms.intakeHuman(controls);
-
         drivetrain.drive(controls);
     }
 }

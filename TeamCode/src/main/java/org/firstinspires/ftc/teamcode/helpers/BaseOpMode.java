@@ -31,10 +31,12 @@ public abstract class BaseOpMode extends LinearOpMode {
 
         onStart();
 
-        // main loop
         while (opModeIsActive()) {
             controls.update(gamepad1, gamepad2);
+
             onLoop();
+
+            this.telemetry();
             telemetry.update();
         }
 
@@ -46,4 +48,5 @@ public abstract class BaseOpMode extends LinearOpMode {
     protected void onStart() {}
     protected abstract void onLoop();
     protected void onStop() {}
+    protected void telemetry() {}
 }

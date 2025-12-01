@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmodes.V1.auto.actions;
+package org.firstinspires.ftc.teamcode.opmodes.V1.actions;
 
 import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;

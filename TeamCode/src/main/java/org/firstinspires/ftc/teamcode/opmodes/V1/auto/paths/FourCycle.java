@@ -7,7 +7,7 @@ import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 
 import org.firstinspires.ftc.teamcode.Robot;
-import org.firstinspires.ftc.teamcode.opmodes.V1.auto.actions.RRActions;
+import org.firstinspires.ftc.teamcode.opmodes.V1.actions.RRActions;
 import org.firstinspires.ftc.teamcode.mechanisms.drivetrain.roadrunner.MecanumDrive;
 
 public class FourCycle implements AutoPath {
