@@ -20,7 +20,7 @@ public class Shoot implements Action {
     @Override
     public boolean run(@NonNull TelemetryPacket packet) {
         if (!initialized) {
-            robot.currentShootState = robot.ShootState.MOVING_TO_SHOOT_POSITION;
+            robot.mechanisms.currentShootState = org.firstinspires.ftc.teamcode.mechanisms.Mechanisms.ShootState.MOVING_TO_SHOOT_POSITION;
             initialized = true;
         }
         return robot.mechanisms.shootAuto(artifacts);

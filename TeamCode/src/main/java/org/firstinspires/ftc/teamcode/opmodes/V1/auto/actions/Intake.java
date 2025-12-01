@@ -19,7 +19,7 @@ public class Intake implements Action {
     @Override
     public boolean run(@NonNull TelemetryPacket packet) {
         if (!initialized) {
-            robot.currentState = robot.IntakeState.MOVING_TO_POSITION;
+            robot.mechanisms.currentState = org.firstinspires.ftc.teamcode.mechanisms.Mechanisms.IntakeState.MOVING_TO_POSITION;
             initialized = true;
         }
         return robot.mechanisms.intakeAuto();
