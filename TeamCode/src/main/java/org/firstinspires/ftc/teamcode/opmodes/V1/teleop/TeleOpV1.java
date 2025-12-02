@@ -31,7 +31,7 @@ public class TeleOpV1 extends BaseOpMode {
         if (controls.d2XJustPressed
                 && currentShootAction == null
                 && !controls.inhibitButtons) {
-            int numArtifacts = robot.artifactCount;
+            int numArtifacts = robot.getArtifactCount();
             if (numArtifacts > 0) {
                 currentShootAction = new Shoot(robot, numArtifacts);
             }
@@ -40,7 +40,7 @@ public class TeleOpV1 extends BaseOpMode {
         if (controls.d2YJustPressed
                 && currentShootAction == null
                 && !controls.inhibitButtons) {
-            int numArtifacts = robot.forcedArtifacts;
+            int numArtifacts = robot.getForcedArtifacts();
             if (numArtifacts > 0) {
                 currentShootAction = new Shoot(robot, numArtifacts);
             }
@@ -52,23 +52,23 @@ public class TeleOpV1 extends BaseOpMode {
         }
 
         if (controls.d2LBumper) {
-            if (robot.isHumanIntake) {
-                robot.spindexer.moveToNextPosition();
+            if (robot.getHumanIntaking()) {
+                spindexer.moveToNextPosition();
             } else {
-                robot.spindexer.moveHalfPosition(false);
+                spindexer.moveHalfPosition(false);
             }
         } else if (controls.d2RBumper) {
-            if (robot.isHumanIntake) {
-                robot.spindexer.moveToNextPosition();
+            if (robot.getHumanIntaking()) {
+                spindexer.moveToNextPosition();
             } else {
-                robot.spindexer.moveHalfPosition(true);
+                spindexer.moveHalfPosition(true);
             }
         }
 
         if (controls.driver2.left_trigger > 0.05) {
-            robot.spindexer.intakePosition();
+            spindexer.intakePosition();
         } else if (controls.driver2.right_trigger > 0.05) {
-            robot.spindexer.shootPosition();
+            spindexer.shootPosition();
         }
 
         robot.loop(controls.driver1, controls.driver2);
@@ -100,7 +100,7 @@ public class TeleOpV1 extends BaseOpMode {
         }
 
         if (controls.d1BackJustPressed) {
-            robot.intake.reverse();
+            intake.reverse();
         }
     }
 
@@ -108,9 +108,9 @@ public class TeleOpV1 extends BaseOpMode {
         currentShootAction  = null;
         currentIntakeAction = null;
 
-        robot.intake.stop();
+        intake.stop();
 
-        robot.spindexer.moveServo(0.5);
+        spindexer.moveServo(0.5);
     }
 
     @Override

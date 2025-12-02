@@ -13,16 +13,16 @@ public class AutoMenu extends MenuLib.Menu {
 
         // change alliance
         addOption(new MenuLib.Option(
-                () -> "Alliance: " + robot.alliance,
-                () -> robot.alliance = (robot.alliance == Robot.Alliances.RED ? Robot.Alliances.BLUE : Robot.Alliances.RED)
+                () -> "Alliance: " + robot.getAlliance(),
+                () -> robot.setAlliance(robot.getAlliance() == Robot.Alliances.RED ? Robot.Alliances.BLUE : Robot.Alliances.RED)
         ));
 
         // change strategy
         addOption(new MenuLib.Option(
-                () -> "Strategy: " + robot.autoStrategy,
+                () -> "Strategy: " + robot.getAutoStrategy(),
                 () -> {
                     Robot.AutoStrategies[] vals = Robot.AutoStrategies.values();
-                    robot.autoStrategy = vals[(robot.autoStrategy.ordinal() + 1) % vals.length];
+                    robot.setAutoStrategy(vals[(robot.getAutoStrategy().ordinal() + 1) % vals.length]);
                 }
         ));
 

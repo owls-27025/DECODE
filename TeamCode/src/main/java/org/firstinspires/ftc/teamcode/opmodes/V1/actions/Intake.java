@@ -32,9 +32,9 @@ public class Intake implements Action {
 
     public Intake(Robot robot) {
         this.robot = robot;
-        this.intake = robot.intake;
-        this.spindexer = robot.spindexer;
-        this.distanceSensor = robot.distanceSensor;
+        this.intake = robot.getIntake();
+        this.spindexer = robot.getSpindexer();
+        this.distanceSensor = robot.getDistanceSensor();
         this.delayTimer = new ElapsedTime();
 
         initialized = false;
@@ -57,16 +57,16 @@ public class Intake implements Action {
                 break;
 
             case WAITING_FOR_BALL:
-                if (distanceSensor.isBall() && robot.artifactCount < 3) {
+                if (distanceSensor.isBall() && robot.getArtifactCount() < 3) {
                     if (!delayStarted) {
                         delayStarted = true;
                         delayTimer.reset();
                     }
                     if (delayTimer.time(TimeUnit.MILLISECONDS) > 250) {
                         spindexer.moveToNextPosition();
-                        robot.artifactCount++;
+                        robot.setArtifactCount(robot.getArtifactCount() + 1);
 
-                        if (robot.artifactCount >= 3) {
+                        if (robot.getArtifactCount() >= 3) {
                             currentState = States.COMPLETED;
                         } else {
                             currentState = States.MOVING_TO_NEXT_POSITION;

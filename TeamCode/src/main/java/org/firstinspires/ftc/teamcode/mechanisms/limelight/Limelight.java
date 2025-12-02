@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.helpers.BaseSubsystem;
 import java.util.List;
 
 public class Limelight extends BaseSubsystem {
-    public Limelight3A limelight;
+    private Limelight3A limelight;
 
     public Limelight(HardwareMap hardwareMap,
                      Telemetry telemetry,
@@ -20,6 +20,10 @@ public class Limelight extends BaseSubsystem {
         super(hardwareMap, telemetry, cfg.itemActive);
 
         ifActive(() -> limelight = hardwareMap.get(Limelight3A.class, cfg.itemName));
+    }
+
+    public LLResult getResult() {
+        return limelight.getLatestResult();
     }
 
     public int getMotif() {
@@ -39,5 +43,9 @@ public class Limelight extends BaseSubsystem {
         }
 
         return 0;
+    }
+
+    public void updateRobotOrientation(double robotYaw) {
+        limelight.updateRobotOrientation(robotYaw);
     }
 }

@@ -14,7 +14,7 @@ public class HumanPlayerIntake implements Action {
 
     public HumanPlayerIntake(Robot robot) {
         this.robot = robot;
-        this.shooter = robot.shooter;
+        this.shooter = robot.getShooter();
     }
 
     @Override
@@ -23,10 +23,10 @@ public class HumanPlayerIntake implements Action {
             if (shooter.getVelocity() > 0) {
                 shooter.shoot(0);
                 shooter.shooterMotor.setPower(-0.5);
-                robot.isHumanIntake = true;
+                robot.setHumanIntaking(true);
             } else {
-                shooter.shoot(robot.shooterVelocity);
-                robot.isHumanIntake = false;
+                shooter.shoot(robot.getShooterVelocity());
+                robot.setHumanIntaking(false);
             }
             initialized = true;
         }

@@ -7,19 +7,22 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.helpers.MenuLib;
+import org.firstinspires.ftc.teamcode.mechanisms.drivetrain.Drivetrain;
 
 public class DrivetrainMenu extends MenuLib.Menu {
     public DrivetrainMenu(MenuLib.MenuHost host, Gamepad gamepad1, Gamepad gamepad2, Telemetry telemetry, GoBildaPinpointDriver pinpoint, Robot robot) {
         super(host, gamepad1, gamepad2, telemetry, "DRIVETRAIN");
 
+        Drivetrain drivetrain = robot.getDrivetrain();
+
         addOption(new MenuLib.InfoOption(() ->
-                "FL Position: " + robot.drivetrain.FL.getCurrentPosition()));
+                "FL Position: " + drivetrain.FL.getCurrentPosition()));
         addOption(new MenuLib.InfoOption(() ->
-                "FR Position: " + robot.drivetrain.FR.getCurrentPosition()));
+                "FR Position: " + drivetrain.FR.getCurrentPosition()));
         addOption(new MenuLib.InfoOption(() ->
-                "BL Position: " + robot.drivetrain.BL.getCurrentPosition()));
+                "BL Position: " + drivetrain.BL.getCurrentPosition()));
         addOption(new MenuLib.InfoOption(() ->
-                "BR Position: " + robot.drivetrain.BR.getCurrentPosition()));
+                "BR Position: " + drivetrain.BR.getCurrentPosition()));
 
         addOption(new MenuLib.InfoOption(() -> ""));
 

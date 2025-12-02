@@ -39,7 +39,7 @@ public class Spindexer extends BaseSubsystem {
             spindexerMotor.setTargetPosition(0);
             spindexerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             spindexerMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            spindexerMotor.setPower(this.robot.SpindexerSpeed);
+            spindexerMotor.setPower(this.robot.getSpindexerSpeed());
             spindexerMotor.setDirection(DcMotor.Direction.FORWARD);
         });
 
@@ -70,7 +70,7 @@ public class Spindexer extends BaseSubsystem {
         int target = current + slot;
         spindexerMotor.setTargetPosition(target);
         spindexerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        spindexerMotor.setPower(robot.SpindexerSpeed);
+        spindexerMotor.setPower(robot.getSpindexerSpeed());
     }
 
     public void moveHalfPosition(boolean forward) {
@@ -79,7 +79,7 @@ public class Spindexer extends BaseSubsystem {
         int target = forward ? current + halfSlot : current - halfSlot;
         spindexerMotor.setTargetPosition(target);
         spindexerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        spindexerMotor.setPower(robot.SpindexerSpeed);
+        spindexerMotor.setPower(robot.getSpindexerSpeed());
     }
 
     public void moveServo(double pos) {
@@ -91,7 +91,7 @@ public class Spindexer extends BaseSubsystem {
         if (!active || spindexerMotor == null) return;
         spindexerMotor.setTargetPosition(targetPosition);
         spindexerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        spindexerMotor.setPower(robot.SpindexerSpeed);
+        spindexerMotor.setPower(robot.getSpindexerSpeed());
     }
 
     public void intakePosition() {

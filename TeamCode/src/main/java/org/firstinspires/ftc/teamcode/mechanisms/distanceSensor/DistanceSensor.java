@@ -24,4 +24,8 @@ public class DistanceSensor extends BaseSubsystem {
         if (!active || distanceSensor == null) return false;
         return distanceSensor.getDistance(DistanceUnit.MM) < 130;
     }
+
+    public double getDistance() {
+        return distanceSensor.getDistance(DistanceUnit.MM);
+    }
 }

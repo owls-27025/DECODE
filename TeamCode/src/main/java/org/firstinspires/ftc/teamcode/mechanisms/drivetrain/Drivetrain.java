@@ -23,7 +23,7 @@ public class Drivetrain extends BaseSubsystem {
     public DcMotor BR;
     public IMU imu;
 
-    private Robot robot;
+    private final Robot robot;
 
     private double currentSpeed = 1.0;
 
@@ -116,20 +116,20 @@ public class Drivetrain extends BaseSubsystem {
         // gamepad1 sticks
         Gamepad g1 = controls.driver1;
 
-        // speed control from Controls
+        // speed control
         if (controls.slowMode) {
-            currentSpeed = robot.slowDriveSpeed;
+            currentSpeed = robot.getSlowDriveSpeed();
         } else {
-            currentSpeed = robot.driveSpeed;
+            currentSpeed = robot.getDriveSpeed();
         }
 
-        // IMU reset from Controls
+        // IMU reset
         if (controls.resetIMU) {
             resetIMU();
         }
 
         double y, x, rx;
-        if (!robot.isRightStick) {
+        if (!robot.getRightStick()) {
             y  = easeInOutSine(-g1.left_stick_y);
             x  = easeInOutSine(g1.left_stick_x);
             rx = easeInOutSine(g1.right_stick_x);
@@ -139,7 +139,7 @@ public class Drivetrain extends BaseSubsystem {
             rx = easeInOutSine(g1.left_stick_x);
         }
 
-        if (robot.isFieldCentric) {
+        if (robot.getFieldCentric()) {
             double[] fc = fieldCentricDrive(x, y);
             y = fc[0];
             x = fc[1];

@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.helpers.MenuLib;
 import org.firstinspires.ftc.teamcode.helpers.BaseOpMode;
+import org.firstinspires.ftc.teamcode.mechanisms.drivetrain.roadrunner.tuning.TuningOpModes;
 import org.firstinspires.ftc.teamcode.options.opmodes.AutoMenu;
 import org.firstinspires.ftc.teamcode.options.opmodes.TeleOpMenu;
 import org.firstinspires.ftc.teamcode.options.testing.TestMenu;
@@ -40,12 +41,17 @@ public class Settings extends BaseOpMode implements MenuLib.MenuHost {
                 // change spindexer speed
                 addOption(new MenuLib.DoubleOption(
                         "Spindexer Speed: ",
-                        robot.SpindexerSpeed,
+                        robot.getSpindexerSpeed(),
                         0.05,
                         0.0,
                         1.0,
                         2,
-                        value -> robot.SpindexerSpeed = value
+                        robot::setSpindexerSpeed
+                ));
+
+                addOption(new MenuLib.Option(
+                        "Tuning OpModes (Requires Restart): " + !TuningOpModes.DISABLED,
+                        () -> TuningOpModes.DISABLED = (!TuningOpModes.DISABLED)
                 ));
 
                 // blank line

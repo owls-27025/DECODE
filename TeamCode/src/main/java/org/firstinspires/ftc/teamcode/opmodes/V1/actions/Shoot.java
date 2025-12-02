@@ -38,8 +38,8 @@ public class Shoot implements Action {
 
     public Shoot(Robot robot, int numArtifacts) {
         this.robot = robot;
-        this.spindexer = robot.spindexer;
-        this.shooter = robot.shooter;
+        this.spindexer = robot.getSpindexer();
+        this.shooter = robot.getShooter();
 
         artifacts = numArtifacts;
         this.delayTimer = new ElapsedTime();
@@ -63,10 +63,10 @@ public class Shoot implements Action {
                 break;
 
             case SPINNING_UP_SHOOTER:
-                double targetVelocity = robot.shooterVelocity;
+                double targetVelocity = robot.getShooterVelocity();
                 shooter.shoot(targetVelocity);
 
-                if (Math.abs(shooter.getVelocity() - targetVelocity) <= robot.shooterTolerance) {
+                if (Math.abs(shooter.getVelocity() - targetVelocity) <= robot.getShooterTolerance()) {
                     currentState = States.FIRING;
                 }
                 break;

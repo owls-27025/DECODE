@@ -20,13 +20,13 @@ public class AutoV1 extends BaseOpMode {
 
     @Override
     protected void onInit() {
-        switch (robot.autoStrategy) {
+        switch (robot.getAutoStrategy()) {
             case FOURCYCLE:
-                path = new FourCycle(robot, robot.alliance);
+                path = new FourCycle(robot, robot.getAlliance());
                 break;
             case LEAVE:
             default:
-                path = new Leave(robot, robot.alliance);
+                path = new Leave(robot, robot.getAlliance());
                 break;
         }
 

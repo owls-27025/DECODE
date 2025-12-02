@@ -14,55 +14,56 @@ public class TeleOpMenu extends MenuLib.Menu {
         // change driving speed
         addOption(new MenuLib.DoubleOption(
                 "Drive Speed: ",
-                robot.driveSpeed,
+                robot.getDriveSpeed(),
                 0.05,
                 0.0,
                 1.0,
                 2,
-                value -> robot.driveSpeed = value
+                robot::setDriveSpeed
         ));
 
         // change slow driving speed
         addOption(new MenuLib.DoubleOption(
                 "Slow Drive Speed: ",
-                robot.slowDriveSpeed,
+                robot.getSlowDriveSpeed(),
                 0.05,
                 0.0,
                 1.0,
                 2,
-                value -> robot.slowDriveSpeed = value
+                robot::setSlowDriveSpeed
         ));
 
         // change number of forced artifacts for y button
         addOption(new MenuLib.IntOption(
                 "Forced Artifacts: ",
-                robot.forcedArtifacts,
+                robot.getForcedArtifacts(),
                 1,
                 1,
                 3,
-                value -> robot.forcedArtifacts = value
+                robot::setForcedArtifacts
         ));
 
         // toggle right stick driving
         addOption(new MenuLib.Option(() ->
-                "Right Stick Driving: " + robot.isRightStick,
-                () -> robot.isRightStick = (!robot.isRightStick)));
+                "Right Stick Driving: " + robot.getRightStick(),
+                () -> robot.setRightStick(!robot.getRightStick())
+        ));
 
         // toggle field centric
         addOption(new MenuLib.Option(
-                () -> "Field Centric: " + robot.isFieldCentric,
-                () -> robot.isFieldCentric = (!robot.isFieldCentric)
+                () -> "Field Centric: " + robot.getFieldCentric(),
+                () -> robot.setFieldCentric(!robot.getFieldCentric())
         ));
 
 
         // shooter tolerance setting
         addOption(new MenuLib.IntOption(
                 "Shooter Tolerance: ",
-                15,
+                robot.getShooterTolerance(),
                 1,
                 0,
                 15,
-                value -> robot.shooterTolerance = value
+                robot::setShooterTolerance
         ));
 
         addOption(new MenuLib.InfoOption(() -> ""));

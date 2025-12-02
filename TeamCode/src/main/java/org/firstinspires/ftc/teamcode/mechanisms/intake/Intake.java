@@ -24,7 +24,6 @@ public class Intake extends BaseSubsystem {
     public void start() {
         ifActive(() -> intake.setPower(1));
     }
-
     public void stop() {
         ifActive(() -> intake.setPower(0));
     }
@@ -32,5 +31,8 @@ public class Intake extends BaseSubsystem {
     public void reverse() {
         ifActive(() -> intake.setPower(-1));
     }
+
+    public void setIntakePower(double power) { intake.setPower(power); }
+
 }
 

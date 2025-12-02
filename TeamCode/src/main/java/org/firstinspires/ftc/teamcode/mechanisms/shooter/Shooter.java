@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class Shooter extends BaseSubsystem {
     public DcMotorEx shooterMotor;
-    private Robot robot;
+    private final Robot robot;
 
     public Shooter(HardwareMap hardwareMap,
                    Telemetry telemetry,
@@ -29,10 +29,6 @@ public class Shooter extends BaseSubsystem {
             shooterMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             shooterMotor.setDirection(DcMotor.Direction.REVERSE);
         });
-    }
-
-    public void shoot() {
-        shoot(robot.shooterVelocity);
     }
 
     public void shoot(double velocity) {

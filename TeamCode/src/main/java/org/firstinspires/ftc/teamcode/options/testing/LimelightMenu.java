@@ -9,6 +9,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.helpers.MenuLib;
 import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.mechanisms.drivetrain.Drivetrain;
+import org.firstinspires.ftc.teamcode.mechanisms.limelight.Limelight;
 
 import java.util.List;
 
@@ -16,7 +18,11 @@ public class LimelightMenu extends MenuLib.Menu {
 
     public LimelightMenu(MenuLib.MenuHost host, Gamepad gamepad1, Gamepad gamepad2, Telemetry telemetry, Robot robot) {
         super(host, gamepad1, gamepad2, telemetry, "LIMELIGHT");
-        LLResult result = robot.limelight.limelight.getLatestResult();
+
+        Limelight limelight = robot.getLimelight();
+        Drivetrain drivetrain = robot.getDrivetrain();
+
+        LLResult result = limelight.getResult();
 
         List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
         if (!fiducials.isEmpty()) {
@@ -29,10 +35,10 @@ public class LimelightMenu extends MenuLib.Menu {
             }
         }
 
-        YawPitchRollAngles angles = robot.drivetrain.imu.getRobotYawPitchRollAngles();
+        YawPitchRollAngles angles = drivetrain.imu.getRobotYawPitchRollAngles();
         double robotYaw = angles.getYaw(AngleUnit.DEGREES);
 
-        robot.limelight.limelight.updateRobotOrientation(robotYaw);
+        limelight.updateRobotOrientation(robotYaw);
 
         //noinspection ConstantValue
         if (result != null && result.isValid()) {
