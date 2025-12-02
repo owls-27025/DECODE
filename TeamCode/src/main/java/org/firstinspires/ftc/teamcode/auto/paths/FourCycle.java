@@ -36,7 +36,7 @@ public class FourCycle implements AutoPath {
                 .strafeTo(new Vector2d(-12, 12));
 
         TrajectoryActionBuilder path2 = path1.endTrajectory().fresh()
-                .waitSeconds(10);
+                .waitSeconds(2);
 
 //        TrajectoryActionBuilder path3 = path2.endTrajectory().fresh()
 //                .lineToY(38, (pose2dDual, posePath, v) -> 8)

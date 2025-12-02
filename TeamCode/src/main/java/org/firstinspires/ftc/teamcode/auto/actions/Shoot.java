@@ -18,7 +18,7 @@ public class Shoot implements Action {
     @Override
     public boolean run(@NonNull TelemetryPacket packet) {
         if (!initialized) {
-            Subsystems.currentShootState = Subsystems.ShootState.MOVING_TO_SHOOT_POSITION;
+            Subsystems.currentAutoShootState = Subsystems.AutoShootState.MOVING_TO_SHOOT_POSITION;
             initialized = true;
         }
         return Subsystems.shootAuto(artifacts);

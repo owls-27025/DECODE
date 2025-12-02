@@ -385,6 +385,9 @@ public class Subsystems {
 
     public static boolean shootAuto(int numArtifacts) {
         switch (currentAutoShootState) {
+            case INIT:
+                currentAutoShootState = AutoShootState.MOVING_TO_SHOOT_POSITION;
+                break;
             case MOVING_TO_SHOOT_POSITION:
                 subsystemTelemetry.addLine("running");
                 subsystemTelemetry.update();
@@ -396,12 +399,23 @@ public class Subsystems {
                 break;
 
             case SPINNING_UP_SHOOTER:
+                if (delayStarted) {
+                    delayStarted = false;
+                }
                 subsystemTelemetry.addLine("spinning up shooter");
                 subsystemTelemetry.update();
                 // wait until shooter is at target velocity
                 double targetVelocity = Globals.ShooterVelocity;
 
-                ShooterHelper.shoot(targetVelocity);
+                if (shotsLeft == 2) {
+                    targetVelocity += 200;
+                    ShooterHelper.shoot(targetVelocity);
+                } else if (shotsLeft == 1) {
+                    targetVelocity += 150;
+                    ShooterHelper.shoot(targetVelocity);
+                } else {
+                    ShooterHelper.shoot(targetVelocity);
+                }
 
                 if (Math.abs(ShooterHelper.shooterMotor.getVelocity() - targetVelocity) <= Globals.ShooterTolerance) {
                     currentAutoShootState = AutoShootState.FIRING;
@@ -410,13 +424,18 @@ public class Subsystems {
 
             case FIRING:
                 // shoot one artifact
+                if (SpindexerHelper.SpindexerMotor.isBusy()) {
+                    return true;
+                }
+                // move servo up
                 SpindexerHelper.moveServo(1);
                 if (!delayStarted) {
                     delayTimer.reset();
                     delayStarted = true;
                 }
-                // sleep for 500 ms
-                if (delayTimer.time(TimeUnit.MILLISECONDS) > 500) {
+                // wait for 400 ms
+                if (delayTimer.time(TimeUnit.MILLISECONDS) > 400) {
+                    // move servo down
                     SpindexerHelper.moveServo(0.5);
                     delayStarted = false;
                     spindexerMoved = false;
