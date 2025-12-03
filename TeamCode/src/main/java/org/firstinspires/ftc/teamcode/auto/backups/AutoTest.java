@@ -1,7 +1,4 @@
-/*
-
-package org.firstinspires.ftc.teamcode.opmodes.V1.auto.backups;
-
+package org.firstinspires.ftc.teamcode.auto.backups;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -180,5 +177,3 @@ public class AutoTest extends LinearOpMode {
         //}
     }
 }
-
-*/

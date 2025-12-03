@@ -2,13 +2,13 @@ package org.firstinspires.ftc.teamcode.options.testing;
 
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.helpers.MenuLib;
-import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.mechanisms.drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.mechanisms.limelight.Limelight;
 
@@ -16,13 +16,9 @@ import java.util.List;
 
 public class LimelightMenu extends MenuLib.Menu {
 
-    public LimelightMenu(MenuLib.MenuHost host, Gamepad gamepad1, Gamepad gamepad2, Telemetry telemetry, Robot robot) {
+    public LimelightMenu(MenuLib.MenuHost host, Gamepad gamepad1, Gamepad gamepad2, Telemetry telemetry) {
         super(host, gamepad1, gamepad2, telemetry, "LIMELIGHT");
-
-        Limelight limelight = robot.getLimelight();
-        Drivetrain drivetrain = robot.getDrivetrain();
-
-        LLResult result = limelight.getResult();
+        LLResult result = Limelight.limelight.getLatestResult();
 
         List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
         if (!fiducials.isEmpty()) {
@@ -35,10 +31,10 @@ public class LimelightMenu extends MenuLib.Menu {
             }
         }
 
-        YawPitchRollAngles angles = drivetrain.imu.getRobotYawPitchRollAngles();
+        YawPitchRollAngles angles = Drivetrain.imu.getRobotYawPitchRollAngles();
         double robotYaw = angles.getYaw(AngleUnit.DEGREES);
 
-        limelight.updateRobotOrientation(robotYaw);
+        Limelight.limelight.updateRobotOrientation(robotYaw);
 
         //noinspection ConstantValue
         if (result != null && result.isValid()) {

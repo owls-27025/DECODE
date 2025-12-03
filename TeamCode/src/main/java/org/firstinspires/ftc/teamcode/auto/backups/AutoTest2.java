@@ -25,8 +25,9 @@
  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 
-package org.firstinspires.ftc.teamcode.opmodes.V1.auto.backups;
+package org.firstinspires.ftc.teamcode.auto.backups;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -85,13 +86,13 @@ import org.firstinspires.ftc.teamcode.mechanisms.drivetrain.Drivetrain;
  *
  *  Use Android Studio to Copy this Class, and Paste it into your "TeamCode" folder with a new name.
  *  Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
-
+ */
 
 @Disabled
 @Autonomous(name="autotest2")
 public class AutoTest2 extends LinearOpMode {
 
-    /* Declare OpMode members.
+    /* Declare OpMode members. */
     private DcMotor BL = Drivetrain.BL;
     private DcMotor BR = Drivetrain.BR;
     private DcMotor FL = Drivetrain.FL;
@@ -187,7 +188,7 @@ public class AutoTest2 extends LinearOpMode {
      * Driving "Helper" functions are below this line.
      * These provide the high and low level methods that handle driving straight and turning.
      * ====================================================================================================
-
+     */
 
     // **********  HIGH Level driving functions.  ********************
 
@@ -202,7 +203,7 @@ public class AutoTest2 extends LinearOpMode {
      * @param heading      Absolute Heading Angle (in Degrees) relative to last gyro reset.
      *                   0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
      *                   If a relative angle is required, add/subtract from the current robotHeading.
-
+     */
     public void driveStraight(double maxDriveSpeed,
                               double distance,
                               double heading) {
@@ -327,7 +328,7 @@ public class AutoTest2 extends LinearOpMode {
      * @param heading Absolute Heading Angle (in Degrees) relative to last gyro reset.
      *              0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
      *              If a relative angle is required, add/subtract from current heading.
-
+     */
     public void turnToHeading(double maxTurnSpeed, double heading) {
         // Use encoders for turning
         FL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -370,7 +371,7 @@ public class AutoTest2 extends LinearOpMode {
      *                   0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
      *                   If a relative angle is required, add/subtract from current heading.
      * @param holdTime   Length of time (in seconds) to hold the specified heading.
-
+     */
     public void holdHeading(double maxTurnSpeed, double heading, double holdTime) {
 
         ElapsedTime holdTimer = new ElapsedTime();
@@ -403,7 +404,7 @@ public class AutoTest2 extends LinearOpMode {
      * @param desiredHeading        The desired absolute heading (relative to last heading reset)
      * @param proportionalGain      Gain factor applied to heading error to obtain turning power.
      * @return                      Turning power needed to get to required heading.
-
+     */
     public double getSteeringCorrection(double desiredHeading, double proportionalGain) {
         targetHeading = desiredHeading;  // Save for telemetry
 
@@ -423,7 +424,7 @@ public class AutoTest2 extends LinearOpMode {
      * combines them, and applies the appropriate speed commands to the left and right wheel motors.
      * @param drive forward motor speed
      * @param turn  clockwise turning motor speed.
-
+     */
     public void moveRobot(double drive, double strafe, double turn) {
         driveSpeed = drive;     // save this value as a class member so it can be used by telemetry.
         turnSpeed  = turn;      // save this value as a class member so it can be used by telemetry.
@@ -459,7 +460,7 @@ public class AutoTest2 extends LinearOpMode {
      *  Display the various control parameters while driving
      *
      * @param straight  Set to true if we are driving straight, and the encoder positions should be included in the telemetry.
-
+     */
     private void sendTelemetry(boolean straight) {
 
         if (straight) {
@@ -479,9 +480,8 @@ public class AutoTest2 extends LinearOpMode {
 
     /**
      * read the Robot heading directly from the IMU (in degrees)
-
+     */
     public double getHeading() {
         return imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
     }
 }
-*/

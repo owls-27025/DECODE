@@ -1,11 +1,15 @@
 package org.firstinspires.ftc.teamcode.options;
 
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.Configuration;
+import org.firstinspires.ftc.teamcode.helpers.Globals;
 import org.firstinspires.ftc.teamcode.helpers.MenuLib;
-import org.firstinspires.ftc.teamcode.helpers.BaseOpMode;
-import org.firstinspires.ftc.teamcode.mechanisms.drivetrain.roadrunner.tuning.TuningOpModes;
+import org.firstinspires.ftc.teamcode.mechanisms.drivetrain.Drivetrain;
+import org.firstinspires.ftc.teamcode.mechanisms.limelight.Limelight;
+import org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems;
 import org.firstinspires.ftc.teamcode.options.opmodes.AutoMenu;
 import org.firstinspires.ftc.teamcode.options.opmodes.TeleOpMenu;
 import org.firstinspires.ftc.teamcode.options.testing.TestMenu;
@@ -14,72 +18,62 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-@TeleOp(name = "Settings", group = "Settings")
-public class Settings extends BaseOpMode implements MenuLib.MenuHost {
+@TeleOp
+public class Settings extends LinearOpMode implements MenuLib.MenuHost {
+
     private MenuLib.Menu mainMenu;
     private MenuLib.Menu currentMenu;
 
     private final List<MenuLib.Menu> menuStack = new ArrayList<>();
 
     private AtomicBoolean isFinished;
-    private GoBildaPinpointDriver pinpoint;
 
     @Override
-    protected void onInit() {
-        if (config != null && config.odometry != null && config.odometry.itemActive) {
-            pinpoint = hardwareMap.get(
-                    GoBildaPinpointDriver.class,
-                    config.odometry.itemName
-            );
-        }
+    public void runOpMode() {
+        Subsystems.init(hardwareMap, telemetry);
+        Drivetrain.init(hardwareMap);
+        Limelight.init(hardwareMap);
+
+        GoBildaPinpointDriver pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, Configuration.odometry.itemName);
 
         isFinished = new AtomicBoolean(false);
 
-        // Build the main menu
         mainMenu = new MenuLib.Menu(this, gamepad1, gamepad2, telemetry, "SETTINGS") {
             {
+
                 // change spindexer speed
                 addOption(new MenuLib.DoubleOption(
                         "Spindexer Speed: ",
-                        robot.getSpindexerSpeed(),
+                        Globals.SpindexerSpeed,
                         0.05,
                         0.0,
                         1.0,
                         2,
-                        robot::setSpindexerSpeed
-                ));
-
-                addOption(new MenuLib.Option(
-                        "Tuning OpModes (Requires Restart): " + !TuningOpModes.DISABLED,
-                        () -> TuningOpModes.DISABLED = (!TuningOpModes.DISABLED)
+                        value -> Globals.SpindexerSpeed = value
                 ));
 
                 // blank line
-                addOption(new MenuLib.InfoOption(() -> ""));
+                addOption(new MenuLib.InfoOption(() ->
+                        ""));
 
-                // teleop options submenu
                 addOption(new MenuLib.SubMenu(
                         "TeleOp",
                         Settings.this,
-                        () -> new TeleOpMenu(Settings.this, gamepad1, gamepad2, telemetry, robot)
+                        () -> new TeleOpMenu(Settings.this, gamepad1, gamepad2, telemetry, pinpoint)
                 ));
 
-                // auto options submenu
                 addOption(new MenuLib.SubMenu(
                         "Auto",
                         Settings.this,
-                        () -> new AutoMenu(Settings.this, gamepad1, gamepad2, telemetry, robot)
+                        () -> new AutoMenu(Settings.this, gamepad1, gamepad2, telemetry, pinpoint)
                 ));
 
-                // testing submenu
+                // go to testing submenu
                 addOption(new MenuLib.SubMenu(
                         "Testing",
                         Settings.this,
-                        () -> new TestMenu(Settings.this, gamepad1, gamepad2, telemetry, pinpoint, robot)
+                        () -> new TestMenu(Settings.this, gamepad1, gamepad2, telemetry, pinpoint)
                 ));
-
-                // blank line
-                addOption(new MenuLib.InfoOption(() -> ""));
 
                 // exit opmode
                 addOption(new MenuLib.Option(
@@ -89,36 +83,26 @@ public class Settings extends BaseOpMode implements MenuLib.MenuHost {
             }
         };
 
+        // run menu code
         mainMenu.onSelected();
         currentMenu = mainMenu;
         menuStack.clear();
         menuStack.add(mainMenu);
-    }
 
-    @Override
-    protected void onLoop() {
+        waitForStart();
 
-        if (isFinished.get()) {
-            requestOpModeStop();
-            return;
-        }
-
-        if (pinpoint != null) {
+        while (opModeIsActive() && !isFinished.get()) {
             pinpoint.update();
+            if (currentMenu != null) {
+                currentMenu.loop();
+            }
         }
 
-        if (currentMenu != null) {
-            currentMenu.loop();
-        }
-    }
-
-    @Override
-    protected void onStop() {
-        telemetry.addLine("Exiting...");
+        // run when exiting
+        telemetry.addLine("exiting...");
         telemetry.update();
         sleep(1500);
     }
-
 
     @Override
     public void setCurrentMenu(MenuLib.Menu menu) {

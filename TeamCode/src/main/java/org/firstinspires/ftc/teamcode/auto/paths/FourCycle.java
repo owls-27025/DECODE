@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmodes.V1.auto.paths;
+package org.firstinspires.ftc.teamcode.auto.paths;
 
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
@@ -6,22 +6,22 @@ import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 
-import org.firstinspires.ftc.teamcode.Robot;
-import org.firstinspires.ftc.teamcode.opmodes.V1.actions.RRActions;
+import org.firstinspires.ftc.teamcode.auto.actions.RRActions;
+import org.firstinspires.ftc.teamcode.auto.actions.Shoot;
+import org.firstinspires.ftc.teamcode.helpers.Globals;
 import org.firstinspires.ftc.teamcode.mechanisms.drivetrain.roadrunner.MecanumDrive;
+import org.jetbrains.annotations.NotNull;
 
 public class FourCycle implements AutoPath {
-    private Robot robot;
-    private final Robot.Alliances alliance;
+    private final Globals.Alliances alliance;
 
-    public FourCycle(Robot robot, Robot.Alliances alliance) {
-        this.robot = robot;
+    public FourCycle(Globals.Alliances alliance) {
         this.alliance = alliance;
     }
 
     @Override
     public Pose2d getInitialPose() {
-        if (alliance == Robot.Alliances.RED) {
+        if (alliance == Globals.Alliances.RED) {
             return new Pose2d(-50, 50, Math.toRadians(135));
         } else {
             return new Pose2d(-50, 50, Math.toRadians(135));

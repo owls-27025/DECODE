@@ -38,10 +38,9 @@ import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeRegistrar;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit;
 import org.firstinspires.ftc.robotcore.internal.opmode.OpModeMeta;
-import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.Configuration;
 import org.firstinspires.ftc.teamcode.mechanisms.drivetrain.roadrunner.MecanumDrive;
 import org.firstinspires.ftc.teamcode.mechanisms.drivetrain.roadrunner.OTOSLocalizer;
 import org.firstinspires.ftc.teamcode.mechanisms.drivetrain.roadrunner.PinpointLocalizer;
@@ -132,7 +131,7 @@ public final class TuningOpModes {
         DriveViewFactory dvf;
         if (DRIVE_CLASS.equals(MecanumDrive.class)) {
             dvf = hardwareMap -> {
-                MecanumDrive md = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0), new org.firstinspires.ftc.teamcode.helpers.Configuration());
+                MecanumDrive md = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
                 LazyImu lazyImu = md.lazyImu;
 
                 List<EncoderGroup> encoderGroups = new ArrayList<>();

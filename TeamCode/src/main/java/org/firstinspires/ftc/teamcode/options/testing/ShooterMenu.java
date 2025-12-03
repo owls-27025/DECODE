@@ -1,26 +1,23 @@
 package org.firstinspires.ftc.teamcode.options.testing;
 
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.Robot;
-import org.firstinspires.ftc.teamcode.helpers.MenuLib;
 import org.firstinspires.ftc.teamcode.mechanisms.light.Light;
-import org.firstinspires.ftc.teamcode.mechanisms.shooter.Shooter;
-import org.firstinspires.ftc.teamcode.mechanisms.spindexer.Spindexer;
+import org.firstinspires.ftc.teamcode.mechanisms.subsystems.shooter.ShooterHelper;
+import org.firstinspires.ftc.teamcode.mechanisms.subsystems.spindexer.SpindexerHelper;
+import org.firstinspires.ftc.teamcode.helpers.MenuLib;
+import org.firstinspires.ftc.teamcode.helpers.Globals;
 
 public class ShooterMenu extends MenuLib.Menu {
-    public ShooterMenu(MenuLib.MenuHost host, Gamepad gamepad1, Gamepad gamepad2, Telemetry telemetry, Robot robot) {
+    public ShooterMenu(MenuLib.MenuHost host, Gamepad gamepad1, Gamepad gamepad2, Telemetry telemetry, GoBildaPinpointDriver pinpoint) {
         super(host, gamepad1, gamepad2, telemetry, "SHOOTER");
-
-        Shooter shooter = robot.getShooter();
-        Spindexer spindexer = robot.getSpindexer();
-        Light light = robot.getLight();
 
         addOption(new MenuLib.Option(
                 "Start Shooter Motor",
                 () -> {
-                    shooter.shooterMotor.setVelocity(robot.getShooterVelocity());
+                    ShooterHelper.shooterMotor.setVelocity(Globals.ShooterVelocity);
                 }
         ));
 
@@ -30,7 +27,7 @@ public class ShooterMenu extends MenuLib.Menu {
                 50,
                 0,
                 1600,
-                robot::setShooterVelocity
+                value -> Globals.ShooterVelocity = value
         ));
 
         addOption(new MenuLib.DoubleOption(
@@ -40,12 +37,12 @@ public class ShooterMenu extends MenuLib.Menu {
                 0.0,
                 1.0,
                 2,
-                spindexer::moveServo
+                SpindexerHelper::moveServo
         ));
 
         addOption(new MenuLib.Option(
-                "Light Color: " + light.color,
-                light::cycle
+                "Light Color: " + Light.color,
+                Light::cycle
         ));
 
         addOption(new MenuLib.InfoOption(() -> ""));

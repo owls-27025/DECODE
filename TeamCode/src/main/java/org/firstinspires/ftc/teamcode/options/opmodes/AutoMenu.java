@@ -1,31 +1,34 @@
 package org.firstinspires.ftc.teamcode.options.opmodes;
 
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.helpers.Globals;
 import org.firstinspires.ftc.teamcode.helpers.MenuLib;
-import org.firstinspires.ftc.teamcode.Robot;
 
 public class AutoMenu extends MenuLib.Menu {
 
-    public AutoMenu(MenuLib.MenuHost host, Gamepad gamepad1, Gamepad gamepad2, Telemetry telemetry, Robot robot) {
-        super(host, gamepad1, gamepad2, telemetry, "AUTO");
+    public AutoMenu(MenuLib.MenuHost host, Gamepad gamepad1, Gamepad gamepad2, Telemetry telemetry, GoBildaPinpointDriver pinpoint) {
+        super(host, gamepad1, gamepad2, telemetry, "TEST MENU");
+
+        // change side
+        addOption(new MenuLib.Option(
+                () -> "Side: " + Globals.side,
+                Globals::flipSide
+        ));
 
         // change alliance
         addOption(new MenuLib.Option(
-                () -> "Alliance: " + robot.getAlliance(),
-                () -> robot.setAlliance(robot.getAlliance() == Robot.Alliances.RED ? Robot.Alliances.BLUE : Robot.Alliances.RED)
+                () -> "Alliance: " + Globals.alliance,
+                Globals::flipAlliance
         ));
 
         // change strategy
         addOption(new MenuLib.Option(
-                () -> "Strategy: " + robot.getAutoStrategy(),
-                () -> {
-                    Robot.AutoStrategies[] vals = Robot.AutoStrategies.values();
-                    robot.setAutoStrategy(vals[(robot.getAutoStrategy().ordinal() + 1) % vals.length]);
-                }
+                () -> "Strategy: " + Globals.autoStrategy,
+                Globals::cycleStrategy
         ));
-
 
         addOption(new MenuLib.InfoOption(() -> ""));
 

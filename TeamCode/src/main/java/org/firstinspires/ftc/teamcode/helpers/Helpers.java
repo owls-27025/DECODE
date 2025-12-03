@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.helpers;
 
-public class HelperFunctions {
+public class Helpers {
     public static double easeInOutSine(double x) {
         x = Math.max(-1.0, Math.min(1.0, x));
         double sign = Math.signum(x);

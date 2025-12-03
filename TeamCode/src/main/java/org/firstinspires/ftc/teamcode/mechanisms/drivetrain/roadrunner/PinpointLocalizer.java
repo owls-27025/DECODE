@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit;
-import org.firstinspires.ftc.teamcode.helpers.Configuration;
+import org.firstinspires.ftc.teamcode.Configuration;
 
 import java.util.Objects;
 
@@ -29,10 +29,10 @@ public final class PinpointLocalizer implements Localizer {
     private Pose2d txWorldPinpoint;
     private Pose2d txPinpointRobot = new Pose2d(0, 0, 0);
 
-    public PinpointLocalizer(HardwareMap hardwareMap, double inPerTick, Pose2d initialPose, Configuration config) {
+    public PinpointLocalizer(HardwareMap hardwareMap, double inPerTick, Pose2d initialPose) {
         // TODO: make sure your config has a Pinpoint device with this name
         //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
-        driver = hardwareMap.get(GoBildaPinpointDriver.class, config.odometry.itemName);
+        driver = hardwareMap.get(GoBildaPinpointDriver.class, Configuration.odometry.itemName);
 
         double mmPerTick = inPerTick * 25.4;
         driver.setEncoderResolution(1 / mmPerTick, DistanceUnit.MM);

@@ -5,24 +5,21 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.Robot;
-import org.firstinspires.ftc.teamcode.helpers.MenuLib;
 import org.firstinspires.ftc.teamcode.mechanisms.drivetrain.Drivetrain;
+import org.firstinspires.ftc.teamcode.helpers.MenuLib;
 
 public class DrivetrainMenu extends MenuLib.Menu {
-    public DrivetrainMenu(MenuLib.MenuHost host, Gamepad gamepad1, Gamepad gamepad2, Telemetry telemetry, GoBildaPinpointDriver pinpoint, Robot robot) {
+    public DrivetrainMenu(MenuLib.MenuHost host, Gamepad gamepad1, Gamepad gamepad2, Telemetry telemetry, GoBildaPinpointDriver pinpoint) {
         super(host, gamepad1, gamepad2, telemetry, "DRIVETRAIN");
 
-        Drivetrain drivetrain = robot.getDrivetrain();
-
         addOption(new MenuLib.InfoOption(() ->
-                "FL Position: " + drivetrain.FL.getCurrentPosition()));
+                "FL Position: " + Drivetrain.FL.getCurrentPosition()));
         addOption(new MenuLib.InfoOption(() ->
-                "FR Position: " + drivetrain.FR.getCurrentPosition()));
+                "FR Position: " + Drivetrain.FR.getCurrentPosition()));
         addOption(new MenuLib.InfoOption(() ->
-                "BL Position: " + drivetrain.BL.getCurrentPosition()));
+                "BL Position: " + Drivetrain.BL.getCurrentPosition()));
         addOption(new MenuLib.InfoOption(() ->
-                "BR Position: " + drivetrain.BR.getCurrentPosition()));
+                "BR Position: " + Drivetrain.BR.getCurrentPosition()));
 
         addOption(new MenuLib.InfoOption(() -> ""));
 
