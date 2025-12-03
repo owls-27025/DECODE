@@ -88,6 +88,16 @@ public class Subsystems {
 
     public static AutoShootState currentAutoShootState;
 
+    public enum AutoIntakeState {
+        INIT,
+        MOVING_TO_POSITION,
+        WAITING_FOR_BALL,
+        MOVING_TO_NEXT_POSITION,
+        COMPLETED
+    }
+
+    public static AutoIntakeState currentAutoIntakeState;
+
 
     public enum HumanState {
         INIT,
@@ -194,11 +204,15 @@ public class Subsystems {
     }
 
     public static boolean intakeAuto() {
-        switch (currentState) {
+        switch (currentAutoIntakeState) {
+            case INIT:
+                currentAutoIntakeState = AutoIntakeState.MOVING_TO_POSITION;
+                break;
             case MOVING_TO_POSITION:
                 // start intake motor
+                subsystemTelemetry.addLine("moving to position");
+                subsystemTelemetry.update();
                 isDetected = false;
-                artifactCount = 0;
                 intakePosition();
                 IntakeHelper.start();
 
@@ -245,9 +259,9 @@ public class Subsystems {
                 IntakeHelper.stop();
                 SpindexerHelper.shootPosition();
                 currentState = IntakeState.INIT;
-                return true;
+                return false;
         }
-        return false;
+        return true;
     }
 
     public static void shoot(Gamepad gamepad2) {
@@ -408,14 +422,16 @@ public class Subsystems {
                 double targetVelocity = Globals.ShooterVelocity;
 
                 if (shotsLeft == 2) {
-                    targetVelocity += 200;
-                    ShooterHelper.shoot(targetVelocity);
+                    ShooterHelper.shoot(targetVelocity - 60);
                 } else if (shotsLeft == 1) {
-                    targetVelocity += 150;
-                    ShooterHelper.shoot(targetVelocity);
-                } else {
+                    ShooterHelper.shoot(targetVelocity + 100);
+                } else if (ShooterHelper.shooterMotor.getVelocity() == 0) {
                     ShooterHelper.shoot(targetVelocity);
                 }
+
+                subsystemTelemetry.setAutoClear(false);
+                subsystemTelemetry.addData("target velocity", targetVelocity);
+                subsystemTelemetry.update();
 
                 if (Math.abs(ShooterHelper.shooterMotor.getVelocity() - targetVelocity) <= Globals.ShooterTolerance) {
                     currentAutoShootState = AutoShootState.FIRING;
@@ -429,6 +445,7 @@ public class Subsystems {
                 }
                 // move servo up
                 SpindexerHelper.moveServo(1);
+                subsystemTelemetry.addData("actual velocity", ShooterHelper.shooterMotor.getVelocity());
                 if (!delayStarted) {
                     delayTimer.reset();
                     delayStarted = true;

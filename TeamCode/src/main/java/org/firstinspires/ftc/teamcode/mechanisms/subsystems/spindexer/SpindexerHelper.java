@@ -57,6 +57,14 @@ public class SpindexerHelper {
         SpindexerMotor.setPower(Globals.SpindexerSpeed);
     }
 
+    public static void moveToPreviousPosition() {
+        int current = SpindexerMotor.getTargetPosition();
+        int target = current - SINGLE;
+        SpindexerMotor.setTargetPosition(target);
+        SpindexerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        SpindexerMotor.setPower(Globals.SpindexerSpeed);
+    }
+
     public static void moveHalfPosition(boolean forward) {
         int current = SpindexerMotor.getTargetPosition();
         int target = (forward) ? current + HALF_SLOT_TICKS : current - HALF_SLOT_TICKS;

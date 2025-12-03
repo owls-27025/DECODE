@@ -16,6 +16,7 @@ import org.firstinspires.ftc.teamcode.helpers.Globals;
 import org.firstinspires.ftc.teamcode.mechanisms.drivetrain.roadrunner.MecanumDrive;
 import org.firstinspires.ftc.teamcode.mechanisms.limelight.Limelight;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems;
+import org.firstinspires.ftc.teamcode.mechanisms.subsystems.shooter.ShooterHelper;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.Math;

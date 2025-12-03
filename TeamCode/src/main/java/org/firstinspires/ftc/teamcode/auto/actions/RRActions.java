@@ -12,4 +12,6 @@ public class RRActions {
     }
 
     public Action readMotif() { return new ReadMotif(); }
+
+    public Action spinUpShooter() { return new SpinUpShooter(); }
 }

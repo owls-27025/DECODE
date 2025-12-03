@@ -5,6 +5,8 @@ import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.helpers.Globals;
+
 import java.util.List;
 
 public class Limelight {
@@ -14,22 +16,27 @@ public class Limelight {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
     }
 
-    public static int getMotif() {
-        int motif = 0;
-
+    public static boolean getMotif() {
         LLResult result = limelight.getLatestResult();
 
         List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
         if (!fiducials.isEmpty()) {
             for (LLResultTypes.FiducialResult fiducial : fiducials) {
                 int id = fiducial.getFiducialId(); // The ID number of the fiducial
-                if (id > 20 && id < 24) {
-                    motif = id;
-                    break;
+                if (id == 21) {
+                    Globals.motif = Globals.Colors.GPP;
+                    return true;
+                } else if (id == 22) {
+                    Globals.motif = Globals.Colors.PGP;
+                    return true;
+                } else if (id == 23) {
+                    Globals.motif = Globals.Colors.PPG;
+                    return true;
+                } else {
+                    return false;
                 }
             }
         }
-
-        return motif;
+        return false;
     }
 }

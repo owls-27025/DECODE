@@ -15,7 +15,7 @@ public class Intake implements Action {
     @Override
     public boolean run(@NonNull TelemetryPacket packet) {
         if (!initialized) {
-            Subsystems.currentState = Subsystems.IntakeState.MOVING_TO_POSITION;
+            Subsystems.currentAutoIntakeState = Subsystems.AutoIntakeState.MOVING_TO_POSITION;
             initialized = true;
         }
         return Subsystems.intakeAuto();

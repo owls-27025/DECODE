@@ -7,7 +7,7 @@ public class Globals {
 
     public static double SlowDriveSpeed = 0.35;
 
-    public static int ShooterVelocity = 1100;
+    public static int ShooterVelocity = 1250;
     public static int ShooterTolerance = 15;
 
     public static int ForcedArtifacts = 1;
@@ -76,4 +76,17 @@ public class Globals {
             autoStrategy = AutoStrategies.LEAVE;
         }
     }
+
+    public enum Colors {
+        PPG(0),
+        PGP(1),
+        GPP(2);
+
+        public final int index;
+
+        Colors(int index) {
+            this.index = index;
+        }
+    }
+    public static Colors motif;
 }
