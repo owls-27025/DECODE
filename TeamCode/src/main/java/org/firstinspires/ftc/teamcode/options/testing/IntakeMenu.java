@@ -12,7 +12,7 @@ public class IntakeMenu extends MenuLib.Menu {
         super(host, gamepad1, gamepad2, telemetry, "INTAKE");
 
         addOption(new MenuLib.DoubleOption(
-                "Intake Power",
+                "Intake Power: ",
                 0.0,
                 0.05,
                 0.0,
