@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.helpers;
 
 public class Globals {
-    public static double SpindexerSpeed = 0.5;
+    public static double SpindexerSpeed = 0.75;
 
     public static double DriveSpeed = 1.0;
 
@@ -89,4 +89,6 @@ public class Globals {
         }
     }
     public static Colors motif;
+
+    public static double intakeSpeed = 0.6;
 }

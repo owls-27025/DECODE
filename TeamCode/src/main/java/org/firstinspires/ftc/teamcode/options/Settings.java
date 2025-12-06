@@ -52,6 +52,16 @@ public class Settings extends LinearOpMode implements MenuLib.MenuHost {
                         value -> Globals.SpindexerSpeed = value
                 ));
 
+                addOption(new MenuLib.DoubleOption(
+                        "Intake Speed: ",
+                        Globals.intakeSpeed,
+                        0.05,
+                        0.0,
+                        1.0,
+                        2,
+                        value -> Globals.intakeSpeed = value
+                ));
+
                 // blank line
                 addOption(new MenuLib.InfoOption(() ->
                         ""));
@@ -73,6 +83,10 @@ public class Settings extends LinearOpMode implements MenuLib.MenuHost {
                         "Testing",
                         Settings.this,
                         () -> new TestMenu(Settings.this, gamepad1, gamepad2, telemetry, pinpoint)
+                ));
+
+                addOption(new MenuLib.InfoOption(
+                        () -> ""
                 ));
 
                 // exit opmode

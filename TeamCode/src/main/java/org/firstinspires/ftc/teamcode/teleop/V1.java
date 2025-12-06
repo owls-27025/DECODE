@@ -97,9 +97,9 @@ public class V1 extends OpMode {
 
         if (gamepad1.backWasPressed()) {
             if (IntakeHelper.intake.getPower() >= 0) {
-                IntakeHelper.intake.setPower(-1);
+                IntakeHelper.reverse();
             } else if(IntakeHelper.intake.getPower() < 0) {
-                IntakeHelper.intake.setPower(0);
+                IntakeHelper.stop();
             }
         }
 

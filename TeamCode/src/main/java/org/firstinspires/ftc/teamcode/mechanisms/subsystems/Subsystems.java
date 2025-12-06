@@ -266,7 +266,7 @@ public class Subsystems {
 
     public static void shoot(Gamepad gamepad2) {
         if (!isHumanIntake) {
-            ShooterHelper.shooterMotor.setVelocity(1100);
+            ShooterHelper.shooterMotor.setVelocity(Globals.ShooterVelocity);
         }
         if (currentShootState == ShootState.INIT) {
             if (gamepad2.xWasPressed()) {
@@ -312,17 +312,9 @@ public class Subsystems {
 
                     ShooterHelper.shoot(targetVelocity);
 
-                    if (!delayStarted) {
-                        delayTimer.reset();
-                        delayStarted = true;
-                    }
-
-                    if (delayTimer.time(TimeUnit.MILLISECONDS) > 100) {
-                        delayTimer.reset();
-                        if (Math.abs(ShooterHelper.shooterMotor.getVelocity() - targetVelocity) <= 15) {
-                            delayStarted = false;
-                            currentShootState = ShootState.FIRING;
-                        }
+                    if (Math.abs(ShooterHelper.shooterMotor.getVelocity() - targetVelocity) <= 15) {
+                        delayStarted = false;
+                        currentShootState = ShootState.FIRING;
                     }
                     break;
 
@@ -359,19 +351,15 @@ public class Subsystems {
                         delayTimer.reset();
                         delayStarted = true;
                     }
-                    // sleep for 100 ms
-                    if (delayTimer.time(TimeUnit.MILLISECONDS) > 100) {
-                        delayTimer.reset();
-                        if (!SpindexerHelper.SpindexerMotor.isBusy()) {
-                            artifactCount--;
-                            shotsLeft--;
 
-                            if (shotsLeft <= 0) {
-                                currentShootState = ShootState.COMPLETED;
-                            } else {
-                                currentShootState = ShootState.SPINNING_UP_SHOOTER;
-                            }
+                    if (!SpindexerHelper.SpindexerMotor.isBusy()) {
+                        artifactCount--;
+                        shotsLeft--;
 
+                        if (shotsLeft <= 0) {
+                            currentShootState = ShootState.COMPLETED;
+                        } else {
+                            currentShootState = ShootState.SPINNING_UP_SHOOTER;
                         }
                     }
                     break;
