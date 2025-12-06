@@ -23,7 +23,7 @@ public class MeepMeepTesting {
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-50, 50, Math.toRadians(125)))
 
                 // prep shoot
-                .strafeTo(new Vector2d(-40, 40))
+                .strafeTo(new Vector2d(-35, 35))
 
                 // read motif
                 .turnTo(Math.toRadians(235))
@@ -36,7 +36,7 @@ public class MeepMeepTesting {
                 .splineToLinearHeading(new Pose2d(-11.5, 30, Math.toRadians(90)), Math.toRadians(90))
                 .turnTo(Math.toRadians(90))
                 .lineToY(45, (pose2dDual, posePath, v) -> 10)
-                .splineToLinearHeading(new Pose2d(-40, 40, Math.toRadians(135)), Math.toRadians(135))
+                .splineToLinearHeading(new Pose2d(-35, 35, Math.toRadians(135)), Math.toRadians(135))
 
                 // shoot three artifacts
                 .waitSeconds(2.5)
@@ -44,7 +44,7 @@ public class MeepMeepTesting {
                 // intake artifacts from second spike mark
                 .splineToLinearHeading(new Pose2d(12, 30, Math.toRadians(90)), Math.toRadians(90))
                 .lineToY(45, (pose2dDual, posePath, v) -> 10)
-                .splineToLinearHeading(new Pose2d(-40, 40, Math.toRadians(135)), Math.toRadians(135))
+                .splineToLinearHeading(new Pose2d(-35, 35, Math.toRadians(135)), Math.toRadians(135))
 
                 // shoot three artifacts
                 .waitSeconds(2.5)
@@ -52,7 +52,7 @@ public class MeepMeepTesting {
                 // intake artifacts from third spike mark
                 .splineToLinearHeading(new Pose2d(35, 30, Math.toRadians(90)), Math.toRadians(90))
                 .lineToY(45, (pose2dDual, posePath, v) -> 10)
-//                .splineToLinearHeading(new Pose2d(-40, 40, Math.toRadians(135)), Math.toRadians(135))
+//                .splineToLinearHeading(new Pose2d(-35, 35, Math.toRadians(135)), Math.toRadians(135))
 //
 //                // shoot three artifacts
 //                .waitSeconds(2.5)
