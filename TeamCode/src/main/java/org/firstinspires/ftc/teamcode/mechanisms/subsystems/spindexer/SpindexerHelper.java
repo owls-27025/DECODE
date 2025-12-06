@@ -41,6 +41,8 @@ public class SpindexerHelper {
         SpindexerMotor.setPower(Globals.SpindexerSpeed);
         SpindexerMotor.setDirection(DcMotor.Direction.FORWARD);
 
+        SpindexerServo.setPosition(Globals.servoDown);
+
         Arrays.fill(colors, "-");
     }
 

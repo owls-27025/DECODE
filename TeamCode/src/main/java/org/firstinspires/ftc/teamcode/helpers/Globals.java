@@ -1,20 +1,21 @@
 package org.firstinspires.ftc.teamcode.helpers;
 
 public class Globals {
-    public static double SpindexerSpeed = 0.75;
+    public static double SpindexerSpeed = 0.5;
 
     public static double DriveSpeed = 1.0;
 
     public static double SlowDriveSpeed = 0.35;
 
     public static int ShooterVelocity = 1250;
-    public static int ShooterTolerance = 15;
+    public static int ShooterTolerance = 50;
 
     public static int ForcedArtifacts = 1;
 
     public static boolean isFieldCentric = false;
     public static boolean isRightStick = false;
     public static int humanWait = 750;
+    public static int spindexerShootTime = 15;
 
     public static void flipStick() {
         if (isRightStick) {
@@ -89,6 +90,8 @@ public class Globals {
         }
     }
     public static Colors motif;
+
+    public static double servoDown = 0.52;
 
     public static double intakeSpeed = 0.6;
 }

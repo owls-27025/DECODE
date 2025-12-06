@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.helpers.Globals;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.colorSensor.ColorSensorHelper;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.spindexer.SpindexerHelper;
 import org.firstinspires.ftc.teamcode.helpers.MenuLib;
@@ -38,6 +39,16 @@ public class SpindexerMenu extends MenuLib.Menu {
                         "Distance: " + ColorSensorHelper.colorSensor.getDistance(DistanceUnit.MM)));
 
         addOption(new MenuLib.InfoOption(() -> ""));
+
+        addOption(new MenuLib.DoubleOption(
+                "Servo Down Position: ",
+                Globals.servoDown,
+                0.01,
+                0.0,
+                1.0,
+                2,
+                value -> Globals.servoDown = value
+        ));
 
         addOption(new MenuLib.Option(
                 "Back",

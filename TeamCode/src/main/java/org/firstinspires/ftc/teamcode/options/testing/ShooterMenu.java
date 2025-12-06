@@ -33,7 +33,7 @@ public class ShooterMenu extends MenuLib.Menu {
         addOption(new MenuLib.DoubleOption(
                 "Servo Position: ",
                 0.0,
-                0.05,
+                0.01,
                 0.0,
                 1.0,
                 2,

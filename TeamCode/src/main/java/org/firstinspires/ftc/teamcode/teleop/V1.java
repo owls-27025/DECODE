@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.teleop;
 import static org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems.artifactCount;
 import static org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems.drivetrain;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -11,6 +13,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems;
 import org.firstinspires.ftc.teamcode.mechanisms.light.Light;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.colorSensor.ColorSensorHelper;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.intake.IntakeHelper;
+import org.firstinspires.ftc.teamcode.mechanisms.subsystems.shooter.ShooterHelper;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.spindexer.SpindexerHelper;
 import org.firstinspires.ftc.teamcode.helpers.Globals;
 
@@ -24,11 +27,14 @@ public class V1 extends OpMode {
     boolean firing = false;
     public static boolean inhibitButtons = false;
 
+    public static FtcDashboard dashboard;
+
     @Override
     public void init() {
         // initialize subsystems
         Subsystems.init(hardwareMap, telemetry);
         firing = false;
+        dashboard = FtcDashboard.getInstance();
     }
 
     public void loop() {
@@ -58,7 +64,7 @@ public class V1 extends OpMode {
             }
         } else if (gamepad2.rightBumperWasPressed()) {
             if (Subsystems.isHumanIntake) {
-                SpindexerHelper.moveToNextPosition();
+                SpindexerHelper.moveToPreviousPosition();
             } else {
                 SpindexerHelper.moveHalfPosition(true);
             }
@@ -141,6 +147,12 @@ public class V1 extends OpMode {
         telemetry.addData("spindexer motor position", SpindexerHelper.SpindexerMotor.getCurrentPosition());
 
         telemetry.addData("spindexer speed", Globals.SpindexerSpeed);
+
+        TelemetryPacket packet = new TelemetryPacket();
+
+        packet.put("shooter velocity", ShooterHelper.shooterMotor.getVelocity());
+
+        dashboard.sendTelemetryPacket(packet);
 
         telemetry.update();
     }
