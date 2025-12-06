@@ -20,38 +20,43 @@ public class MeepMeepTesting {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-50, 50, Math.toRadians(135)))
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-50, 50, Math.toRadians(125)))
+
                 // prep shoot
                 .strafeTo(new Vector2d(-40, 40))
+
                 // read motif
                 .turnTo(Math.toRadians(235))
                 .turnTo(Math.toRadians(135))
-                // shoot pre-load
+
+                // shoot preload
                 .waitSeconds(2.5)
+
                 // intake artifacts from first spike mark
                 .splineToLinearHeading(new Pose2d(-11.5, 30, Math.toRadians(90)), Math.toRadians(90))
                 .turnTo(Math.toRadians(90))
                 .lineToY(45, (pose2dDual, posePath, v) -> 10)
                 .splineToLinearHeading(new Pose2d(-40, 40, Math.toRadians(135)), Math.toRadians(135))
-                // shoot three artifacts
-                .waitSeconds(2.5)
-                // intake artifacts from second spike mark
 
+                // shoot three artifacts
+                .waitSeconds(2.5)
+
+                // intake artifacts from second spike mark
                 .splineToLinearHeading(new Pose2d(12, 30, Math.toRadians(90)), Math.toRadians(90))
-                .turnTo(Math.toRadians(90))
-                .lineToY(50, (pose2dDual, posePath, v) -> 10)
+                .lineToY(45, (pose2dDual, posePath, v) -> 10)
                 .splineToLinearHeading(new Pose2d(-40, 40, Math.toRadians(135)), Math.toRadians(135))
+
                 // shoot three artifacts
                 .waitSeconds(2.5)
+
                 // intake artifacts from third spike mark
-                .turnTo(Math.toRadians(90))
-                .strafeTo(new Vector2d(35, 30))
                 .splineToLinearHeading(new Pose2d(35, 30, Math.toRadians(90)), Math.toRadians(90))
-                .turnTo(Math.toRadians(90))
-                .lineToY(50, (pose2dDual, posePath, v) -> 10)
-                .splineToLinearHeading(new Pose2d(-40, 40, Math.toRadians(135)), Math.toRadians(135))
-                // shoot three artifacts
-                .waitSeconds(2.5)
+                .lineToY(45, (pose2dDual, posePath, v) -> 10)
+//                .splineToLinearHeading(new Pose2d(-40, 40, Math.toRadians(135)), Math.toRadians(135))
+//
+//                // shoot three artifacts
+//                .waitSeconds(2.5)
+
                 .build());
 
 
