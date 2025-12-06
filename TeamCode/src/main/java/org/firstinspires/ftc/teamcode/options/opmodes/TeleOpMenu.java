@@ -57,20 +57,20 @@ public class TeleOpMenu extends MenuLib.Menu {
         // shooter tolerance setting
         addOption(new MenuLib.IntOption(
                 "Shooter Tolerance: ",
-                15,
+                Globals.ShooterTolerance,
                 1,
                 0,
-                15,
+                100,
                 value -> Globals.ShooterTolerance = value
         ));
 
         addOption(new MenuLib.IntOption(
-                "Human Player Intake: ",
-                750,
-                250,
-                100,
-                2000,
-                value -> Globals.humanWait = value
+                "Spindexer Shoot Wait: ",
+                Globals.spindexerShootTime,
+                1,
+                0,
+                10000,
+                value -> Globals.spindexerShootTime = value
         ));
 
         addOption(new MenuLib.InfoOption(() -> ""));

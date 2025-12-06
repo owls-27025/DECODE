@@ -1,12 +1,13 @@
 package org.firstinspires.ftc.teamcode.mechanisms.subsystems;
 
 import static org.firstinspires.ftc.teamcode.helpers.Helpers.easeInOutSine;
-import static org.firstinspires.ftc.teamcode.mechanisms.subsystems.spindexer.SpindexerHelper.intakePosition;
-import static org.firstinspires.ftc.teamcode.mechanisms.subsystems.spindexer.SpindexerHelper.shootPosition;
+import static org.firstinspires.ftc.teamcode.mechanisms.subsystems.spindexer.SpindexerHelper.*;
 import static org.firstinspires.ftc.teamcode.teleop.V1.currentSpeed;
 
 import static java.lang.Thread.sleep;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -266,7 +267,7 @@ public class Subsystems {
 
     public static void shoot(Gamepad gamepad2) {
         if (!isHumanIntake) {
-            ShooterHelper.shooterMotor.setVelocity(1100);
+            ShooterHelper.shooterMotor.setVelocity(Globals.ShooterVelocity);
         }
         if (currentShootState == ShootState.INIT) {
             if (gamepad2.xWasPressed()) {
@@ -312,18 +313,11 @@ public class Subsystems {
 
                     ShooterHelper.shoot(targetVelocity);
 
-                    if (!delayStarted) {
-                        delayTimer.reset();
-                        delayStarted = true;
+                    if (Math.abs(ShooterHelper.shooterMotor.getVelocity() - targetVelocity) <= Globals.ShooterTolerance) {
+                        delayStarted = false;
+                        currentShootState = ShootState.FIRING;
                     }
 
-                    if (delayTimer.time(TimeUnit.MILLISECONDS) > 100) {
-                        delayTimer.reset();
-                        if (Math.abs(ShooterHelper.shooterMotor.getVelocity() - targetVelocity) <= 15) {
-                            delayStarted = false;
-                            currentShootState = ShootState.FIRING;
-                        }
-                    }
                     break;
 
                 case FIRING:
@@ -335,7 +329,7 @@ public class Subsystems {
                     }
                     // sleep for 500 ms
                     if (delayTimer.time(TimeUnit.MILLISECONDS) > 500) {
-                        SpindexerHelper.moveServo(0.5);
+                        SpindexerHelper.moveServo(Globals.servoDown);
                         delayStarted = false;
                         spindexerMoved = false;
                         currentShootState = ShootState.ADVANCING_NEXT_BALL;
@@ -355,23 +349,17 @@ public class Subsystems {
                         spindexerMoved = true;
                     }
 
-                    if (!delayStarted) {
-                        delayTimer.reset();
-                        delayStarted = true;
-                    }
-                    // sleep for 100 ms
-                    if (delayTimer.time(TimeUnit.MILLISECONDS) > 100) {
-                        delayTimer.reset();
-                        if (!SpindexerHelper.SpindexerMotor.isBusy()) {
-                            artifactCount--;
-                            shotsLeft--;
+                    int current = SpindexerHelper.SpindexerMotor.getCurrentPosition();
+                    int target  = SpindexerMotor.getTargetPosition();
+                    int posError = Math.abs(current - target);
 
-                            if (shotsLeft <= 0) {
-                                currentShootState = ShootState.COMPLETED;
-                            } else {
-                                currentShootState = ShootState.SPINNING_UP_SHOOTER;
-                            }
-
+                    if (posError < HALF_SLOT_TICKS * 0.1) {
+                        artifactCount--;
+                        shotsLeft--;
+                        if (shotsLeft <= 0) {
+                            currentShootState = ShootState.COMPLETED;
+                        } else {
+                            currentShootState = ShootState.SPINNING_UP_SHOOTER;
                         }
                     }
                     break;
