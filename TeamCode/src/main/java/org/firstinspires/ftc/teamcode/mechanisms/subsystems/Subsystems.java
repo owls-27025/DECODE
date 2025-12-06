@@ -6,8 +6,6 @@ import static org.firstinspires.ftc.teamcode.teleop.V1.currentSpeed;
 
 import static java.lang.Thread.sleep;
 
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -16,7 +14,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.mechanisms.drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.mechanisms.light.Light;
-import org.firstinspires.ftc.teamcode.mechanisms.subsystems.colorSensor.ColorSensorHelper;
+import org.firstinspires.ftc.teamcode.mechanisms.subsystems.colorSensor.DistanceSensorHelper;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.intake.IntakeHelper;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.shooter.ShooterHelper;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.spindexer.SpindexerHelper;
@@ -122,7 +120,7 @@ public class Subsystems {
     public static void init(HardwareMap hardwareMap, Telemetry telemetry) {
         // init subsystems
         SpindexerHelper.init(hardwareMap);
-        ColorSensorHelper.init(hardwareMap);
+        DistanceSensorHelper.init(hardwareMap);
         ShooterHelper.init(hardwareMap);
         IntakeHelper.init(hardwareMap);
         Drivetrain.init(hardwareMap);
@@ -172,7 +170,7 @@ public class Subsystems {
                 case WAITING_FOR_BALL:
                     // wait for color sensor to detect ball
 
-                    if (ColorSensorHelper.isBall() && !isDetected && artifactCount < 3) {
+                    if (DistanceSensorHelper.isBall() && !isDetected && artifactCount < 3) {
                         isDetected = true;
                         SpindexerHelper.moveToNextPosition();
 
@@ -224,7 +222,7 @@ public class Subsystems {
 
             case WAITING_FOR_BALL:
                 // wait for color sensor to detect ball
-                if (ColorSensorHelper.isBall() && artifactCount < 3) {
+                if (DistanceSensorHelper.isBall() && artifactCount < 3) {
                     if (!delayStarted) {
                         delayStarted = true;
                         delayTimer.reset();
@@ -263,6 +261,20 @@ public class Subsystems {
                 return false;
         }
         return true;
+    }
+
+    public static void intakeHuman(Gamepad gamepad2) {
+        if (gamepad2.backWasPressed()) {
+            if (ShooterHelper.shooterMotor.getVelocity() > 0) {
+                ShooterHelper.shooterMotor.setVelocity(0);
+                ShooterHelper.shooterMotor.setPower(-0.2);
+                isHumanIntake = true;
+            } else {
+                ShooterHelper.shooterMotor.setPower(0);
+                ShooterHelper.shooterMotor.setVelocity(1100);
+                isHumanIntake = false;
+            }
+        }
     }
 
     public static void shoot(Gamepad gamepad2) {
@@ -371,77 +383,54 @@ public class Subsystems {
         }
     }
 
-    public static void intakeHuman(Gamepad gamepad2) {
-        if (gamepad2.backWasPressed()) {
-            if (ShooterHelper.shooterMotor.getVelocity() > 0) {
-                ShooterHelper.shooterMotor.setVelocity(0);
-                ShooterHelper.shooterMotor.setPower(-0.2);
-                isHumanIntake = true;
-            } else {
-                ShooterHelper.shooterMotor.setPower(0);
-                ShooterHelper.shooterMotor.setVelocity(1100);
-                isHumanIntake = false;
-            }
-        }
-    }
-
     public static boolean shootAuto(int numArtifacts) {
+        if (numArtifacts <= 0) {
+            currentAutoShootState = AutoShootState.INIT;
+            return false;
+        }
+
+        double targetVelocity = Globals.ShooterVelocity;
+
         switch (currentAutoShootState) {
+
             case INIT:
+                artifactCount = numArtifacts;
+                shotsLeft = numArtifacts;
+                initialArtifactCount = numArtifacts;
+                spindexerMoved = false;
+                delayStarted = false;
+
                 currentAutoShootState = AutoShootState.MOVING_TO_SHOOT_POSITION;
                 break;
+
             case MOVING_TO_SHOOT_POSITION:
-                subsystemTelemetry.addLine("running");
-                subsystemTelemetry.update();
-                // start shooter motor
                 shootPosition();
-                shotsLeft = numArtifacts;
-                currentAutoShootState = AutoShootState.SPINNING_UP_SHOOTER;
+                shotsLeft = artifactCount;
                 delayStarted = false;
+
+                currentAutoShootState = AutoShootState.SPINNING_UP_SHOOTER;
                 break;
 
             case SPINNING_UP_SHOOTER:
-                if (delayStarted) {
+                ShooterHelper.shoot(targetVelocity);
+
+                if (Math.abs(ShooterHelper.shooterMotor.getVelocity() - targetVelocity)
+                        <= Globals.ShooterTolerance) {
                     delayStarted = false;
-                }
-                subsystemTelemetry.addLine("spinning up shooter");
-                subsystemTelemetry.update();
-                // wait until shooter is at target velocity
-                double targetVelocity = Globals.ShooterVelocity;
-
-                if (shotsLeft == 2) {
-                    ShooterHelper.shoot(targetVelocity - 60);
-                } else if (shotsLeft == 1) {
-                    ShooterHelper.shoot(targetVelocity + 100);
-                } else if (ShooterHelper.shooterMotor.getVelocity() == 0) {
-                    ShooterHelper.shoot(targetVelocity);
-                }
-
-                subsystemTelemetry.setAutoClear(false);
-                subsystemTelemetry.addData("target velocity", targetVelocity);
-                subsystemTelemetry.update();
-
-                if (Math.abs(ShooterHelper.shooterMotor.getVelocity() - targetVelocity) <= Globals.ShooterTolerance) {
                     currentAutoShootState = AutoShootState.FIRING;
                 }
                 break;
 
             case FIRING:
-                // shoot one artifact
-                if (SpindexerHelper.SpindexerMotor.isBusy()) {
-                    return true;
-                }
-                // move servo up
                 SpindexerHelper.moveServo(1);
-                subsystemTelemetry.addData("actual velocity", ShooterHelper.shooterMotor.getVelocity());
+
                 if (!delayStarted) {
                     delayTimer.reset();
                     delayStarted = true;
                 }
-                // wait for 400 ms
-                if (delayTimer.time(TimeUnit.MILLISECONDS) > 400) {
-                    // move servo down
-                    SpindexerHelper.moveServo(0.5);
+
+                if (delayTimer.time(TimeUnit.MILLISECONDS) > 500) {
+                    SpindexerHelper.moveServo(Globals.servoDown);
                     delayStarted = false;
                     spindexerMoved = false;
                     currentAutoShootState = AutoShootState.ADVANCING_NEXT_BALL;
@@ -449,9 +438,8 @@ public class Subsystems {
                 break;
 
             case ADVANCING_NEXT_BALL:
-                // move spindexer and prep for next ball
                 if (!spindexerMoved) {
-                    if (numArtifacts == 2) {
+                    if (initialArtifactCount == 2) {
                         SpindexerHelper.SpindexerMotor.setDirection(DcMotor.Direction.REVERSE);
                         SpindexerHelper.moveToNextPosition();
                         SpindexerHelper.SpindexerMotor.setDirection(DcMotor.Direction.FORWARD);
@@ -461,23 +449,18 @@ public class Subsystems {
                     spindexerMoved = true;
                 }
 
-                if (!delayStarted) {
-                    delayTimer.reset();
-                    delayStarted = true;
-                }
-                // sleep for 100 ms
-                if (delayTimer.time(TimeUnit.MILLISECONDS) > 100) {
-                    delayTimer.reset();
-                    if (!SpindexerHelper.SpindexerMotor.isBusy()) {
-                        artifactCount--;
-                        shotsLeft--;
+                int current = SpindexerHelper.SpindexerMotor.getCurrentPosition();
+                int target  = SpindexerMotor.getTargetPosition();
+                int posError = Math.abs(current - target);
 
-                        if (shotsLeft <= 0) {
-                            currentAutoShootState = AutoShootState.COMPLETED;
-                        } else {
-                            currentAutoShootState = AutoShootState.SPINNING_UP_SHOOTER;
-                        }
+                if (posError < HALF_SLOT_TICKS * 0.1) {
+                    artifactCount--;
+                    shotsLeft--;
 
+                    if (shotsLeft <= 0) {
+                        currentAutoShootState = AutoShootState.COMPLETED;
+                    } else {
+                        currentAutoShootState = AutoShootState.SPINNING_UP_SHOOTER;
                     }
                 }
                 break;
@@ -486,8 +469,10 @@ public class Subsystems {
                 currentAutoShootState = AutoShootState.INIT;
                 return false;
         }
+
         return true;
     }
+
 
 
     public static void drivetrain(Gamepad gamepad1) {

@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
-import static org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems.artifactCount;
 import static org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems.drivetrain;
 
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -10,8 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems;
-import org.firstinspires.ftc.teamcode.mechanisms.light.Light;
-import org.firstinspires.ftc.teamcode.mechanisms.subsystems.colorSensor.ColorSensorHelper;
+import org.firstinspires.ftc.teamcode.mechanisms.subsystems.colorSensor.DistanceSensorHelper;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.intake.IntakeHelper;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.shooter.ShooterHelper;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.spindexer.SpindexerHelper;
@@ -120,8 +118,8 @@ public class V1 extends OpMode {
         telemetry.addData("Current Velocity", Globals.ShooterVelocity);
 
         // color sensor telemetry
-        telemetry.addData("Distance", ColorSensorHelper.colorSensor.getDistance(DistanceUnit.MM));
-        telemetry.addData("Detects Ball", ColorSensorHelper.isBall());
+        telemetry.addData("Distance", DistanceSensorHelper.colorSensor.getDistance(DistanceUnit.MM));
+        telemetry.addData("Detects Ball", DistanceSensorHelper.isBall());
 
         // intake telemetry
         telemetry.addData("Artifacts", Subsystems.artifactCount);

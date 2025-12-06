@@ -22,7 +22,7 @@ public class Limelight {
         List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
         if (!fiducials.isEmpty()) {
             for (LLResultTypes.FiducialResult fiducial : fiducials) {
-                int id = fiducial.getFiducialId(); // The ID number of the fiducial
+                int id = fiducial.getFiducialId();
                 if (id == 21) {
                     Globals.motif = Globals.Colors.GPP;
                     return true;
