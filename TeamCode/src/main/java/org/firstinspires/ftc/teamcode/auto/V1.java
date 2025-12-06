@@ -27,7 +27,7 @@ public class V1 extends LinearOpMode {
     @Override
     public void runOpMode() {
         Subsystems.init(hardwareMap, telemetry);
-//        Limelight.init(hardwareMap);
+        Limelight.init(hardwareMap);
 
         AutoPath path;
 
@@ -49,14 +49,14 @@ public class V1 extends LinearOpMode {
         RRActions RRActions = new RRActions();
 
         telemetry.addLine("Auto ready");
-        telemetry.addData("Path: ", path.getInitialPose());
+        telemetry.addData("Path", path.getName());
         telemetry.update();
 
         waitForStart();
         if (isStopRequested()) return;
 
         Actions.runBlocking(
-                path.build(drive, RRActions)
+                path.build(drive, RRActions, telemetry)
         );
     }
 }

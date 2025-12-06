@@ -14,6 +14,8 @@ public class Limelight {
 
     public static void init(HardwareMap hardwareMap) {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
+        limelight.setPollRateHz(50);
+        limelight.start();
     }
 
     public static boolean getMotif() {

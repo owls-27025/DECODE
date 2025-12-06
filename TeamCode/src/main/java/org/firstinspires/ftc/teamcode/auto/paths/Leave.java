@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.auto.actions.RRActions;
 import org.firstinspires.ftc.teamcode.helpers.Globals;
 import org.firstinspires.ftc.teamcode.mechanisms.drivetrain.roadrunner.MecanumDrive;
@@ -26,7 +27,12 @@ public class Leave implements AutoPath {
     }
 
     @Override
-    public Action build(MecanumDrive drive, RRActions rractions) {
+    public String getName() {
+        return "Leave";
+    }
+
+    @Override
+    public Action build(MecanumDrive drive, RRActions rractions, Telemetry telemetry) {
         Pose2d initialPose = getInitialPose();
 
         return drive.actionBuilder(initialPose)

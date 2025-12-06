@@ -5,6 +5,8 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import org.firstinspires.ftc.teamcode.auto.V1;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems;
+import org.firstinspires.ftc.teamcode.mechanisms.subsystems.shooter.ShooterHelper;
+import org.firstinspires.ftc.teamcode.mechanisms.subsystems.spindexer.SpindexerHelper;
 
 public class Shoot implements Action {
     public int artifacts;
@@ -18,9 +20,10 @@ public class Shoot implements Action {
     @Override
     public boolean run(@NonNull TelemetryPacket packet) {
         if (!initialized) {
-            Subsystems.currentAutoShootState = Subsystems.AutoShootState.MOVING_TO_SHOOT_POSITION;
+            Subsystems.currentAutoShootState = Subsystems.AutoShootState.INIT;
             initialized = true;
         }
+        packet.put("Shooter Velocity", ShooterHelper.shooterMotor.getVelocity());
         return Subsystems.shootAuto(artifacts);
     }
 }

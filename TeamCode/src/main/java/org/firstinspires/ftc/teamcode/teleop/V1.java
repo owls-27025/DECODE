@@ -6,6 +6,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems;
@@ -105,6 +106,10 @@ public class V1 extends OpMode {
             } else if(IntakeHelper.intake.getPower() < 0) {
                 IntakeHelper.stop();
             }
+        }
+
+        if (gamepad2.rightStickButtonWasPressed()) {
+            SpindexerHelper.SpindexerMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         }
 
         // drive

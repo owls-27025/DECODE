@@ -392,7 +392,6 @@ public class Subsystems {
         double targetVelocity = Globals.ShooterVelocity;
 
         switch (currentAutoShootState) {
-
             case INIT:
                 artifactCount = numArtifacts;
                 shotsLeft = numArtifacts;
@@ -414,8 +413,7 @@ public class Subsystems {
             case SPINNING_UP_SHOOTER:
                 ShooterHelper.shoot(targetVelocity);
 
-                if (Math.abs(ShooterHelper.shooterMotor.getVelocity() - targetVelocity)
-                        <= Globals.ShooterTolerance) {
+                if (Math.abs(ShooterHelper.shooterMotor.getVelocity() - targetVelocity) <= Globals.ShooterTolerance) {
                     delayStarted = false;
                     currentAutoShootState = AutoShootState.FIRING;
                 }
@@ -466,7 +464,6 @@ public class Subsystems {
                 break;
 
             case COMPLETED:
-                currentAutoShootState = AutoShootState.INIT;
                 return false;
         }
 

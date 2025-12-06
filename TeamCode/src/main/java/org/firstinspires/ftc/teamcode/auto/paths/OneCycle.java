@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.auto.paths;
 
 import com.acmerobotics.roadrunner.*;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.auto.actions.RRActions;
 import org.firstinspires.ftc.teamcode.auto.actions.Shoot;
 import org.firstinspires.ftc.teamcode.helpers.Globals;
@@ -23,7 +24,12 @@ public class OneCycle implements AutoPath {
     }
 
     @Override
-    public Action build(MecanumDrive drive, RRActions rractions) {
+    public String getName() {
+        return "One Cycle";
+    }
+
+    @Override
+    public Action build(MecanumDrive drive, RRActions rractions, Telemetry telemetry) {
         Pose2d initialPose = getInitialPose();
 
         if (alliance == Globals.Alliances.RED) {
@@ -42,7 +48,7 @@ public class OneCycle implements AutoPath {
                 rractions.spinUpShooter(),
                     path1.build(),
                     new ParallelAction(
-                            rractions.readMotif(),
+                            rractions.readMotif(telemetry),
                             motifTurn.build()
                     ),
                     rractions.shoot(3),
@@ -63,7 +69,7 @@ public class OneCycle implements AutoPath {
                 rractions.spinUpShooter(),
                     path1.build(),
                     new ParallelAction(
-                            rractions.readMotif(),
+                            rractions.readMotif(telemetry),
                             motifTurn.build()
                     ),
                     rractions.shoot(3),

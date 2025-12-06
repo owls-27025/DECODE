@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.teamcode.auto.paths;
 
+import androidx.annotation.NonNull;
+
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.*;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.auto.actions.RRActions;
-import org.firstinspires.ftc.teamcode.auto.actions.Shoot;
 import org.firstinspires.ftc.teamcode.helpers.Globals;
 import org.firstinspires.ftc.teamcode.mechanisms.drivetrain.roadrunner.MecanumDrive;
-import org.jetbrains.annotations.NotNull;
 
 import java.lang.Math;
 
@@ -19,74 +21,78 @@ public class FourCycle implements AutoPath {
 
     @Override
     public Pose2d getInitialPose() {
-        return new Pose2d(-50, 50, Math.toRadians(135));
+        if (alliance == Globals.Alliances.RED) {
+            return new Pose2d(-50, 50, Math.toRadians(135));
+        } else {
+            return new Pose2d(-50, -50, Math.toRadians(235));
+        }
     }
 
     @Override
-    public Action build(MecanumDrive drive, RRActions rractions) {
+    public String getName() {
+        return "Four Cycle";
+    }
+
+    @Override
+    public Action build(MecanumDrive drive, RRActions rractions, Telemetry telemetry) {
         Pose2d initialPose = getInitialPose();
 
         if (alliance == Globals.Alliances.RED) {
-            TrajectoryActionBuilder path1 = drive.actionBuilder(initialPose)
-                    .strafeTo(new Vector2d(-11.5, 11.5));
-
-
-            TrajectoryActionBuilder path2 = path1.endTrajectory().fresh()
-                    .waitSeconds(2)
-                    .turnTo(Math.toRadians(90));
-
-            TrajectoryActionBuilder path3 = path2.endTrajectory().fresh()
-                    .lineToY(34)
-                    .waitSeconds(1)
-                    .lineToY(44, (pose2dDual, posePath, v) -> 8)
-                    .waitSeconds(1)
-                    .lineToY(50, (pose2dDual, posePath, v) -> 8)
-                    .strafeTo(new Vector2d(-11.5, 11.5))
-                    .turnTo(Math.toRadians(135));
-
-            TrajectoryActionBuilder motifTurn = path1.endTrajectory().fresh()
-                    .turn(-360);
-
-            return new SequentialAction(
-//                rractions.spinUpShooter(),
-                    path1.build(),
-                    new ParallelAction(
-                            rractions.readMotif(),
-                            motifTurn.build()
-                    ),
-                    rractions.shoot(3),
-                    path2.build()
-            );
+            return new Action() {
+                @Override
+                public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                    return false; // TODO: implement red path
+                }
+            };
         } else {
-            TrajectoryActionBuilder path1 = drive.actionBuilder(initialPose, p -> new Pose2dDual<>(p.position.x, p.position.y.unaryMinus(), p.heading.plus(Math.PI)))
-                    .strafeTo(new Vector2d(-11.5, 11.5));
+            TrajectoryActionBuilder goToShoot = drive.actionBuilder(initialPose)
+                    .splineToLinearHeading(new Pose2d(-35, -35, Math.toRadians(225)), Math.toRadians(225));
+
+            TrajectoryActionBuilder motifTurn = goToShoot.endTrajectory().fresh()
+                    .turnTo(Math.toRadians(135), new TurnConstraints(1, -1, 1))
+                    .waitSeconds(5)
+                    .turnTo(Math.toRadians(225));
+
+            TrajectoryActionBuilder shootWait = motifTurn.endTrajectory().fresh()
+                    .waitSeconds(2.5);
+
+            TrajectoryActionBuilder goToIntakeOne = shootWait.endTrajectory().fresh()
+                    .turnTo(Math.toRadians(-90))
+                    .strafeTo(new Vector2d(-11.5, -20));
+
+            TrajectoryActionBuilder intakeOne = goToIntakeOne.endTrajectory().fresh()
+                    .lineToY(50, (pose2dDual, posePath, v) -> 5)
+                    .strafeTo(new Vector2d(-35, -35))
+                    .turnTo(Math.toRadians(225));
+
+            TrajectoryActionBuilder goToIntakeTwo = shootWait.endTrajectory().fresh()
+                    .turnTo(Math.toRadians(-90))
+                    .strafeTo(new Vector2d(12, -30));
 
 
-            TrajectoryActionBuilder path2 = path1.endTrajectory().fresh()
-                    .waitSeconds(2)
-                    .turnTo(Math.toRadians(90));
-
-            TrajectoryActionBuilder path3 = path2.endTrajectory().fresh()
-                    .lineToY(34)
-                    .waitSeconds(1)
-                    .lineToY(44, (pose2dDual, posePath, v) -> 8)
-                    .waitSeconds(1)
-                    .lineToY(50, (pose2dDual, posePath, v) -> 8)
-                    .strafeTo(new Vector2d(-11.5, 11.5))
-                    .turnTo(Math.toRadians(135));
-
-            TrajectoryActionBuilder motifTurn = path1.endTrajectory().fresh()
-                    .turn(-360);
+            TrajectoryActionBuilder intakeTwo = goToIntakeTwo.endTrajectory().fresh()
+                    .lineToY(50, (pose2dDual, posePath, v) -> 5)
+                    .strafeTo(new Vector2d(-35, -20))
+                    .turnTo(Math.toRadians(225));
 
             return new SequentialAction(
-//                rractions.spinUpShooter(),
-                    path1.build(),
-                    new ParallelAction(
-                            rractions.readMotif(),
-                            motifTurn.build()
-                    ),
+                    rractions.spinUpShooter(),
+                    goToShoot.build(),
+//                    new ParallelAction(
+//                            rractions.readMotif(telemetry),
+//                            motifTurn.build()
+//                    ),
                     rractions.shoot(3),
-                    path2.build()
+                    shootWait.build(),
+                    goToIntakeOne.build(),
+                    new ParallelAction(
+                        rractions.intake(),
+                        intakeOne.build()
+                    )
+//                    shootWait.build(),
+//                    goToIntakeTwo.build(),
+//                    intakeTwo.build(),
+//                    shootWait.build()
             );
         }
     }
