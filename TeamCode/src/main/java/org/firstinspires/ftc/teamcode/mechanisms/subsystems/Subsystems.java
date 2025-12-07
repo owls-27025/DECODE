@@ -149,14 +149,11 @@ public class Subsystems {
 
     public static void intake(Gamepad gamepad2) {
         if (currentState == IntakeState.INIT) {
-            if (gamepad2.aWasPressed() && !V1.inhibitButtons) {
+            if ((gamepad2.aWasPressed() && !V1.inhibitButtons) || artifactCount == 0) {
                 // start intake
                 currentState = IntakeState.MOVING_TO_POSITION;
             }
         } else {
-            if (gamepad2.aWasPressed() && !V1.inhibitButtons) {
-                currentState = IntakeState.MOVING_TO_POSITION;
-            }
             switch (currentState) {
                 case MOVING_TO_POSITION:
                     // start intake motor
@@ -217,36 +214,28 @@ public class Subsystems {
 
                 delayStarted = false;
 
-                currentState = IntakeState.WAITING_FOR_BALL;
+                currentAutoIntakeState = AutoIntakeState.WAITING_FOR_BALL;
                 break;
 
             case WAITING_FOR_BALL:
                 // wait for color sensor to detect ball
-                if (DistanceSensorHelper.isBall() && artifactCount < 3) {
-                    if (!delayStarted) {
-                        delayStarted = true;
-                        delayTimer.reset();
-                    }
-                    // sleep for 250 ms
-                    if (delayTimer.time(TimeUnit.MILLISECONDS) > 250) {
-                        SpindexerHelper.moveToNextPosition();
-                        subsystemTelemetry.addLine("yo");
-                        subsystemTelemetry.update();
-
-                        artifactCount++;
-
-                        if (artifactCount >= 3) {
-                            currentState = IntakeState.COMPLETED;
-                        } else {
-                            currentState = IntakeState.MOVING_TO_NEXT_POSITION;
-                        }
+                subsystemTelemetry.addData("artiffact counet", artifactCount);
+                subsystemTelemetry.update();
+                if (DistanceSensorHelper.isBall() && !isDetected && artifactCount < 3) {
+                    isDetected = true;
+                    SpindexerHelper.moveToNextPosition();
+                    artifactCount++;
+                    if (artifactCount >= 3) {
+                        currentAutoIntakeState = AutoIntakeState.COMPLETED;
+                    } else {
+                        currentAutoIntakeState = AutoIntakeState.MOVING_TO_NEXT_POSITION;
                     }
                 }
                 break;
 
             case MOVING_TO_NEXT_POSITION:
                 if (!SpindexerHelper.SpindexerMotor.isBusy()) {
-                    currentState = IntakeState.WAITING_FOR_BALL;
+                    currentAutoIntakeState = AutoIntakeState.WAITING_FOR_BALL;
                 }
 
                 delayStarted = false;
@@ -257,7 +246,6 @@ public class Subsystems {
                 // stop intake motor
                 IntakeHelper.stop();
                 SpindexerHelper.shootPosition();
-                currentState = IntakeState.INIT;
                 return false;
         }
         return true;
@@ -464,6 +452,7 @@ public class Subsystems {
                 break;
 
             case COMPLETED:
+                SpindexerHelper.intakePosition();
                 return false;
         }
 

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
+import static org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems.artifactCount;
 import static org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems.drivetrain;
 
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -9,18 +10,18 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.helpers.Globals;
 import org.firstinspires.ftc.teamcode.mechanisms.light.Light;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.colorSensor.DistanceSensorHelper;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.intake.IntakeHelper;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.shooter.ShooterHelper;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.spindexer.SpindexerHelper;
-import org.firstinspires.ftc.teamcode.helpers.Globals;
 
 import java.util.concurrent.TimeUnit;
 
-@TeleOp(name = "TeleOp", group = "OpModes")
-public class V1 extends OpMode {
+@TeleOp(name = "TeleOp Solo", group = "OpModes")
+public class V1Solo extends OpMode {
     // drivetrain
     public static double currentSpeed = 1;
     public static boolean isFieldCentric = false;
@@ -49,9 +50,9 @@ public class V1 extends OpMode {
         }
 
         // change shooter velocity
-        if (gamepad1.dpadUpWasPressed()) {
+        if (gamepad2.dpadUpWasPressed()) {
             Globals.ShooterVelocity += 50;
-        } else if (gamepad1.dpadDownWasPressed()) {
+        } else if (gamepad2.dpadDownWasPressed()) {
             Globals.ShooterVelocity -= 50;
         }
 
@@ -59,14 +60,12 @@ public class V1 extends OpMode {
         if (gamepad2.leftBumperWasPressed()) {
             if (Subsystems.isHumanIntake) {
                 SpindexerHelper.moveToNextPosition();
-                Subsystems.artifactCount++;
             } else {
                 SpindexerHelper.moveHalfPosition(false);
             }
         } else if (gamepad2.rightBumperWasPressed()) {
             if (Subsystems.isHumanIntake) {
                 SpindexerHelper.moveToPreviousPosition();
-                Subsystems.artifactCount++;
             } else {
                 SpindexerHelper.moveHalfPosition(true);
             }
@@ -90,15 +89,11 @@ public class V1 extends OpMode {
             Light.blue();
         }
 
-        if (gamepad2.aWasPressed()) {
-            SpindexerHelper.SpindexerServo.setPosition(Globals.servoDown);
-        }
-
         // intake
         Subsystems.intake(gamepad1);
 
         // shoot
-        Subsystems.shoot(gamepad2);
+        Subsystems.shoot(gamepad1);
 
         // human player intake
         Subsystems.intakeHuman(gamepad2);

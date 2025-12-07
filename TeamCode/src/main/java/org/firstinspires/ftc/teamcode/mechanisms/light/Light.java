@@ -33,6 +33,11 @@ public class Light {
         color = "Green";
     }
 
+    public static void blue() {
+        light.setPosition(0.611);
+        color = "Blue";
+    }
+
     public static void cycle() {
         if (Objects.equals(color, "Red")) {
             yellow();
@@ -41,7 +46,7 @@ public class Light {
         } else if (Objects.equals(color, "Green")) {
             red();
         } else {
-            red();
+            blue();
         }
     }
 }

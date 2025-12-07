@@ -8,7 +8,7 @@ public class Globals {
     public static double SlowDriveSpeed = 0.35;
 
     public static int ShooterVelocity = 1050;
-    public static int ShooterTolerance = 100;
+    public static int ShooterTolerance = 50;
 
     public static int ForcedArtifacts = 1;
 
