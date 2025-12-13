@@ -4,9 +4,6 @@ import static org.firstinspires.ftc.teamcode.helpers.Helpers.easeInOutSine;
 import static org.firstinspires.ftc.teamcode.mechanisms.subsystems.spindexer.SpindexerHelper.*;
 import static org.firstinspires.ftc.teamcode.teleop.V1.currentSpeed;
 
-import static java.lang.Thread.sleep;
-
-import androidx.annotation.NonNull;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;

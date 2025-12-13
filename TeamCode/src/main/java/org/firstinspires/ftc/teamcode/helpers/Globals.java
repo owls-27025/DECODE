@@ -20,7 +20,7 @@ public class Globals {
     public static void flipStick() {
         if (isRightStick) {
             isRightStick = false;
-        } else if (!isRightStick) {
+        } else {
             isRightStick = true;
         }
     }
@@ -28,7 +28,7 @@ public class Globals {
     public static void flipFieldCentric() {
         if (isFieldCentric) {
             isFieldCentric = false;
-        } else if (!isFieldCentric) {
+        } else {
             isFieldCentric = true;
         }
     }
