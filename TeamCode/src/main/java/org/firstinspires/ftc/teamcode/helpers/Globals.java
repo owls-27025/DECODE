@@ -38,7 +38,7 @@ public class Globals {
         BLUE
     }
 
-    public static Alliances alliance = Alliances.BLUE;
+    public static Alliances alliance = Alliances.RED;
 
     public static void flipAlliance() {
         if (alliance == Alliances.RED) {
@@ -65,15 +65,18 @@ public class Globals {
 
     public enum AutoStrategies {
         LEAVE,
-        FOURCYCLE
+        ONECYCLEFRONT,
+        ONECYCLEBACK
     }
 
-    public static AutoStrategies autoStrategy = AutoStrategies.FOURCYCLE;
+    public static AutoStrategies autoStrategy = AutoStrategies.ONECYCLEFRONT;
 
     public static void cycleStrategy() {
         if (autoStrategy == AutoStrategies.LEAVE) {
-            autoStrategy = AutoStrategies.FOURCYCLE;
-        } else if (autoStrategy == AutoStrategies.FOURCYCLE) {
+            autoStrategy = AutoStrategies.ONECYCLEFRONT;
+        } else if (autoStrategy == AutoStrategies.ONECYCLEFRONT) {
+            autoStrategy = AutoStrategies.ONECYCLEBACK;
+        } else if (autoStrategy == AutoStrategies.ONECYCLEBACK) {
             autoStrategy = AutoStrategies.LEAVE;
         }
     }

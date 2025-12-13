@@ -10,11 +10,13 @@ import org.firstinspires.ftc.teamcode.mechanisms.subsystems.spindexer.SpindexerH
 
 public class Shoot implements Action {
     public int artifacts;
+    public int velocity;
     public boolean initialized;
 
-    public Shoot(int numArtifacts) {
+    public Shoot(int numArtifacts, int velocity) {
         artifacts = numArtifacts;
         initialized = false;
+        this.velocity = velocity;
     }
 
     @Override
@@ -24,6 +26,6 @@ public class Shoot implements Action {
             initialized = true;
         }
         packet.put("Shooter Velocity", ShooterHelper.shooterMotor.getVelocity());
-        return Subsystems.shootAuto(artifacts);
+        return Subsystems.shootAuto(artifacts, velocity);
     }
 }

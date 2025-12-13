@@ -1,8 +1,5 @@
 package org.firstinspires.ftc.teamcode.auto.paths;
 
-import androidx.annotation.NonNull;
-
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.*;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -12,10 +9,10 @@ import org.firstinspires.ftc.teamcode.mechanisms.drivetrain.roadrunner.MecanumDr
 
 import java.lang.Math;
 
-public class FourCycle implements AutoPath {
+public class OneCycleFront implements AutoPath {
     private final Globals.Alliances alliance;
 
-    public FourCycle(Globals.Alliances alliance) {
+    public OneCycleFront(Globals.Alliances alliance) {
         this.alliance = alliance;
     }
 
@@ -30,7 +27,7 @@ public class FourCycle implements AutoPath {
 
     @Override
     public String getName() {
-        return "Four Cycle";
+        return "One Cycle (Front)";
     }
 
     @Override
@@ -38,32 +35,32 @@ public class FourCycle implements AutoPath {
         Pose2d initialPose = getInitialPose();
 
         if (alliance == Globals.Alliances.RED) {
-            TrajectoryActionBuilder goToShoot = drive.actionBuilder(initialPose, p -> new Pose2dDual<>(p.position.x, p.position.y.unaryMinus(), p.heading.plus(Math.PI)))
-                    .splineToLinearHeading(new Pose2d(-35, -35, Math.toRadians(225)), Math.toRadians(225));
+            TrajectoryActionBuilder goToShoot = drive.actionBuilder(initialPose)
+                    .splineToLinearHeading(new Pose2d(-35, 35, Math.toRadians(135)), Math.toRadians(135));
 
             TrajectoryActionBuilder motifTurn = goToShoot.endTrajectory().fresh()
-                    .turnTo(Math.toRadians(135), new TurnConstraints(1, -1, 1))
+                    .turnTo(Math.toRadians(225), new TurnConstraints(1, -1, 1))
                     .waitSeconds(5)
-                    .turnTo(Math.toRadians(225));
+                    .turnTo(Math.toRadians(135));
 
             TrajectoryActionBuilder shootWait = motifTurn.endTrajectory().fresh()
                     .waitSeconds(2.5);
 
             TrajectoryActionBuilder goToIntakeOne = shootWait.endTrajectory().fresh()
-                    .turnTo(Math.toRadians(-90))
-                    .strafeTo(new Vector2d(-52, -10));
+                    .turnTo(Math.toRadians(90))
+                    .strafeTo(new Vector2d(-52, 20));
 
             TrajectoryActionBuilder intakeOne = goToIntakeOne.endTrajectory().fresh()
-                    .turnTo(Math.toRadians(-90))
-                    .lineToY(-50, (pose2dDual, posePath, v) -> 5);
+                    .turnTo(Math.toRadians(90))
+                    .lineToY(50, (pose2dDual, posePath, v) -> 5);
 
             TrajectoryActionBuilder goToIntakeTwo = shootWait.endTrajectory().fresh()
-                    .turnTo(Math.toRadians(-90))
-                    .strafeTo(new Vector2d(12, -30));
+                    .turnTo(Math.toRadians(90))
+                    .strafeTo(new Vector2d(12, 30));
 
 
             TrajectoryActionBuilder intakeTwo = goToIntakeTwo.endTrajectory().fresh()
-                    .lineToY(50, (pose2dDual, posePath, v) -> 5)
+                    .lineToY(-50, (pose2dDual, posePath, v) -> 5)
                     .strafeTo(new Vector2d(-35, -20))
                     .turnTo(Math.toRadians(225));
 
@@ -76,7 +73,7 @@ public class FourCycle implements AutoPath {
 //                    ),
                     new ParallelAction(
                             rractions.spinUpShooter(),
-                            rractions.shoot(3)
+                            rractions.shoot(3, 1050)
                     ),
                     goToIntakeOne.build()
 //                    new ParallelAction(
@@ -102,7 +99,7 @@ public class FourCycle implements AutoPath {
 
             TrajectoryActionBuilder goToIntakeOne = shootWait.endTrajectory().fresh()
                     .turnTo(Math.toRadians(-90))
-                    .strafeTo(new Vector2d(-52, -10));
+                    .strafeTo(new Vector2d(-52, -20));
 
             TrajectoryActionBuilder intakeOne = goToIntakeOne.endTrajectory().fresh()
                     .turnTo(Math.toRadians(-90))
@@ -127,7 +124,7 @@ public class FourCycle implements AutoPath {
 //                    ),
                     new ParallelAction(
                             rractions.spinUpShooter(),
-                            rractions.shoot(3)
+                            rractions.shoot(3, 1050)
                     ),
                     goToIntakeOne.build()
 //                    new ParallelAction(

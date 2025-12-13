@@ -4,6 +4,7 @@ import static org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems.dr
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -19,6 +20,7 @@ import org.firstinspires.ftc.teamcode.helpers.Globals;
 
 import java.util.concurrent.TimeUnit;
 
+@Disabled
 @TeleOp(name = "TeleOp", group = "OpModes")
 public class V1 extends OpMode {
     // drivetrain
@@ -59,14 +61,12 @@ public class V1 extends OpMode {
         if (gamepad2.leftBumperWasPressed()) {
             if (Subsystems.isHumanIntake) {
                 SpindexerHelper.moveToNextPosition();
-                Subsystems.artifactCount++;
             } else {
                 SpindexerHelper.moveHalfPosition(false);
             }
         } else if (gamepad2.rightBumperWasPressed()) {
             if (Subsystems.isHumanIntake) {
                 SpindexerHelper.moveToPreviousPosition();
-                Subsystems.artifactCount++;
             } else {
                 SpindexerHelper.moveHalfPosition(true);
             }
@@ -106,7 +106,7 @@ public class V1 extends OpMode {
         // cancel functions
         if ((gamepad2.bWasPressed() || gamepad1.bWasPressed()) && !inhibitButtons) {
             Subsystems.currentShootState = Subsystems.ShootState.COMPLETED;
-            Subsystems.currentState = Subsystems.IntakeState.COMPLETED;
+            Subsystems.currentIntakeState = Subsystems.IntakeState.COMPLETED;
         }
 
         if (gamepad1.backWasPressed()) {
@@ -158,7 +158,7 @@ public class V1 extends OpMode {
 
         telemetry.addData("Has fired", firing);
 
-        telemetry.addData("Intake State", Subsystems.currentState);
+        telemetry.addData("Intake State", Subsystems.currentIntakeState);
         telemetry.addData("Delay", Subsystems.delayTimer.time(TimeUnit.MILLISECONDS));
         telemetry.addData("Delay started", Subsystems.delayStarted);
 

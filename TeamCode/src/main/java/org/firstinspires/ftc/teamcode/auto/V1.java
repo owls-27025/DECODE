@@ -1,8 +1,5 @@
 package org.firstinspires.ftc.teamcode.auto;
 
-import androidx.annotation.NonNull;
-
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.*;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -10,16 +7,13 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.auto.actions.RRActions;
 import org.firstinspires.ftc.teamcode.auto.paths.AutoPath;
-import org.firstinspires.ftc.teamcode.auto.paths.FourCycle;
+import org.firstinspires.ftc.teamcode.auto.paths.OneCycleFront;
 import org.firstinspires.ftc.teamcode.auto.paths.Leave;
+import org.firstinspires.ftc.teamcode.auto.paths.OneCycleBack;
 import org.firstinspires.ftc.teamcode.helpers.Globals;
 import org.firstinspires.ftc.teamcode.mechanisms.drivetrain.roadrunner.MecanumDrive;
 import org.firstinspires.ftc.teamcode.mechanisms.limelight.Limelight;
 import org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems;
-import org.firstinspires.ftc.teamcode.mechanisms.subsystems.shooter.ShooterHelper;
-import org.jetbrains.annotations.NotNull;
-
-import java.lang.Math;
 
 @Autonomous(name = "Auto", group = "OpModes")
 public class V1 extends LinearOpMode {
@@ -33,8 +27,11 @@ public class V1 extends LinearOpMode {
 
 
         switch (Globals.autoStrategy) {
-            case FOURCYCLE:
-                path = new FourCycle(Globals.alliance);
+            case ONECYCLEFRONT:
+                path = new OneCycleFront(Globals.alliance);
+                break;
+            case ONECYCLEBACK:
+                path = new OneCycleBack(Globals.alliance);
                 break;
             case LEAVE:
             default:

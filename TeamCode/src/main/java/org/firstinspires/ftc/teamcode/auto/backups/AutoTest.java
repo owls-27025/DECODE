@@ -19,7 +19,7 @@ public class AutoTest extends LinearOpMode {
         waitForStart();
 
         forward(-1000);
-        Subsystems.shootAuto(3);
+        Subsystems.shootAuto(3, 1050);
         turn(-45);
         while(true){
             // do nothing

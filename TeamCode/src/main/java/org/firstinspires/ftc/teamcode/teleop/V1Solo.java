@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
-import static org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems.artifactCount;
 import static org.firstinspires.ftc.teamcode.mechanisms.subsystems.Subsystems.drivetrain;
 
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -20,7 +19,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.subsystems.spindexer.SpindexerH
 
 import java.util.concurrent.TimeUnit;
 
-@TeleOp(name = "TeleOp Solo", group = "OpModes")
+@TeleOp(name = "TeleOp", group = "OpModes")
 public class V1Solo extends OpMode {
     // drivetrain
     public static double currentSpeed = 1;
@@ -30,14 +29,25 @@ public class V1Solo extends OpMode {
 
     public static FtcDashboard dashboard;
 
+    public enum PreviousIntakeState {
+        STOPPED,
+        FORWARD,
+        NA
+    }
+
+    public static PreviousIntakeState previousIntakeState;
+
     @Override
     public void init() {
         // initialize subsystems
         Subsystems.init(hardwareMap, telemetry);
         firing = false;
         dashboard = FtcDashboard.getInstance();
+
+        previousIntakeState = PreviousIntakeState.STOPPED;
     }
 
+    @Override
     public void loop() {
         // when start is held with a or b buttons
         if ((gamepad1.start && (gamepad1.a || gamepad1.b)) || (gamepad2.start && (gamepad2.a || gamepad2.b))) {
@@ -60,12 +70,14 @@ public class V1Solo extends OpMode {
         if (gamepad2.leftBumperWasPressed()) {
             if (Subsystems.isHumanIntake) {
                 SpindexerHelper.moveToNextPosition();
+                Subsystems.artifactCount = 1;
             } else {
                 SpindexerHelper.moveHalfPosition(false);
             }
         } else if (gamepad2.rightBumperWasPressed()) {
             if (Subsystems.isHumanIntake) {
                 SpindexerHelper.moveToPreviousPosition();
+                Subsystems.artifactCount = 1;
             } else {
                 SpindexerHelper.moveHalfPosition(true);
             }
@@ -101,15 +113,23 @@ public class V1Solo extends OpMode {
         // cancel functions
         if ((gamepad2.bWasPressed() || gamepad1.bWasPressed()) && !inhibitButtons) {
             Subsystems.currentShootState = Subsystems.ShootState.COMPLETED;
-            Subsystems.currentState = Subsystems.IntakeState.COMPLETED;
+            Subsystems.currentIntakeState = Subsystems.IntakeState.COMPLETED;
         }
 
-        if (gamepad1.backWasPressed()) {
-            if (IntakeHelper.intake.getPower() >= 0) {
-                IntakeHelper.reverse();
-            } else if(IntakeHelper.intake.getPower() < 0) {
+        if (gamepad1.back) {
+            if (Subsystems.currentIntakeState != Subsystems.IntakeState.INIT) {
+                previousIntakeState = PreviousIntakeState.FORWARD;
+            } else {
+                previousIntakeState = PreviousIntakeState.STOPPED;
+            }
+            IntakeHelper.reverse();
+        } else if (Subsystems.currentIntakeState == Subsystems.IntakeState.INIT) {
+            if (previousIntakeState == PreviousIntakeState.FORWARD) {
+                IntakeHelper.start();
+            } else {
                 IntakeHelper.stop();
             }
+            previousIntakeState = PreviousIntakeState.NA;
         }
 
         if (gamepad2.rightStickButtonWasPressed()) {
@@ -153,7 +173,7 @@ public class V1Solo extends OpMode {
 
         telemetry.addData("Has fired", firing);
 
-        telemetry.addData("Intake State", Subsystems.currentState);
+        telemetry.addData("Intake State", Subsystems.currentIntakeState);
         telemetry.addData("Delay", Subsystems.delayTimer.time(TimeUnit.MILLISECONDS));
         telemetry.addData("Delay started", Subsystems.delayStarted);
 

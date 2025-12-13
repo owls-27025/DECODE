@@ -6,6 +6,8 @@ import static org.firstinspires.ftc.teamcode.teleop.V1.currentSpeed;
 
 import static java.lang.Thread.sleep;
 
+import androidx.annotation.NonNull;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -62,7 +64,7 @@ public class Subsystems {
         COMPLETED
     }
 
-    public static IntakeState currentState;
+    public static IntakeState currentIntakeState;
 
 
     public enum ShootState {
@@ -128,7 +130,7 @@ public class Subsystems {
 
         // variables
         artifactCount = 0;
-        currentState = IntakeState.INIT;
+        currentIntakeState = IntakeState.INIT;
         currentShootState = ShootState.INIT;
         currentAutoShootState = AutoShootState.INIT;
         currentHumanState = HumanState.INIT;
@@ -148,20 +150,20 @@ public class Subsystems {
 
 
     public static void intake(Gamepad gamepad2) {
-        if (currentState == IntakeState.INIT) {
-            if ((gamepad2.aWasPressed() && !V1.inhibitButtons) || artifactCount == 0) {
+        if (currentIntakeState == IntakeState.INIT) {
+            if (((gamepad2.aWasPressed() && !V1.inhibitButtons) || artifactCount == 0) && currentShootState == ShootState.INIT && !isHumanIntake) {
                 // start intake
-                currentState = IntakeState.MOVING_TO_POSITION;
+                currentIntakeState = IntakeState.MOVING_TO_POSITION;
             }
         } else {
-            switch (currentState) {
+            switch (currentIntakeState) {
                 case MOVING_TO_POSITION:
                     // start intake motor
                     isDetected = false;
                     intakePosition();
                     IntakeHelper.start();
 
-                    currentState = IntakeState.WAITING_FOR_BALL;
+                    currentIntakeState = IntakeState.WAITING_FOR_BALL;
                     break;
 
                 case WAITING_FOR_BALL:
@@ -174,16 +176,16 @@ public class Subsystems {
                         artifactCount++;
 
                         if (artifactCount >= 3) {
-                            currentState = IntakeState.COMPLETED;
+                            currentIntakeState = IntakeState.COMPLETED;
                         } else {
-                            currentState = IntakeState.MOVING_TO_NEXT_POSITION;
+                            currentIntakeState = IntakeState.MOVING_TO_NEXT_POSITION;
                         }
                     }
                     break;
 
                 case MOVING_TO_NEXT_POSITION:
                     if (!SpindexerHelper.SpindexerMotor.isBusy()) {
-                        currentState = IntakeState.WAITING_FOR_BALL;
+                        currentIntakeState = IntakeState.WAITING_FOR_BALL;
                     }
 
                     isDetected = false;
@@ -193,7 +195,7 @@ public class Subsystems {
                     // stop intake motor
                     IntakeHelper.stop();
                     SpindexerHelper.shootPosition();
-                    currentState = IntakeState.INIT;
+                    currentIntakeState = IntakeState.INIT;
                     break;
             }
         }
@@ -256,10 +258,11 @@ public class Subsystems {
             if (ShooterHelper.shooterMotor.getVelocity() > 0) {
                 ShooterHelper.shooterMotor.setVelocity(0);
                 ShooterHelper.shooterMotor.setPower(-0.2);
+                Light.white();
                 isHumanIntake = true;
             } else {
                 ShooterHelper.shooterMotor.setPower(0);
-                ShooterHelper.shooterMotor.setVelocity(1100);
+                ShooterHelper.shooterMotor.setVelocity(Globals.ShooterVelocity);
                 isHumanIntake = false;
             }
         }
@@ -371,13 +374,11 @@ public class Subsystems {
         }
     }
 
-    public static boolean shootAuto(int numArtifacts) {
+    public static boolean shootAuto(int numArtifacts, int velocity) {
         if (numArtifacts <= 0) {
             currentAutoShootState = AutoShootState.INIT;
             return false;
         }
-
-        double targetVelocity = Globals.ShooterVelocity;
 
         switch (currentAutoShootState) {
             case INIT:
@@ -399,9 +400,9 @@ public class Subsystems {
                 break;
 
             case SPINNING_UP_SHOOTER:
-                ShooterHelper.shoot(targetVelocity);
+                ShooterHelper.shoot(velocity);
 
-                if (Math.abs(ShooterHelper.shooterMotor.getVelocity() - targetVelocity) <= Globals.ShooterTolerance) {
+                if (Math.abs(ShooterHelper.shooterMotor.getVelocity() - (double) velocity) <= Globals.ShooterTolerance) {
                     delayStarted = false;
                     currentAutoShootState = AutoShootState.FIRING;
                 }

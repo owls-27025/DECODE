@@ -5,8 +5,8 @@ import com.acmerobotics.roadrunner.Action;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class RRActions {
-    public Action shoot(int artifacts) {
-        return new Shoot(artifacts);
+    public Action shoot(int artifacts, int velocity) {
+        return new Shoot(artifacts, velocity);
     }
 
     public Action intake() {
