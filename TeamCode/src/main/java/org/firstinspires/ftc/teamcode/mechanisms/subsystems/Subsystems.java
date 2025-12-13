@@ -258,7 +258,7 @@ public class Subsystems {
             if (ShooterHelper.shooterMotor.getVelocity() > 0) {
                 ShooterHelper.shooterMotor.setVelocity(0);
                 ShooterHelper.shooterMotor.setPower(-0.2);
-                Light.white();
+                //Light.white();
                 isHumanIntake = true;
             } else {
                 ShooterHelper.shooterMotor.setPower(0);
