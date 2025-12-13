@@ -18,19 +18,11 @@ public class Globals {
     public static int spindexerShootTime = 15;
 
     public static void flipStick() {
-        if (isRightStick) {
-            isRightStick = false;
-        } else {
-            isRightStick = true;
-        }
+       isRightStick = !isRightStick;
     }
 
     public static void flipFieldCentric() {
-        if (isFieldCentric) {
-            isFieldCentric = false;
-        } else {
-            isFieldCentric = true;
-        }
+        isFieldCentric = !isFieldCentric;
     }
 
     public enum Alliances {
