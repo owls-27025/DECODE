@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class HumanPlayerIntake extends BaseAction {
 
-    protected HumanPlayerIntake(Robot robot) {
+    public HumanPlayerIntake(Robot robot) {
         super(robot);
     }
 

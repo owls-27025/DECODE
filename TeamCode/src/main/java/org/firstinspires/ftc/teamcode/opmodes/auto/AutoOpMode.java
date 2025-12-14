@@ -57,7 +57,7 @@ public class AutoOpMode extends OwlsOpMode {
     }
 
     @Override
-    public void runLoop() {
+    public void onStart() {
         if (!built) buildAutoFromRobotConfig();
         Actions.runBlocking(path.build(drive, rr, telemetry));
     }

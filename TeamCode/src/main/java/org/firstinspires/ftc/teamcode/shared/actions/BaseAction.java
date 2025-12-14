@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.shared.actions;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.shared.mechanisms.drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.shared.mechanisms.light.Light;
@@ -22,6 +23,8 @@ public abstract class BaseAction implements com.acmerobotics.roadrunner.Action {
 
     private boolean cancelled = false;
 
+    protected final Telemetry telemetry;
+
     protected BaseAction(Robot robot) {
         this.robot = robot;
         this.shooter = robot.shooter;
@@ -31,9 +34,10 @@ public abstract class BaseAction implements com.acmerobotics.roadrunner.Action {
         this.limelight = robot.limelight;
         this.drivetrain = robot.drivetrain;
         this.distance = robot.distance;
+
+        this.telemetry = robot.telemetry;
     }
 
-    /** Request cancellation. Next run() should return false. */
     public final void cancel() {
         if (!cancelled) {
             cancelled = true;
@@ -41,14 +45,12 @@ public abstract class BaseAction implements com.acmerobotics.roadrunner.Action {
         }
     }
 
-    /** Cleanup hook (stop motors, reset servos). Override as needed. */
     protected void onCancel() {}
 
     protected final boolean isCancelled() {
         return cancelled;
     }
 
-    /** Optional helper to call at top of run(). */
     protected final boolean stopIfCancelled(TelemetryPacket packet) {
         return !cancelled;
     }

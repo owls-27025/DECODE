@@ -92,6 +92,8 @@ public class Shoot extends BaseAction {
                 }
                 break;
         }
+
+        telemetry.addData("Shoot State", state);
         return true;
     }
 

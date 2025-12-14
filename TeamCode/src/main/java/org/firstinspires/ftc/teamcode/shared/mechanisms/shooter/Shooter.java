@@ -22,7 +22,6 @@ public class Shooter {
         if (shooter != null) shooter.setVelocity(velocity);
     }
 
-    /** +1 means rotate CCW one slot, -1 means rotate CW one slot, 0 means aligned. */
     public int calculateMotifOffset(Robot.Colors target) {
         int diff = robot.motif.index - target.index;
         if (diff == 2) diff = -1;

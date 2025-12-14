@@ -24,7 +24,6 @@ public class ActionManager {
         while (it.hasNext()) {
             Action action = it.next();
 
-            // optional: draw overlay if you use it
             action.preview(packet.fieldOverlay());
 
             boolean keepRunning = action.run(packet);

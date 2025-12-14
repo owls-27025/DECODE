@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.shared.mechanisms.distance.Distance;
 import org.firstinspires.ftc.teamcode.shared.mechanisms.drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.shared.mechanisms.intake.Intake;
@@ -208,10 +209,12 @@ public class Robot {
         return eased * sign;
     }
 
+    public Telemetry telemetry;
+
     // ----------------------------
     // Constructor
     // ----------------------------
-    public Robot(HardwareMap hw) {
+    public Robot(HardwareMap hw, Telemetry telemetry) {
         this.hw = hw;
 
         artifactCount = 0;
@@ -244,6 +247,8 @@ public class Robot {
         limelight = new Limelight(this);
         distance = new Distance(this);
         intake = new Intake(this);
+
+        this.telemetry = telemetry;
     }
 
     public void update() {

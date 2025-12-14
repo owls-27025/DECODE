@@ -71,6 +71,8 @@ public class Intake extends BaseAction {
         if (!robot.intakeReversed) {
             intake.start();
         }
+
+        telemetry.addData("Intake State", state);
         return true;
     }
 

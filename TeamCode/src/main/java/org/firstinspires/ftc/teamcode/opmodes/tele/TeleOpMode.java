@@ -5,6 +5,7 @@ import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.opmodes.OwlsOpMode;
 import org.firstinspires.ftc.teamcode.shared.actions.ActionManager;
+import org.firstinspires.ftc.teamcode.shared.actions.HumanPlayerIntake;
 import org.firstinspires.ftc.teamcode.shared.actions.Intake;
 import org.firstinspires.ftc.teamcode.shared.actions.Shoot;
 import org.firstinspires.ftc.teamcode.shared.helpers.OwlsGamepad;
@@ -15,6 +16,7 @@ public class TeleOpMode extends OwlsOpMode {
     private ActionManager actionManager;
     private Action intakeAction;
     private Action shootAction;
+    private Action humanIntakeAction;
 
     public enum PreviousIntakeState { STOPPED, FORWARD, NA }
 
@@ -25,6 +27,8 @@ public class TeleOpMode extends OwlsOpMode {
 
     @Override
     public void runLoop() {
+        shooter.shoot(robot.shooterVelocity);
+
         if (p2.pressed(OwlsGamepad.Button.DPAD_UP)) robot.shooterVelocity += 50;
         if (p2.pressed(OwlsGamepad.Button.DPAD_DOWN)) robot.shooterVelocity -= 50;
 
@@ -65,11 +69,16 @@ public class TeleOpMode extends OwlsOpMode {
             actionManager.cancelAll();
         }
 
-        if (p1.pressed(OwlsGamepad.Button.BACK)) {
+        if (p1.held(OwlsGamepad.Button.BACK)) {
             intake.reverse();
             robot.intakeReversed = true;
         } else {
             robot.intakeReversed = false;
+        }
+
+        if (p2.pressed(OwlsGamepad.Button.BACK)) {
+            actionManager.cancel(humanIntakeAction);
+            humanIntakeAction = actionManager.addAndReturn(new HumanPlayerIntake(robot));
         }
 
         if (p2.pressed(OwlsGamepad.Button.RS)) spindexer.reset();
@@ -101,5 +110,6 @@ public class TeleOpMode extends OwlsOpMode {
         telemetry.addData("Right Stick", robot.isRightStick);
         telemetry.addData("Drive Speed", robot.driveSpeed);
         telemetry.addData("Slow Speed", robot.slowDriveSpeed);
+
     }
 }
