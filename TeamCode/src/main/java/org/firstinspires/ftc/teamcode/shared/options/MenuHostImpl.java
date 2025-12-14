@@ -4,11 +4,12 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 
 public class MenuHostImpl implements MenuLib.MenuHost {
-    private final Deque<MenuLib.Menu> stack = new ArrayDeque<MenuLib.Menu>();
+    private final Deque<MenuLib.Menu> stack = new ArrayDeque<>();
     private MenuLib.Menu root;
     private MenuLib.Menu current;
 
-    /** Set the root menu and make it current. */
+    public boolean isActive = true;
+
     public void setRoot(MenuLib.Menu rootMenu) {
         this.root = rootMenu;
         this.current = rootMenu;
@@ -16,7 +17,6 @@ public class MenuHostImpl implements MenuLib.MenuHost {
         if (this.current != null) this.current.onSelected();
     }
 
-    /** Call this every init loop to render/update the current menu. */
     public void update() {
         if (current != null) current.loop();
     }
@@ -39,6 +39,11 @@ public class MenuHostImpl implements MenuLib.MenuHost {
 
     @Override
     public void goBack() {
+        if (current == root) {
+            isActive = false;
+            return;
+        }
+
         if (!stack.isEmpty()) {
             current = stack.pop();
             current.onSelected();

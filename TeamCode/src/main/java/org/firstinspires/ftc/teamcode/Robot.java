@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.shared.mechanisms.light.Light;
 import org.firstinspires.ftc.teamcode.shared.mechanisms.limelight.Limelight;
 import org.firstinspires.ftc.teamcode.shared.mechanisms.shooter.Shooter;
 import org.firstinspires.ftc.teamcode.shared.mechanisms.spindexer.Spindexer;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
@@ -141,7 +142,24 @@ public class Robot {
     public enum Sides { GOAL, WALL }
     public Sides side;
 
-    public enum AutoStrategies { LEAVE, ONECYCLEFRONT, ONECYCLEBACK }
+    public enum AutoStrategies {
+        LEAVE("Leave"),
+        ONECYCLEFRONT("One Cycle Front"),
+        ONECYCLEBACK("One Cycle Back");
+
+        public final String displayName;
+
+        AutoStrategies(String displayName) {
+            this.displayName = displayName;
+        }
+
+        @NotNull
+        @Override
+        public String toString() {
+            return displayName;
+        }
+    }
+
     public AutoStrategies autoStrategy;
 
     public enum Colors {
