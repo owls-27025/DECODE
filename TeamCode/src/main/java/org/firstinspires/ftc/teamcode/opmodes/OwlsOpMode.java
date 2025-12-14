@@ -38,7 +38,7 @@ public class OwlsOpMode extends LinearOpMode {
 
     @Override
     public final void runOpMode() throws InterruptedException {
-        robot = new Robot(hardwareMap);
+        robot = new Robot(hardwareMap, telemetry);
 
         spindexer = robot.spindexer;
         shooter = robot.shooter;

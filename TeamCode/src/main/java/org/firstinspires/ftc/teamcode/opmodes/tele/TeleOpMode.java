@@ -75,6 +75,9 @@ public class TeleOpMode extends OwlsOpMode {
             intake.reverse();
             robot.intakeReversed = true;
         } else {
+            if (!actionManager.isRunning(intakeAction)) {
+                intake.stop();
+            }
             robot.intakeReversed = false;
         }
 

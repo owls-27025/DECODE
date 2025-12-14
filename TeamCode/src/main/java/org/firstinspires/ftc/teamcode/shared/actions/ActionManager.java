@@ -57,4 +57,9 @@ public class ActionManager {
     public int size() {
         return running.size();
     }
+
+    public boolean isRunning(Action action) {
+        return action != null && running.contains(action);
+    }
+
 }
