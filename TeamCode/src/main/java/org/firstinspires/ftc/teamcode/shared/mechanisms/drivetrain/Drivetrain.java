@@ -2,9 +2,8 @@ package org.firstinspires.ftc.teamcode.shared.mechanisms.drivetrain;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Gamepad;
+import org.firstinspires.ftc.teamcode.shared.helpers.OwlsController;
 import com.qualcomm.robotcore.hardware.IMU;
-
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Robot;
 
@@ -70,24 +69,24 @@ public class Drivetrain {
         if (imu != null) imu.resetYaw();
     }
 
-    public void drive(Gamepad gp) {
+    public void drive(OwlsController gp) {
         // speed control
-        robot.currentSpeed = gp.left_bumper ? robot.slowDriveSpeed : robot.driveSpeed;
+        robot.currentSpeed = gp.held(OwlsController.Button.LB) ? robot.slowDriveSpeed : robot.driveSpeed;
 
         // reset imu
-        if (gp.startWasPressed()) {
+        if (gp.pressed(OwlsController.Button.START)) {
             resetIMU();
         }
 
         double y, x, rx;
         if (!robot.isRightStick) {
-            y = Robot.easeInOutSine(-gp.left_stick_y);
-            x = Robot.easeInOutSine(gp.left_stick_x);
-            rx = Robot.easeInOutSine(gp.right_stick_x);
+            y = Robot.easeInOutSine(-gp.leftStickY());
+            x = Robot.easeInOutSine(gp.leftStickX());
+            rx = Robot.easeInOutSine(gp.rightStickX());
         } else {
-            y = Robot.easeInOutSine(-gp.right_stick_y);
-            x = Robot.easeInOutSine(gp.right_stick_x);
-            rx = Robot.easeInOutSine(gp.left_stick_x);
+            y = Robot.easeInOutSine(-gp.rightStickY());
+            x = Robot.easeInOutSine(gp.rightStickX());
+            rx = Robot.easeInOutSine(gp.leftStickX());
         }
 
         if (robot.isFieldCentric) {
@@ -106,7 +105,6 @@ public class Drivetrain {
         if (m != null) m.setPower(p);
     }
 
-    // --- Testing helpers ---
     public int getFLPos() { return FL == null ? 0 : FL.getCurrentPosition(); }
     public int getFRPos() { return FR == null ? 0 : FR.getCurrentPosition(); }
     public int getBLPos() { return BL == null ? 0 : BL.getCurrentPosition(); }

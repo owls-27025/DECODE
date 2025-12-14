@@ -76,7 +76,7 @@ public class TeleOpMode extends OwlsOpMode {
 
         if (p1.pressed(OwlsController.Button.LS)) robot.artifactCount = 0;
 
-        drivetrain.drive(gamepad1);
+        drivetrain.drive(p1);
 
         TelemetryPacket packet = new TelemetryPacket();
         actionManager.run(packet);
