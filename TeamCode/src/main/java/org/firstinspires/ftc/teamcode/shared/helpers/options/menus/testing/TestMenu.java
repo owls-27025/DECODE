@@ -1,50 +1,49 @@
-package org.firstinspires.ftc.teamcode.shared.options.testing;
+package org.firstinspires.ftc.teamcode.shared.helpers.options.menus.testing;
 
-import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
-import com.qualcomm.robotcore.hardware.Gamepad;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Robot;
-import org.firstinspires.ftc.teamcode.shared.options.MenuLib;
+import org.firstinspires.ftc.teamcode.shared.helpers.OwlsController;
+import org.firstinspires.ftc.teamcode.shared.helpers.options.libraries.MenuLib;
 
 public class TestMenu extends MenuLib.Menu {
 
-    public TestMenu(MenuLib.MenuHost host, Robot robot, Gamepad gamepad1, Gamepad gamepad2, Telemetry telemetry, GoBildaPinpointDriver pinpoint) {
+    public TestMenu(MenuLib.MenuHost host, Robot robot, OwlsController gamepad1, OwlsController gamepad2, Telemetry telemetry) {
         super(host, gamepad1, gamepad2, telemetry, "TESTING");
 
-        addOption(new MenuLib.SubMenu(
+        addOption(MenuLib.Option.submenu(
                 "Spindexer",
                 host,
                 () -> new SpindexerMenu(host, robot, gamepad1, gamepad2, telemetry)
         ));
 
-        addOption(new MenuLib.SubMenu(
+        addOption(MenuLib.Option.submenu(
                 "Shooter",
                 host,
                 () -> new ShooterMenu(host, robot, gamepad1, gamepad2, telemetry)
         ));
 
-        addOption(new MenuLib.SubMenu(
+        addOption(MenuLib.Option.submenu(
                 "Intake",
                 host,
                 () -> new IntakeMenu(host, robot, gamepad1, gamepad2, telemetry)
         ));
 
-        addOption(new MenuLib.SubMenu(
+        addOption(MenuLib.Option.submenu(
                 "Drivetrain",
                 host,
                 () -> new DrivetrainMenu(host, robot, gamepad1, gamepad2, telemetry)
         ));
 
-        addOption(new MenuLib.SubMenu(
+        addOption(MenuLib.Option.submenu(
                 "Limelight",
                 host,
                 () -> new LimelightMenu(host, robot, gamepad1, gamepad2, telemetry)
         ));
 
-        addOption(new MenuLib.InfoOption(() -> ""));
+        addOption(MenuLib.Option.info(() -> ""));
 
-        addOption(new MenuLib.Option(
-                "Back",
+        addOption(MenuLib.Option.action(
+                () -> "Back",
                 host::goBack
         ));
     }

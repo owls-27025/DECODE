@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmodes.tele;
+package org.firstinspires.ftc.teamcode.shared.helpers;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
 
@@ -7,32 +7,17 @@ import java.lang.reflect.Method;
 import java.util.EnumMap;
 import java.util.Map;
 
-/**
- * Controls: controller-normalization + edge detection + inhibit logic + safe PS extras.
- *
- * - Canonical buttons: works with Xbox + PlayStation (Cross/Circle/Square/Triangle)
- * - pressed/held/released (digital)
- * - analog triggers (0.0 -> 1.0) + trigger edge detection
- * - automatic inhibit when Start + (A or B)
- * - safe rumble / LED color / touchpad (never crashes on Xbox or older SDKs)
- *
- * Call update() ONCE per loop before reading inputs.
- */
-public class Controls {
-
-    // ----------------------------
-    // Canonical buttons (logical)
-    // ----------------------------
+@SuppressWarnings({"unused", "SameParameterValue"})
+public class OwlsController {
     public enum Button {
         A, B, X, Y,
         LB, RB,
-        LT, RT,           // digital (thresholded)
+        LT, RT,
         START, BACK,
         LS, RS,
         DPAD_UP, DPAD_DOWN, DPAD_LEFT, DPAD_RIGHT
     }
 
-    // Touchpad data (safe; may be unavailable)
     public static final class TouchpadState {
         public boolean available = false;
         public final Finger f1 = new Finger();
@@ -42,26 +27,23 @@ public class Controls {
     public static final class Finger {
         public boolean present = false;
         public boolean isTouching = false;
-        public float x = 0f; // usually 0..1 if available
-        public float y = 0f; // usually 0..1 if available
+        public float x = 0f;
+        public float y = 0f;
     }
 
     private final Gamepad gp;
 
-    private final Map<Button, Boolean> current = new EnumMap<Button, Boolean>(Button.class);
-    private final Map<Button, Boolean> previous = new EnumMap<Button, Boolean>(Button.class);
+    private final Map<Button, Boolean> current = new EnumMap<>(Button.class);
+    private final Map<Button, Boolean> previous = new EnumMap<>(Button.class);
 
-    // analog triggers for edge detection
     private double prevLT = 0.0;
     private double prevRT = 0.0;
 
-    // inhibit: start + (a|b)
     private boolean inhibitButtons = false;
 
-    // Trigger thresholds for digital LT/RT mapping
     private double triggerDigitalThreshold = 0.5;
 
-    public Controls(Gamepad gamepad) {
+    public OwlsController(Gamepad gamepad) {
         this.gp = gamepad;
 
         for (Button b : Button.values()) {
@@ -70,64 +52,53 @@ public class Controls {
         }
     }
 
-    /** Optionally adjust the digital LT/RT threshold (default 0.5). */
+    @SuppressWarnings("unused")
     public void setTriggerDigitalThreshold(double threshold) {
         triggerDigitalThreshold = clamp01(threshold);
     }
 
-    /** Call ONCE per loop, before reading pressed/held/released. */
     public void update() {
-        // shift digital button states
         for (Button b : Button.values()) {
             previous.put(b, current.get(b));
         }
 
-        // store previous analog trigger values (for edge detection)
         prevLT = gp.left_trigger;
         prevRT = gp.right_trigger;
 
-        // read physical -> canonical
         mapButtons();
 
-        // inhibit: start + (a|b)
         if (heldRaw(Button.START) && (heldRaw(Button.A) || heldRaw(Button.B))) {
             inhibitButtons = true;
         }
 
-        // release inhibit once A and B are lifted (matches your old behavior)
         if (!heldRaw(Button.A) && !heldRaw(Button.B)) {
             inhibitButtons = false;
         }
     }
 
-    // ----------------------------
-    // Digital button API
-    // ----------------------------
     public boolean pressed(Button b) {
-        return current.get(b) && !previous.get(b) && !inhibitButtons;
+        return Boolean.TRUE.equals(current.get(b)) && Boolean.FALSE.equals(previous.get(b)) && !inhibitButtons;
     }
 
     public boolean held(Button b) {
-        return current.get(b) && !inhibitButtons;
+        return Boolean.TRUE.equals(current.get(b)) && !inhibitButtons;
     }
 
+    @SuppressWarnings("unused")
     public boolean released(Button b) {
-        return !current.get(b) && previous.get(b);
+        return Boolean.FALSE.equals(current.get(b)) && Boolean.TRUE.equals(previous.get(b));
     }
 
-    /** Raw (ignores inhibit). Useful for combos that control inhibit itself. */
     public boolean heldRaw(Button b) {
         Boolean v = current.get(b);
         return v != null && v;
     }
 
+    @SuppressWarnings("unused")
     public boolean inhibited() {
         return inhibitButtons;
     }
 
-    // ----------------------------
-    // Analog triggers (0.0 -> 1.0)
-    // ----------------------------
     public double leftTrigger() {
         return clamp01(gp.left_trigger);
     }
@@ -136,39 +107,32 @@ public class Controls {
         return clamp01(gp.right_trigger);
     }
 
-    /** Edge: crosses up through threshold this frame. */
     public boolean leftTriggerPressed(double threshold) {
         threshold = clamp01(threshold);
         double now = leftTrigger();
         return (now >= threshold && prevLT < threshold) && !inhibitButtons;
     }
 
-    /** Edge: crosses down through threshold this frame. */
+    @SuppressWarnings("unused")
     public boolean leftTriggerReleased(double threshold) {
         threshold = clamp01(threshold);
         double now = leftTrigger();
         return (now < threshold && prevLT >= threshold);
     }
 
-    /** Edge: crosses up through threshold this frame. */
     public boolean rightTriggerPressed(double threshold) {
         threshold = clamp01(threshold);
         double now = rightTrigger();
         return (now >= threshold && prevRT < threshold) && !inhibitButtons;
     }
 
-    /** Edge: crosses down through threshold this frame. */
+    @SuppressWarnings("unused")
     public boolean rightTriggerReleased(double threshold) {
         threshold = clamp01(threshold);
         double now = rightTrigger();
         return (now < threshold && prevRT >= threshold);
     }
 
-    // ----------------------------
-    // PS/Xbox extras (safe)
-    // ----------------------------
-
-    /** Safe rumble on any controller. Returns true if the SDK supported the call. */
     public boolean rumble(int milliseconds) {
         try {
             Method m = gp.getClass().getMethod("rumble", int.class);
@@ -179,7 +143,7 @@ public class Controls {
         }
     }
 
-    /** Safe blips. Falls back to short rumbles if rumbleBlips isn't available. */
+    @SuppressWarnings("unused")
     public boolean rumbleBlips(int blips) {
         try {
             Method m = gp.getClass().getMethod("rumbleBlips", int.class);
@@ -202,16 +166,9 @@ public class Controls {
         }
     }
 
-    /**
-     * Safe lightbar/LED color. Works on PS controllers if SDK exposes setLedColor,
-     * safely no-ops on Xbox.
-     *
-     * r,g,b are 0..1. durationMs may be ignored on some SDKs.
-     */
     public boolean setLedColor(double r, double g, double b, int durationMs) {
         r = clamp01(r); g = clamp01(g); b = clamp01(b);
 
-        // Signature: setLedColor(double,double,double,int)
         try {
             Method m = gp.getClass().getMethod("setLedColor",
                     double.class, double.class, double.class, int.class);
@@ -219,7 +176,6 @@ public class Controls {
             return true;
         } catch (Throwable ignored) { }
 
-        // Signature: setLedColor(double,double,double)
         try {
             Method m = gp.getClass().getMethod("setLedColor",
                     double.class, double.class, double.class);
@@ -230,7 +186,6 @@ public class Controls {
         }
     }
 
-    /** Safe touchpad read (PS). On Xbox/older SDK, returns available=false. */
     public TouchpadState readTouchpad() {
         TouchpadState out = new TouchpadState();
 
@@ -244,12 +199,7 @@ public class Controls {
         return out;
     }
 
-    // ----------------------------
-    // Internal mapping
-    // ----------------------------
     private void mapButtons() {
-        // Face buttons: unify Xbox + PlayStation names if present.
-        // Some SDK versions expose cross/circle/square/triangle; others may not.
         current.put(Button.A, gp.a || getBoolFieldSafe(gp, "cross"));
         current.put(Button.B, gp.b || getBoolFieldSafe(gp, "circle"));
         current.put(Button.X, gp.x || getBoolFieldSafe(gp, "square"));
@@ -258,7 +208,6 @@ public class Controls {
         current.put(Button.LB, gp.left_bumper);
         current.put(Button.RB, gp.right_bumper);
 
-        // Digital trigger buttons based on threshold
         current.put(Button.LT, gp.left_trigger >= triggerDigitalThreshold);
         current.put(Button.RT, gp.right_trigger >= triggerDigitalThreshold);
 
@@ -274,9 +223,6 @@ public class Controls {
         current.put(Button.DPAD_RIGHT, gp.dpad_right);
     }
 
-    // ----------------------------
-    // Reflection helpers (safe)
-    // ----------------------------
     private static boolean getBoolFieldSafe(Object obj, String fieldName) {
         try {
             Field f = obj.getClass().getField(fieldName);
@@ -325,4 +271,11 @@ public class Controls {
         if (v > 1) return 1;
         return v;
     }
+
+    public Gamepad raw() { return gp; }
+
+    public double leftStickX()  { return gp.left_stick_x; }
+    public double leftStickY()  { return gp.left_stick_y; }
+    public double rightStickX() { return gp.right_stick_x; }
+    public double rightStickY() { return gp.right_stick_y; }
 }

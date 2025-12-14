@@ -3,17 +3,19 @@ package org.firstinspires.ftc.teamcode.opmodes.auto;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import org.firstinspires.ftc.teamcode.opmodes.BaseOpMode;
+import org.firstinspires.ftc.teamcode.opmodes.OwlsOpMode;
 import org.firstinspires.ftc.teamcode.opmodes.auto.paths.AutoPath;
 import org.firstinspires.ftc.teamcode.opmodes.auto.paths.Leave;
 import org.firstinspires.ftc.teamcode.opmodes.auto.paths.OneCycleBack;
 import org.firstinspires.ftc.teamcode.opmodes.auto.paths.OneCycleFront;
 import org.firstinspires.ftc.teamcode.shared.actions.RRActions;
 import org.firstinspires.ftc.teamcode.shared.mechanisms.drivetrain.roadrunner.MecanumDrive;
-import org.firstinspires.ftc.teamcode.shared.options.MenuHostImpl;
+import org.firstinspires.ftc.teamcode.shared.helpers.options.libraries.MenuHostImpl;
+import org.firstinspires.ftc.teamcode.shared.helpers.options.menus.opmodes.AutoConfig;
 
 @Autonomous(name = "Auto", group = "OpModes")
-public class AutoOpMode extends BaseOpMode {
+@SuppressWarnings("unused")
+public class AutoOpMode extends OwlsOpMode {
 
     private enum InitState { MENU, READY }
     private InitState initState = InitState.MENU;
@@ -30,7 +32,7 @@ public class AutoOpMode extends BaseOpMode {
     public void initLoop() {
         if (initState == InitState.MENU && menuHostIsUninitialized()) {
             menuHost = new MenuHostImpl();
-            menuHost.setRoot(new AutoConfig(menuHost, robot, gamepad1, gamepad2, telemetry));
+            menuHost.setRoot(new AutoConfig(menuHost, robot, p1, p2, telemetry));
         }
 
         if (initState == InitState.MENU) {

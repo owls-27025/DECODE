@@ -1,10 +1,11 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.Robot;
-import org.firstinspires.ftc.teamcode.opmodes.tele.Controls;
+import org.firstinspires.ftc.teamcode.shared.helpers.OwlsController;
 import org.firstinspires.ftc.teamcode.shared.mechanisms.distance.Distance;
 import org.firstinspires.ftc.teamcode.shared.mechanisms.drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.shared.mechanisms.intake.Intake;
@@ -16,7 +17,8 @@ import org.firstinspires.ftc.teamcode.shared.mechanisms.spindexer.Spindexer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BaseOpMode extends LinearOpMode {
+@SuppressWarnings("RedundantThrows")
+public class OwlsOpMode extends LinearOpMode {
     protected Robot robot;
     protected Spindexer spindexer;
     protected Shooter shooter;
@@ -29,8 +31,10 @@ public class BaseOpMode extends LinearOpMode {
     protected FtcDashboard dash;
     protected List<Action> runningActions;
 
-    protected Controls p1;
-    protected Controls p2;
+    protected OwlsController p1;
+    protected OwlsController p2;
+
+    protected boolean overrideTelemetry;
 
     @Override
     public final void runOpMode() throws InterruptedException {
@@ -47,13 +51,18 @@ public class BaseOpMode extends LinearOpMode {
         dash = FtcDashboard.getInstance();
         runningActions = new ArrayList<>();
 
-        p1 = new Controls(gamepad1);
-        p2 = new Controls(gamepad2);
+        p1 = new OwlsController(gamepad1);
+        p2 = new OwlsController(gamepad2);
+
+        telemetry = new MultipleTelemetry(telemetry, dash.getTelemetry());
+        overrideTelemetry = false;
 
         try {
             onInit();
 
             while (opModeInInit() && !isStopRequested()) {
+                p1.update();
+                p2.update();
                 initLoop();
                 idle();
             }
@@ -64,11 +73,13 @@ public class BaseOpMode extends LinearOpMode {
             onStart();
 
             while (opModeIsActive() && !isStopRequested()) {
-                runLoop();
-                telemetry();
-                telemetry.update();
                 p1.update();
                 p2.update();
+                runLoop();
+                if (!overrideTelemetry) {
+                    telemetry();
+                    telemetry.update();
+                }
                 idle();
             }
         } finally {

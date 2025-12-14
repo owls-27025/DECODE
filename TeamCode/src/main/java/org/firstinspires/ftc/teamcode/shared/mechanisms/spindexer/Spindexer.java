@@ -21,9 +21,11 @@ public class Spindexer {
     private final int tpr;
     private final int single;
 
+    @SuppressWarnings("all") // trust me bro
     private final String[] colors = new String[SLOTS];
     private final boolean[] isIntakePos = new boolean[POSITIONS];
     private final boolean[] isShootPos  = new boolean[POSITIONS];
+    private double flapPosition;
 
     public Spindexer(Robot robot) {
         this.robot = robot;
@@ -53,6 +55,8 @@ public class Spindexer {
         }
 
         Arrays.fill(colors, "-");
+
+        flapPosition = robot.servoDownPos;
     }
 
     private void goToTicks(int targetTicks) {
@@ -79,7 +83,6 @@ public class Spindexer {
         if (flap != null) flap.setPosition(robot.servoDownPos);
     }
 
-    /** 0..5 half-slot index */
     public int findPosition() {
         if (motor == null) return 0;
         int ticks = motor.getCurrentPosition();
@@ -129,15 +132,24 @@ public class Spindexer {
         return motor == null ? 0 : motor.getTargetPosition();
     }
 
-
-    public void setFlapPosition(double pos) {
-        if (flap != null) flap.setPosition(pos);
-    }
     public void reset() {
         if (motor == null) return;
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motor.setTargetPosition(0);
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motor.setPower(robot.spindexerSpeed);
+    }
+
+    public double getFlapPosition() {
+        return flapPosition;
+    }
+
+    public void setFlapPosition(double pos) {
+        flapPosition = clamp(pos);
+        if (flap != null) flap.setPosition(flapPosition);
+    }
+
+    private double clamp(double v) {
+        return Math.max(0.0, Math.min(1.0, v));
     }
 }
