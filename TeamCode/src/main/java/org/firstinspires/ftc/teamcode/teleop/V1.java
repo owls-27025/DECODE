@@ -138,7 +138,7 @@ public class V1 extends OpMode {
         telemetry.addData("Current Velocity", Globals.ShooterVelocity);
 
         // color sensor telemetry
-        telemetry.addData("Distance", DistanceSensorHelper.colorSensor.getDistance(DistanceUnit.MM));
+        telemetry.addData("Distance", DistanceSensorHelper.distanceSensor.getDistance(DistanceUnit.MM));
         telemetry.addData("Detects Ball", DistanceSensorHelper.isBall());
 
         // intake telemetry

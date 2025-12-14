@@ -6,16 +6,16 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Configuration;
 
 public class DistanceSensorHelper {
-    public static Rev2mDistanceSensor colorSensor;
+    public static Rev2mDistanceSensor distanceSensor;
 
 
     public static void init(HardwareMap hw) {
         if (Configuration.distance.itemActive) {
-            colorSensor = hw.get(Rev2mDistanceSensor.class, Configuration.distance.itemName);
+            distanceSensor = hw.get(Rev2mDistanceSensor.class, Configuration.distance.itemName);
         }
     }
 
     public static boolean isBall() {
-        return colorSensor.getDistance(DistanceUnit.MM) < 130;
+        return distanceSensor.getDistance(DistanceUnit.MM) < 130;
     }
 }

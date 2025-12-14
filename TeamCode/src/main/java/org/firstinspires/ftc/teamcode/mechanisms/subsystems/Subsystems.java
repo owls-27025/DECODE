@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.mechanisms.subsystems;
 
 import static org.firstinspires.ftc.teamcode.helpers.Helpers.easeInOutSine;
-import static org.firstinspires.ftc.teamcode.mechanisms.subsystems.spindexer.SpindexerHelper.*;
 import static org.firstinspires.ftc.teamcode.teleop.V1.currentSpeed;
 
 
@@ -157,7 +156,7 @@ public class Subsystems {
                 case MOVING_TO_POSITION:
                     // start intake motor
                     isDetected = false;
-                    intakePosition();
+                    SpindexerHelper.intakePosition();
                     IntakeHelper.start();
 
                     currentIntakeState = IntakeState.WAITING_FOR_BALL;
@@ -208,7 +207,7 @@ public class Subsystems {
                 subsystemTelemetry.addLine("moving to position");
                 subsystemTelemetry.update();
                 isDetected = false;
-                intakePosition();
+                SpindexerHelper.intakePosition();
                 IntakeHelper.start();
 
                 delayStarted = false;
@@ -300,7 +299,7 @@ public class Subsystems {
             switch (currentShootState) {
                 case MOVING_TO_SHOOT_POSITION:
                     // start shooter motor
-                    shootPosition();
+                    SpindexerHelper.shootPosition();
                     shotsLeft = artifactCount;
                     initialArtifactCount = artifactCount;
                     currentShootState = ShootState.SPINNING_UP_SHOOTER;
@@ -350,7 +349,7 @@ public class Subsystems {
                     }
 
                     int current = SpindexerHelper.SpindexerMotor.getCurrentPosition();
-                    int target  = SpindexerMotor.getTargetPosition();
+                    int target  = SpindexerHelper.SpindexerMotor.getTargetPosition();
                     int posError = Math.abs(current - target);
 
                     if (posError < HALF_SLOT_TICKS * 0.1) {
@@ -389,7 +388,7 @@ public class Subsystems {
                 break;
 
             case MOVING_TO_SHOOT_POSITION:
-                shootPosition();
+                SpindexerHelper.shootPosition();
                 shotsLeft = artifactCount;
                 delayStarted = false;
 
@@ -434,7 +433,7 @@ public class Subsystems {
                 }
 
                 int current = SpindexerHelper.SpindexerMotor.getCurrentPosition();
-                int target  = SpindexerMotor.getTargetPosition();
+                int target  = SpindexerHelper.SpindexerMotor.getTargetPosition();
                 int posError = Math.abs(current - target);
 
                 if (posError < HALF_SLOT_TICKS * 0.1) {
