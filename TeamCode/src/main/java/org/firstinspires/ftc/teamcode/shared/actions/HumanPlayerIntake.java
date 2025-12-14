@@ -14,7 +14,14 @@ public class HumanPlayerIntake extends BaseAction {
     public boolean run(@NotNull TelemetryPacket telemetryPacket) {
         if (isCancelled()) return false;
 
+        robot.isHumanIntake = true;
         shooter.shoot(-600);
         return true;
+    }
+
+    @Override
+    protected void onCancel() {
+        super.onCancel();
+        robot.isHumanIntake = false;
     }
 }

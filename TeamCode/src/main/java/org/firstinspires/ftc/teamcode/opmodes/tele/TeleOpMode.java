@@ -27,7 +27,9 @@ public class TeleOpMode extends OwlsOpMode {
 
     @Override
     public void runLoop() {
-        shooter.shoot(robot.shooterVelocity);
+        if (!robot.isHumanIntake) {
+            shooter.shoot(robot.shooterVelocity);
+        }
 
         if (p2.pressed(OwlsGamepad.Button.DPAD_UP)) robot.shooterVelocity += 50;
         if (p2.pressed(OwlsGamepad.Button.DPAD_DOWN)) robot.shooterVelocity -= 50;
