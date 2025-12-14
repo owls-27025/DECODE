@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.shared.helpers.options.menus;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Robot;
-import org.firstinspires.ftc.teamcode.shared.helpers.OwlsController;
+import org.firstinspires.ftc.teamcode.shared.helpers.OwlsGamepad;
 import org.firstinspires.ftc.teamcode.shared.helpers.options.libraries.MenuLib;
 import org.firstinspires.ftc.teamcode.shared.helpers.options.menus.opmodes.AutoMenu;
 import org.firstinspires.ftc.teamcode.shared.helpers.options.menus.opmodes.TeleOpMenu;
@@ -13,8 +13,8 @@ public class SettingsMenu extends MenuLib.Menu {
     public SettingsMenu(
             MenuLib.MenuHost host,
             Robot robot,
-            OwlsController gamepad1,
-            OwlsController gamepad2,
+            OwlsGamepad gamepad1,
+            OwlsGamepad gamepad2,
             Telemetry telemetry
     ) {
         super(host, gamepad1, gamepad2, telemetry, "SETTINGS");

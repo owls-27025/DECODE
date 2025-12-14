@@ -2,11 +2,11 @@ package org.firstinspires.ftc.teamcode.shared.helpers.options.menus.testing;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Robot;
-import org.firstinspires.ftc.teamcode.shared.helpers.OwlsController;
+import org.firstinspires.ftc.teamcode.shared.helpers.OwlsGamepad;
 import org.firstinspires.ftc.teamcode.shared.helpers.options.libraries.MenuLib;
 
 public class IntakeMenu extends MenuLib.Menu {
-    public IntakeMenu(MenuLib.MenuHost host, Robot robot, OwlsController gamepad1, OwlsController gamepad2, Telemetry telemetry) {
+    public IntakeMenu(MenuLib.MenuHost host, Robot robot, OwlsGamepad gamepad1, OwlsGamepad gamepad2, Telemetry telemetry) {
         super(host, gamepad1, gamepad2, telemetry, "INTAKE");
 
         addOption(MenuLib.Option.action(

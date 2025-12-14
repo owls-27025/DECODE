@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.opmodes.OwlsOpMode;
 import org.firstinspires.ftc.teamcode.shared.actions.ActionManager;
 import org.firstinspires.ftc.teamcode.shared.actions.Intake;
 import org.firstinspires.ftc.teamcode.shared.actions.Shoot;
-import org.firstinspires.ftc.teamcode.shared.helpers.OwlsController;
+import org.firstinspires.ftc.teamcode.shared.helpers.OwlsGamepad;
 
 @TeleOp(name = "TeleOp", group = "OpModes")
 @SuppressWarnings("unused")
@@ -25,13 +25,13 @@ public class TeleOpMode extends OwlsOpMode {
 
     @Override
     public void runLoop() {
-        if (p2.pressed(OwlsController.Button.DPAD_UP)) robot.shooterVelocity += 50;
-        if (p2.pressed(OwlsController.Button.DPAD_DOWN)) robot.shooterVelocity -= 50;
+        if (p2.pressed(OwlsGamepad.Button.DPAD_UP)) robot.shooterVelocity += 50;
+        if (p2.pressed(OwlsGamepad.Button.DPAD_DOWN)) robot.shooterVelocity -= 50;
 
-        if (p2.pressed(OwlsController.Button.LB)) {
+        if (p2.pressed(OwlsGamepad.Button.LB)) {
             if (robot.isHumanIntake) spindexer.moveToNextPosition();
             else spindexer.moveHalfPosition(false);
-        } else if (p2.pressed(OwlsController.Button.RB)) {
+        } else if (p2.pressed(OwlsGamepad.Button.RB)) {
             if (robot.isHumanIntake) spindexer.moveToPreviousPosition();
             else spindexer.moveHalfPosition(true);
         }
@@ -46,35 +46,35 @@ public class TeleOpMode extends OwlsOpMode {
             case 3: light.green(); break;
         }
 
-        if (p1.pressed(OwlsController.Button.A)) {
+        if (p1.pressed(OwlsGamepad.Button.A)) {
             actionManager.cancel(intakeAction);
             intakeAction = actionManager.addAndReturn(new Intake(robot));
         }
 
-        if (p1.pressed(OwlsController.Button.X)) {
+        if (p1.pressed(OwlsGamepad.Button.X)) {
             actionManager.cancel(shootAction);
             shootAction = actionManager.addAndReturn(new Shoot(robot, robot.artifactCount, robot.shooterVelocity));
         }
 
-        if (p1.pressed(OwlsController.Button.Y)) {
+        if (p1.pressed(OwlsGamepad.Button.Y)) {
             actionManager.cancel(shootAction);
             shootAction = actionManager.addAndReturn(new Shoot(robot, 1, robot.shooterVelocity));
         }
 
-        if (p1.pressed(OwlsController.Button.B) || p2.pressed(OwlsController.Button.B)) {
+        if (p1.pressed(OwlsGamepad.Button.B) || p2.pressed(OwlsGamepad.Button.B)) {
             actionManager.cancelAll();
         }
 
-        if (p1.pressed(OwlsController.Button.BACK)) {
+        if (p1.pressed(OwlsGamepad.Button.BACK)) {
             intake.reverse();
             robot.intakeReversed = true;
         } else {
             robot.intakeReversed = false;
         }
 
-        if (p2.pressed(OwlsController.Button.RS)) spindexer.reset();
+        if (p2.pressed(OwlsGamepad.Button.RS)) spindexer.reset();
 
-        if (p1.pressed(OwlsController.Button.LS)) robot.artifactCount = 0;
+        if (p1.pressed(OwlsGamepad.Button.LS)) robot.artifactCount = 0;
 
         drivetrain.drive(p1);
 

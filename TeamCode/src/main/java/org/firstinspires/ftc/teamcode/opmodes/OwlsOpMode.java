@@ -5,7 +5,7 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.Robot;
-import org.firstinspires.ftc.teamcode.shared.helpers.OwlsController;
+import org.firstinspires.ftc.teamcode.shared.helpers.OwlsGamepad;
 import org.firstinspires.ftc.teamcode.shared.mechanisms.distance.Distance;
 import org.firstinspires.ftc.teamcode.shared.mechanisms.drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.shared.mechanisms.intake.Intake;
@@ -31,8 +31,8 @@ public class OwlsOpMode extends LinearOpMode {
     protected FtcDashboard dash;
     protected List<Action> runningActions;
 
-    protected OwlsController p1;
-    protected OwlsController p2;
+    protected OwlsGamepad p1;
+    protected OwlsGamepad p2;
 
     protected boolean overrideTelemetry;
 
@@ -51,8 +51,8 @@ public class OwlsOpMode extends LinearOpMode {
         dash = FtcDashboard.getInstance();
         runningActions = new ArrayList<>();
 
-        p1 = new OwlsController(gamepad1);
-        p2 = new OwlsController(gamepad2);
+        p1 = new OwlsGamepad(gamepad1);
+        p2 = new OwlsGamepad(gamepad2);
 
         telemetry = new MultipleTelemetry(telemetry, dash.getTelemetry());
         overrideTelemetry = false;
@@ -63,6 +63,7 @@ public class OwlsOpMode extends LinearOpMode {
             while (opModeInInit() && !isStopRequested()) {
                 p1.update();
                 p2.update();
+                robot.update();
                 initLoop();
                 idle();
             }
@@ -75,6 +76,7 @@ public class OwlsOpMode extends LinearOpMode {
             while (opModeIsActive() && !isStopRequested()) {
                 p1.update();
                 p2.update();
+                robot.update();
                 runLoop();
                 if (!overrideTelemetry) {
                     telemetry();

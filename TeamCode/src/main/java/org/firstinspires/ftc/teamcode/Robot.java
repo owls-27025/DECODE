@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 
+@SuppressWarnings("unused")
 public class Robot {
     public final HardwareMap hw;
 
@@ -43,6 +44,7 @@ public class Robot {
         public final ConfigItem imu            = item("imu", true);
         public final ConfigItem limelight      = item("limelight", true);
 
+        @SuppressWarnings("SameParameterValue")
         private ConfigItem item(String name, boolean active) {
             ConfigItem c = new ConfigItem(name, active);
             configItems.add(c);
@@ -242,5 +244,9 @@ public class Robot {
         limelight = new Limelight(this);
         distance = new Distance(this);
         intake = new Intake(this);
+    }
+
+    public void update() {
+        drivetrain.update();
     }
 }

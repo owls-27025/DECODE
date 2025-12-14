@@ -6,14 +6,14 @@ import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.teamcode.Robot;
-import org.firstinspires.ftc.teamcode.shared.helpers.OwlsController;
+import org.firstinspires.ftc.teamcode.shared.helpers.OwlsGamepad;
 import org.firstinspires.ftc.teamcode.shared.helpers.options.libraries.MenuLib;
 
 import java.util.List;
 
 public class LimelightMenu extends MenuLib.Menu {
 
-    public LimelightMenu(MenuLib.MenuHost host, Robot robot, OwlsController gamepad1, OwlsController gamepad2, Telemetry telemetry) {
+    public LimelightMenu(MenuLib.MenuHost host, Robot robot, OwlsGamepad gamepad1, OwlsGamepad gamepad2, Telemetry telemetry) {
         super(host, gamepad1, gamepad2, telemetry, "LIMELIGHT");
 
         LLResult result = robot.limelight.getLatestResult();

@@ -20,8 +20,6 @@ public class Limelight {
             limelight.start();
         }
     }
-
-    /** Updates robot.motif based on fiducial IDs 21/22/23. Returns true if detected. */
     public boolean getMotif() {
         if (limelight == null) return false;
 

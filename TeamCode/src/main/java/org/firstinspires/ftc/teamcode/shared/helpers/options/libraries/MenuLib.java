@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.shared.helpers.options.libraries;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.shared.helpers.OwlsController;
+import org.firstinspires.ftc.teamcode.shared.helpers.OwlsGamepad;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -146,8 +146,8 @@ public class MenuLib {
 
     public static abstract class Menu {
         protected final MenuHost host;
-        protected final OwlsController gamepad1;
-        protected final OwlsController gamepad2;
+        protected final OwlsGamepad gamepad1;
+        protected final OwlsGamepad gamepad2;
         protected final Telemetry telemetry;
         private final String title;
 
@@ -162,7 +162,7 @@ public class MenuLib {
         private long upPressStartTime, downPressStartTime, leftPressStartTime, rightPressStartTime;
         private long upLastRepeatTime, downLastRepeatTime, leftLastRepeatTime, rightLastRepeatTime;
 
-        public Menu(MenuHost host, OwlsController gamepad1, OwlsController gamepad2, Telemetry telemetry, String title) {
+        public Menu(MenuHost host, OwlsGamepad gamepad1, OwlsGamepad gamepad2, Telemetry telemetry, String title) {
             this.host = host;
             this.gamepad1 = gamepad1;
             this.gamepad2 = gamepad2;
@@ -193,19 +193,19 @@ public class MenuLib {
             double lsy2 = gamepad2.leftStickY();
 
             boolean upActive =
-                    gamepad1.held(OwlsController.Button.DPAD_UP) || gamepad2.held(OwlsController.Button.DPAD_UP) ||
+                    gamepad1.held(OwlsGamepad.Button.DPAD_UP) || gamepad2.held(OwlsGamepad.Button.DPAD_UP) ||
                             (lsy1 < -STICK_DEADZONE) || (lsy2 < -STICK_DEADZONE);
 
             boolean downActive =
-                    gamepad1.held(OwlsController.Button.DPAD_DOWN) || gamepad2.held(OwlsController.Button.DPAD_DOWN) ||
+                    gamepad1.held(OwlsGamepad.Button.DPAD_DOWN) || gamepad2.held(OwlsGamepad.Button.DPAD_DOWN) ||
                             (lsy1 > STICK_DEADZONE) || (lsy2 > STICK_DEADZONE);
 
             boolean leftActive =
-                    gamepad1.held(OwlsController.Button.DPAD_LEFT) || gamepad2.held(OwlsController.Button.DPAD_LEFT) ||
+                    gamepad1.held(OwlsGamepad.Button.DPAD_LEFT) || gamepad2.held(OwlsGamepad.Button.DPAD_LEFT) ||
                             (lsx1 < -STICK_DEADZONE) || (lsx2 < -STICK_DEADZONE);
 
             boolean rightActive =
-                    gamepad1.held(OwlsController.Button.DPAD_RIGHT) || gamepad2.held(OwlsController.Button.DPAD_RIGHT) ||
+                    gamepad1.held(OwlsGamepad.Button.DPAD_RIGHT) || gamepad2.held(OwlsGamepad.Button.DPAD_RIGHT) ||
                             (lsx1 > STICK_DEADZONE) || (lsx2 > STICK_DEADZONE);
 
             long now = System.nanoTime();
@@ -274,11 +274,11 @@ public class MenuLib {
                 rightHeld = false;
             }
 
-            if (gamepad1.pressed(OwlsController.Button.A) || gamepad2.pressed(OwlsController.Button.A)) {
+            if (gamepad1.pressed(OwlsGamepad.Button.A) || gamepad2.pressed(OwlsGamepad.Button.A)) {
                 if (options.get(pointer).isSelectable()) options.get(pointer).select();
             }
 
-            if (gamepad1.pressed(OwlsController.Button.B) || gamepad2.pressed(OwlsController.Button.B)) {
+            if (gamepad1.pressed(OwlsGamepad.Button.B) || gamepad2.pressed(OwlsGamepad.Button.B)) {
                 host.goBack();
             }
 

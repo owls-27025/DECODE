@@ -8,7 +8,7 @@ import java.util.EnumMap;
 import java.util.Map;
 
 @SuppressWarnings({"unused", "SameParameterValue"})
-public class OwlsController {
+public class OwlsGamepad {
     public enum Button {
         A, B, X, Y,
         LB, RB,
@@ -43,7 +43,7 @@ public class OwlsController {
 
     private double triggerDigitalThreshold = 0.5;
 
-    public OwlsController(Gamepad gamepad) {
+    public OwlsGamepad(Gamepad gamepad) {
         this.gp = gamepad;
 
         for (Button b : Button.values()) {

@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.shared.mechanisms.drivetrain;
 
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import org.firstinspires.ftc.teamcode.shared.helpers.OwlsController;
+import org.firstinspires.ftc.teamcode.shared.helpers.OwlsGamepad;
 import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Robot;
+
 
 public class Drivetrain {
     private final DcMotor FL;
@@ -13,6 +15,7 @@ public class Drivetrain {
     private final DcMotor BL;
     private final DcMotor BR;
     private final IMU imu;
+    private final GoBildaPinpointDriver odo;
     private final Robot robot;
 
     public Drivetrain(Robot robot) {
@@ -48,6 +51,8 @@ public class Drivetrain {
                     RevHubOrientationOnRobot.UsbFacingDirection.UP);
             imu.initialize(new IMU.Parameters(Orientation));
         }
+
+        odo = robot.registerItem(GoBildaPinpointDriver.class, robot.config.odometry);
     }
 
     public double[] fieldCentricDrive(double x, double y) {
@@ -69,12 +74,24 @@ public class Drivetrain {
         if (imu != null) imu.resetYaw();
     }
 
-    public void drive(OwlsController gp) {
+    public double getOdometryHeading() {
+        return odo.getHeading(AngleUnit.DEGREES);
+    }
+
+    public int getOdometryX() {
+        return odo.getEncoderX();
+    }
+
+    public int getOdometryY() {
+        return odo.getEncoderY();
+    }
+
+    public void drive(OwlsGamepad gp) {
         // speed control
-        robot.currentSpeed = gp.held(OwlsController.Button.LB) ? robot.slowDriveSpeed : robot.driveSpeed;
+        robot.currentSpeed = gp.held(OwlsGamepad.Button.LB) ? robot.slowDriveSpeed : robot.driveSpeed;
 
         // reset imu
-        if (gp.pressed(OwlsController.Button.START)) {
+        if (gp.pressed(OwlsGamepad.Button.START)) {
             resetIMU();
         }
 
@@ -109,4 +126,12 @@ public class Drivetrain {
     public int getFRPos() { return FR == null ? 0 : FR.getCurrentPosition(); }
     public int getBLPos() { return BL == null ? 0 : BL.getCurrentPosition(); }
     public int getBRPos() { return BR == null ? 0 : BR.getCurrentPosition(); }
+
+    public void update() {
+        odo.update();
+    }
+
+    public double getIMUHeading() {
+        return imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+    }
 }
