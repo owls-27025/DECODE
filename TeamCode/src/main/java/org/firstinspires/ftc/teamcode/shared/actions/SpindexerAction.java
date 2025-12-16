@@ -21,7 +21,9 @@ public class SpindexerAction extends BaseAction {
 
     private ElapsedTime timer;
 
-    protected SpindexerAction(Robot robot) {
+    private boolean timerReset;
+
+    public SpindexerAction(Robot robot) {
         super(robot);
         timer = new ElapsedTime();
     }
@@ -29,6 +31,8 @@ public class SpindexerAction extends BaseAction {
     private void enter(States state) {
         this.state = state;
         timer.reset();
+        robot.spindexerReady = false;
+        timerReset = false;
     }
 
     @Override
@@ -56,8 +60,15 @@ public class SpindexerAction extends BaseAction {
             case SHOOT_POS:
                 robot.spindexerReady = true;
                 if (robot.shooterReady) {
-                    timer.reset();
+                    if (!timerReset) {
+                        timer.reset();
+                        timerReset = true;
+                    }
                     spindexer.flapUp();
+                    if (timer.time(TimeUnit.MILLISECONDS) >= 400) {
+                        spindexer.flapDown();
+                        timerReset = false;
+                    }
                 }
                 break;
         }

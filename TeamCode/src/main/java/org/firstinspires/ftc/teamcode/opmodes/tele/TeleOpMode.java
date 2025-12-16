@@ -6,10 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.opmodes.OwlsOpMode;
-import org.firstinspires.ftc.teamcode.shared.actions.ActionManager;
-import org.firstinspires.ftc.teamcode.shared.actions.HumanPlayerIntake;
-import org.firstinspires.ftc.teamcode.shared.actions.Intake;
-import org.firstinspires.ftc.teamcode.shared.actions.Shoot;
+import org.firstinspires.ftc.teamcode.shared.actions.*;
 import org.firstinspires.ftc.teamcode.shared.helpers.OwlsGamepad;
 
 @TeleOp(name = "TeleOp", group = "OpModes")
@@ -19,6 +16,7 @@ public class TeleOpMode extends OwlsOpMode {
     private Action intakeAction;
     private Action shootAction;
     private Action humanIntakeAction;
+    private Action spindexerAction;
 
     public enum PreviousIntakeState { STOPPED, FORWARD, NA }
 
@@ -56,7 +54,9 @@ public class TeleOpMode extends OwlsOpMode {
 
         if (p1.pressed(OwlsGamepad.Button.A)) {
             actionManager.cancel(intakeAction);
+            actionManager.cancel(spindexerAction);
             intakeAction = actionManager.addAndReturn(new Intake(robot));
+            spindexerAction = actionManager.addAndReturn(new SpindexerAction(robot));
         }
 
         if (p1.pressed(OwlsGamepad.Button.X)) {
