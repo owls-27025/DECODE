@@ -7,8 +7,8 @@ import org.firstinspires.ftc.teamcode.Robot;
 public class Distance {
     private final DistanceSensor distance;
 
-    public Distance(Robot robot) {
-        distance = robot.registerItem(DistanceSensor.class, robot.config.distance);
+    public Distance(Robot.Config config) {
+        distance = config.registerItem(DistanceSensor.class, Robot.Config.distance);
     }
 
     public boolean isBall() {

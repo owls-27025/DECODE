@@ -6,18 +6,16 @@ import org.firstinspires.ftc.teamcode.Robot;
 
 public class Intake {
     private final DcMotor intake;
-    private final Robot robot;
 
-    public Intake(Robot robot) {
-        this.robot = robot;
-        intake = robot.registerItem(DcMotor.class, robot.config.intake);
+    public Intake(Robot.Config config) {
+        intake = config.registerItem(DcMotor.class, Robot.Config.intake);
         if (intake != null) {
             intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
     }
 
     public void start() {
-        setPower(robot.intakeSpeed);
+        setPower(Robot.Globals.intakeSpeed);
     }
 
     public void stop() {
@@ -25,7 +23,7 @@ public class Intake {
     }
 
     public void reverse() {
-        setPower(-robot.intakeSpeed);
+        setPower(-Robot.Globals.intakeSpeed);
     }
 
     public void setPower(double power) {

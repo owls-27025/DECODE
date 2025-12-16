@@ -45,7 +45,7 @@ public class Shoot extends BaseAction {
         if (isCancelled()) return false;
 
         if (state == State.DONE) {
-            spindexer.intakePosition();
+            spindexer.shootPosition();
             return false;
         }
 

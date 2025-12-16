@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.shared.mechanisms.drivetrain.roadrunner.tuning;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -131,7 +133,7 @@ public final class TuningOpModes {
         DriveViewFactory dvf;
         if (DRIVE_CLASS.equals(MecanumDrive.class)) {
             dvf = hardwareMap -> {
-                Robot robot = new Robot(hardwareMap);
+                Robot robot = new Robot(hardwareMap, telemetry);
                 MecanumDrive md = new MecanumDrive(robot, hardwareMap, new Pose2d(0, 0, 0));
                 LazyImu lazyImu = md.lazyImu;
 

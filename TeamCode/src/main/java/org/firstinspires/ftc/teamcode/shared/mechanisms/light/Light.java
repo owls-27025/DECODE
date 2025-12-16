@@ -26,8 +26,8 @@ public class Light {
     private final Servo light;
     private LightColor current = LightColor.RED;
 
-    public Light(Robot robot) {
-        light = robot.registerItem(Servo.class, robot.config.light);
+    public Light(Robot.Config config) {
+        light = config.registerItem(Servo.class, Robot.Config.light);
         apply();
     }
 

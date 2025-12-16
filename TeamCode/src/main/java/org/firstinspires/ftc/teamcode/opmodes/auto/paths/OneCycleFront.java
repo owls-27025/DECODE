@@ -72,9 +72,9 @@ public class OneCycleFront implements AutoPath {
 //                    ),
                     new ParallelAction(
                             rractions.spinUpShooter(),
-                            rractions.shoot(3, 1050)
-                    ),
-                    goToIntakeOne.build()
+                            rractions.shoot(3, 900)
+                    )
+//                    goToIntakeOne.build()
 //                    new ParallelAction(
 //                        rractions.intake(),
 //                        intakeOne.build()
@@ -123,14 +123,14 @@ public class OneCycleFront implements AutoPath {
 //                    ),
                     new ParallelAction(
                             rractions.spinUpShooter(),
-                            rractions.shoot(3, 1050)
-                    ),
-                    goToIntakeOne.build()
+                            rractions.shoot(3, 900)
+                    )
+//                    goToIntakeOne.build()
 //                    new ParallelAction(
 //                        rractions.intake(),
 //                        intakeOne.build()
-//                    )
-//                    shootWait.build(),
+//                    ),
+//                    shootWait.build()
 //                    goToIntakeTwo.build(),
 //                    intakeTwo.build(),
 //                    shootWait.build()

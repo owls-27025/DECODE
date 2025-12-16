@@ -16,7 +16,7 @@ public final class ManualFeedbackTuner extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         if (TuningOpModes.DRIVE_CLASS.equals(MecanumDrive.class)) {
-            Robot robot = new Robot(hardwareMap);
+            Robot robot = new Robot(hardwareMap, telemetry);
             MecanumDrive drive = new MecanumDrive(robot, hardwareMap, new Pose2d(0, 0, 0));
             
             if (drive.localizer instanceof TwoDeadWheelLocalizer) {

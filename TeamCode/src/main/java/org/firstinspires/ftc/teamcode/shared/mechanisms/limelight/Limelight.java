@@ -10,11 +10,9 @@ import java.util.List;
 
 public class Limelight {
     private final Limelight3A limelight;
-    private final Robot robot;
 
-    public Limelight(Robot robot) {
-        this.robot = robot;
-        limelight = robot.registerItem(Limelight3A.class, robot.config.limelight);
+    public Limelight(Robot.Config config) {
+        limelight = config.registerItem(Limelight3A.class, Robot.Config.limelight);
         if (limelight != null) {
             limelight.setPollRateHz(50);
             limelight.start();
@@ -31,9 +29,9 @@ public class Limelight {
 
         for (LLResultTypes.FiducialResult fiducial : fiducials) {
             int id = fiducial.getFiducialId();
-            if (id == 21) { robot.motif = Robot.Colors.GPP; return true; }
-            if (id == 22) { robot.motif = Robot.Colors.PGP; return true; }
-            if (id == 23) { robot.motif = Robot.Colors.PPG; return true; }
+            if (id == 21) { Robot.Globals.motif = Robot.Globals.Colors.GPP; return true; }
+            if (id == 22) { Robot.Globals.motif = Robot.Globals.Colors.PGP; return true; }
+            if (id == 23) { Robot.Globals.motif = Robot.Globals.Colors.PPG; return true; }
         }
         return false;
     }

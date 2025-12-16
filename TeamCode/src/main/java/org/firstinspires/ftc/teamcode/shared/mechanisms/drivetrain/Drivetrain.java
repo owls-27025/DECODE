@@ -16,15 +16,12 @@ public class Drivetrain {
     private final DcMotor BR;
     private final IMU imu;
     private final GoBildaPinpointDriver odo;
-    private final Robot robot;
 
-    public Drivetrain(Robot robot) {
-        this.robot = robot;
-
-        FR = robot.registerItem(DcMotor.class, robot.config.FR);
-        FL = robot.registerItem(DcMotor.class, robot.config.FL);
-        BR = robot.registerItem(DcMotor.class, robot.config.BR);
-        BL = robot.registerItem(DcMotor.class, robot.config.BL);
+    public Drivetrain(Robot.Config config) {
+        FR = config.registerItem(DcMotor.class, Robot.Config.FR);
+        FL = config.registerItem(DcMotor.class, Robot.Config.FL);
+        BR = config.registerItem(DcMotor.class, Robot.Config.BR);
+        BL = config.registerItem(DcMotor.class, Robot.Config.BL);
 
         if (FR != null) FR.setDirection(DcMotor.Direction.REVERSE);
         if (BL != null) BL.setDirection(DcMotor.Direction.REVERSE);
@@ -44,7 +41,7 @@ public class Drivetrain {
         if (FL != null) FL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         if (BL != null) BL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        imu = robot.registerItem(IMU.class, robot.config.imu);
+        imu = config.registerItem(IMU.class, Robot.Config.imu);
         if (imu != null) {
             RevHubOrientationOnRobot Orientation = new RevHubOrientationOnRobot(
                     RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
@@ -52,7 +49,7 @@ public class Drivetrain {
             imu.initialize(new IMU.Parameters(Orientation));
         }
 
-        odo = robot.registerItem(GoBildaPinpointDriver.class, robot.config.odometry);
+        odo = config.registerItem(GoBildaPinpointDriver.class, Robot.Config.odometry);
     }
 
     public double[] fieldCentricDrive(double x, double y) {
@@ -88,7 +85,7 @@ public class Drivetrain {
 
     public void drive(OwlsGamepad gp) {
         // speed control
-        robot.currentSpeed = gp.held(OwlsGamepad.Button.LB) ? robot.slowDriveSpeed : robot.driveSpeed;
+        Robot.Globals.currentSpeed = gp.held(OwlsGamepad.Button.LB) ? Robot.Globals.slowDriveSpeed : Robot.Globals.driveSpeed;
 
         // reset imu
         if (gp.pressed(OwlsGamepad.Button.START)) {
@@ -96,26 +93,26 @@ public class Drivetrain {
         }
 
         double y, x, rx;
-        if (!robot.isRightStick) {
-            y = Robot.easeInOutSine(-gp.leftStickY());
-            x = Robot.easeInOutSine(gp.leftStickX());
-            rx = Robot.easeInOutSine(gp.rightStickX());
+        if (!Robot.Globals.isRightStick) {
+            y = Robot.Globals.easeInOutSine(-gp.leftStickY());
+            x = Robot.Globals.easeInOutSine(gp.leftStickX());
+            rx = Robot.Globals.easeInOutSine(gp.rightStickX());
         } else {
-            y = Robot.easeInOutSine(-gp.rightStickY());
-            x = Robot.easeInOutSine(gp.rightStickX());
-            rx = Robot.easeInOutSine(gp.leftStickX());
+            y = Robot.Globals.easeInOutSine(-gp.rightStickY());
+            x = Robot.Globals.easeInOutSine(gp.rightStickX());
+            rx = Robot.Globals.easeInOutSine(gp.leftStickX());
         }
 
-        if (robot.isFieldCentric) {
+        if (Robot.Globals.isFieldCentric) {
             double[] fc = fieldCentricDrive(x, y);
             y = fc[0];
             x = fc[1];
         }
 
-        setPower(FL, (y + x + rx) * robot.currentSpeed);
-        setPower(BL, (y - x + rx) * robot.currentSpeed);
-        setPower(FR, (y - x - rx) * robot.currentSpeed);
-        setPower(BR, (y + x - rx) * robot.currentSpeed);
+        setPower(FL, (y + x + rx) * Robot.Globals.currentSpeed);
+        setPower(BL, (y - x + rx) * Robot.Globals.currentSpeed);
+        setPower(FR, (y - x - rx) * Robot.Globals.currentSpeed);
+        setPower(BR, (y + x - rx) * Robot.Globals.currentSpeed);
     }
 
     private static void setPower(DcMotor m, double p) {

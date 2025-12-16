@@ -11,7 +11,6 @@ public class Spindexer {
     public final double[] intakePositions = new double[]{1.0, 3.0, 5.0};
     public final double[] shootPositions  = new double[]{0.0, 2.0, 4.0};
 
-    private final Robot robot;
     private final DcMotor motor;
     private final Servo flap;
 
@@ -27,13 +26,12 @@ public class Spindexer {
     private final boolean[] isShootPos  = new boolean[POSITIONS];
     private double flapPosition;
 
-    public Spindexer(Robot robot) {
-        this.robot = robot;
-        this.tpr = robot.tpr;
+    public Spindexer(Robot.Config config) {
+        this.tpr = Robot.Globals.tpr;
         this.single = tpr * 2;
 
-        motor = robot.registerItem(DcMotor.class, robot.config.spindexerMotor);
-        flap  = robot.registerItem(Servo.class, robot.config.spindexerServo);
+        motor = config.registerItem(DcMotor.class, config.spindexerMotor);
+        flap  = config.registerItem(Servo.class, config.spindexerServo);
 
         Arrays.fill(isIntakePos, false);
         Arrays.fill(isShootPos, false);
@@ -47,23 +45,23 @@ public class Spindexer {
             motor.setDirection(DcMotor.Direction.FORWARD);
 
             motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            motor.setPower(robot.spindexerSpeed);
+            motor.setPower(Robot.Globals.spindexerSpeed);
         }
 
         if (flap != null) {
-            flap.setPosition(robot.servoDownPos);
+            flap.setPosition(Robot.Globals.servoDownPos);
         }
 
         Arrays.fill(colors, "-");
 
-        flapPosition = robot.servoDownPos;
+        flapPosition = Robot.Globals.servoDownPos;
     }
 
     private void goToTicks(int targetTicks) {
         if (motor == null) return;
         motor.setTargetPosition(targetTicks);
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motor.setPower(robot.spindexerSpeed);
+        motor.setPower(Robot.Globals.spindexerSpeed);
     }
 
     private void goRelativeTicks(int deltaTicks) {
@@ -80,7 +78,7 @@ public class Spindexer {
     }
 
     public void flapDown() {
-        if (flap != null) flap.setPosition(robot.servoDownPos);
+        if (flap != null) flap.setPosition(Robot.Globals.servoDownPos);
     }
 
     public int findPosition() {
@@ -137,7 +135,7 @@ public class Spindexer {
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motor.setTargetPosition(0);
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motor.setPower(robot.spindexerSpeed);
+        motor.setPower(Robot.Globals.spindexerSpeed);
     }
 
     public double getFlapPosition() {
