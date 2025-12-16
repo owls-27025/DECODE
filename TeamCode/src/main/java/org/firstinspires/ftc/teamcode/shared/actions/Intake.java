@@ -5,16 +5,12 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import org.firstinspires.ftc.teamcode.Robot;
 
 public class Intake extends BaseAction {
-    private State state = State.MOVING_TO_POSITION;
-
-    private boolean lastBall = false;
-    private boolean requestedIndex = false;
+    private State state = State.FORWARD;
 
     private enum State {
-        MOVING_TO_POSITION,
-        WAITING_FOR_BALL,
-        INDEXING,
-        COMPLETED
+        FORWARD,
+        REVERSE,
+        STOP
     }
 
     public Intake(Robot robot) {
@@ -23,53 +19,28 @@ public class Intake extends BaseAction {
 
     private void enter(State next) {
         state = next;
-        if (next == State.WAITING_FOR_BALL) {
-            requestedIndex = false;
-        }
     }
 
     @Override
     public boolean run(@NonNull TelemetryPacket packet) {
-        if (isCancelled()) return false;
-
-        boolean ballNow = distance.isBall();
-        boolean ballRisingEdge = ballNow && !lastBall;
-        lastBall = ballNow;
-
         switch (state) {
-            case MOVING_TO_POSITION:
-                spindexer.intakePosition();
+            case FORWARD:
                 intake.start();
-                enter(State.WAITING_FOR_BALL);
-                break;
-
-            case WAITING_FOR_BALL:
                 if (robot.artifactCount >= 3) {
-                    enter(State.COMPLETED);
-                    break;
-                }
-
-                if (ballRisingEdge && !requestedIndex) {
-                    spindexer.moveToNextPosition();
-                    requestedIndex = true;
-                    enter(State.INDEXING);
+                    enter(State.STOP);
                 }
                 break;
 
-            case INDEXING:
-                if (!spindexer.isBusy()) {
-                    robot.artifactCount++;
-                    enter(robot.artifactCount >= 3 ? State.COMPLETED : State.WAITING_FOR_BALL);
-                }
-                break;
-
-            case COMPLETED:
+            case STOP:
                 intake.stop();
-                spindexer.shootPosition();
                 return false;
-        }
-        if (!robot.intakeReversed) {
-            intake.start();
+
+            case REVERSE:
+                intake.reverse();
+                if (robot.artifactCount >= 3) {
+                    enter(State.STOP);
+                }
+                break;
         }
 
         telemetry.addData("Intake State", state);
@@ -79,7 +50,6 @@ public class Intake extends BaseAction {
     @Override
     protected void onCancel() {
         intake.stop();
-        spindexer.shootPosition();
     }
 
 }
