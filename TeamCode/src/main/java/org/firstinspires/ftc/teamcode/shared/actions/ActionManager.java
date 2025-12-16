@@ -8,7 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class ActionManager {
-    private final List<Action> running = new ArrayList<Action>();
+    private final List<Action> running = new ArrayList<>();
 
     public void add(Action action) {
         if (action != null) running.add(action);

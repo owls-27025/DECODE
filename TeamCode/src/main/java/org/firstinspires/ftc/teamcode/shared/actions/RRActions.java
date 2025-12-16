@@ -12,7 +12,7 @@ public class RRActions {
     }
 
     public Action shoot(int artifacts, int velocity) {
-        return new Shoot(robot, artifacts, velocity);
+        return new Shoot(robot);
     }
 
     public Action intake() {

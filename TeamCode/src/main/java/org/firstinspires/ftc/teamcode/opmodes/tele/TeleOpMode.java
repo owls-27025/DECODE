@@ -26,6 +26,12 @@ public class TeleOpMode extends OwlsOpMode {
     }
 
     @Override
+    public void onStart() {
+        intakeAction = actionManager.addAndReturn(new Intake(robot));
+        shootAction = actionManager.addAndReturn(new Shoot(robot));
+    }
+
+    @Override
     public void runLoop() {
         if (!robot.isHumanIntake) {
             shooter.shoot(Robot.Globals.shooterVelocity);
@@ -67,13 +73,13 @@ public class TeleOpMode extends OwlsOpMode {
         // shoot
         if (p1.pressed(OwlsGamepad.Button.X)) {
             actionManager.cancel(shootAction);
-            shootAction = actionManager.addAndReturn(new Shoot(robot, robot.artifactCount, Robot.Globals.shooterVelocity));
+            shootAction = actionManager.addAndReturn(new Shoot(robot));
         }
 
         // manual shoot (set to 1)
         if (p1.pressed(OwlsGamepad.Button.Y)) {
             actionManager.cancel(shootAction);
-            shootAction = actionManager.addAndReturn(new Shoot(robot, 1, Robot.Globals.shooterVelocity));
+            shootAction = actionManager.addAndReturn(new Shoot(robot));
         }
 
         // cancel
@@ -94,8 +100,7 @@ public class TeleOpMode extends OwlsOpMode {
 
         // human intake
         if (p2.pressed(OwlsGamepad.Button.BACK)) {
-            actionManager.cancel(humanIntakeAction);
-            humanIntakeAction = actionManager.addAndReturn(new HumanPlayerIntake(robot));
+            robot.isHumanIntake = !robot.isHumanIntake;
         }
 
         // reset spindexer encoder

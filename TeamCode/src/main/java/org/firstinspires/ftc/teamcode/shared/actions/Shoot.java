@@ -7,20 +7,17 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Robot;
 
 public class Shoot extends BaseAction {
-    private final int velocity;
     private State state;
     private final ElapsedTime timer = new ElapsedTime();
 
-    private boolean advancedThisCycle;
-
     private enum State {
         SPIN_UP,
-        READY
+        READY,
+        HUMAN_INTAKE
     }
 
-    public Shoot(Robot robot, int numArtifacts, int velocity) {
+    public Shoot(Robot robot) {
         super(robot);
-        this.velocity = velocity;
     }
 
     private void enter(State next) {
@@ -32,10 +29,14 @@ public class Shoot extends BaseAction {
     public boolean run(@NonNull TelemetryPacket packet) {
         if (isCancelled()) return false;
 
+        if (robot.isHumanIntake) {
+            state = State.HUMAN_INTAKE;
+        }
+
         switch (state) {
             case SPIN_UP:
-                shooter.shoot(velocity);
-                if (Math.abs(shooter.getVelocity() - velocity) <= Robot.Globals.shooterTolerance) {
+                shooter.shoot(Robot.Globals.shooterVelocity);
+                if (Math.abs(shooter.getVelocity() - Robot.Globals.shooterVelocity) <= Robot.Globals.shooterTolerance) {
                     enter(State.READY);
                 }
                 break;
@@ -43,8 +44,9 @@ public class Shoot extends BaseAction {
             case READY:
                 robot.shooterReady = true;
                 break;
-
-
+            case HUMAN_INTAKE:
+                shooter.shoot(-600);
+                break;
         }
 
         telemetry.addData("Shoot State", state);
