@@ -33,9 +33,11 @@ public class TeleOpMode extends OwlsOpMode {
             shooter.shoot(Robot.Globals.shooterVelocity);
         }
 
+        // manual shooter vel change
         if (p2.pressed(OwlsGamepad.Button.DPAD_UP)) Robot.Globals.shooterVelocity += 50;
         if (p2.pressed(OwlsGamepad.Button.DPAD_DOWN)) Robot.Globals.shooterVelocity -= 50;
 
+        // manual spindexer control
         if (p2.pressed(OwlsGamepad.Button.LB)) {
             if (robot.isHumanIntake) spindexer.moveToNextPosition();
             else spindexer.moveHalfPosition(false);
@@ -44,9 +46,11 @@ public class TeleOpMode extends OwlsOpMode {
             else spindexer.moveHalfPosition(true);
         }
 
+        // manual spindexer pos
         if (p2.leftTriggerPressed(0.2)) spindexer.intakePosition();
         else if (p2.rightTriggerPressed(0.2)) spindexer.shootPosition();
 
+        // rgb
         switch (robot.artifactCount) {
             case 0: light.blue(); break;
             case 1: light.red(); break;
@@ -54,25 +58,30 @@ public class TeleOpMode extends OwlsOpMode {
             case 3: light.green(); break;
         }
 
+        // intake
         if (p1.pressed(OwlsGamepad.Button.A)) {
             actionManager.cancel(intakeAction);
             intakeAction = actionManager.addAndReturn(new Intake(robot));
         }
 
+        // shoot
         if (p1.pressed(OwlsGamepad.Button.X)) {
             actionManager.cancel(shootAction);
             shootAction = actionManager.addAndReturn(new Shoot(robot, robot.artifactCount, Robot.Globals.shooterVelocity));
         }
 
+        // manual shoot (set to 1)
         if (p1.pressed(OwlsGamepad.Button.Y)) {
             actionManager.cancel(shootAction);
             shootAction = actionManager.addAndReturn(new Shoot(robot, 1, Robot.Globals.shooterVelocity));
         }
 
+        // cancel
         if (p1.pressed(OwlsGamepad.Button.B) || p2.pressed(OwlsGamepad.Button.B)) {
             actionManager.cancelAll();
         }
 
+        // reverse intake
         if (p1.held(OwlsGamepad.Button.BACK)) {
             intake.reverse();
             robot.intakeReversed = true;
@@ -83,13 +92,16 @@ public class TeleOpMode extends OwlsOpMode {
             robot.intakeReversed = false;
         }
 
+        // human intake
         if (p2.pressed(OwlsGamepad.Button.BACK)) {
             actionManager.cancel(humanIntakeAction);
             humanIntakeAction = actionManager.addAndReturn(new HumanPlayerIntake(robot));
         }
 
+        // reset spindexer encoder
         if (p2.pressed(OwlsGamepad.Button.RS)) spindexer.reset();
 
+        // reset artifact count
         if (p1.pressed(OwlsGamepad.Button.LS)) robot.artifactCount = 0;
 
         drivetrain.drive(p1);
