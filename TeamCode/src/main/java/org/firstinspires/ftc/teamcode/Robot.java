@@ -116,6 +116,8 @@ public class Robot {
     public int artifactCount;
     public boolean isHumanIntake;
     public boolean intakeReversed;
+    public boolean spindexerReady;
+    public boolean shooterReady;
 
     public static class Globals {
         // ----------------------------
@@ -222,6 +224,7 @@ public class Robot {
         artifactCount = 0;
         isHumanIntake = false;
         intakeReversed = false;
+        spindexerReady = false;
 
         spindexer = new Spindexer(config);
         shooter = new Shooter(config);
