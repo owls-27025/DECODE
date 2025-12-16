@@ -31,11 +31,11 @@ public class SpindexerMenu extends MenuLib.Menu {
         ));
 
         addOption(MenuLib.Option.info(
-                () -> "Relative Position: " + (spindexer.getCurrent() % robot.tpr)
+                () -> "Relative Position: " + (spindexer.getCurrent() % Robot.Globals.tpr)
         ));
 
         addOption(MenuLib.Option.info(
-                () -> "Relative Target: " + (spindexer.getTarget() % robot.tpr)
+                () -> "Relative Target: " + (spindexer.getTarget() % Robot.Globals.tpr)
         ));
 
         addOption(MenuLib.Option.info(() -> ""));

@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.opmodes.tele;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.opmodes.OwlsOpMode;
 import org.firstinspires.ftc.teamcode.shared.actions.ActionManager;
 import org.firstinspires.ftc.teamcode.shared.actions.HumanPlayerIntake;
@@ -28,11 +30,11 @@ public class TeleOpMode extends OwlsOpMode {
     @Override
     public void runLoop() {
         if (!robot.isHumanIntake) {
-            shooter.shoot(robot.shooterVelocity);
+            shooter.shoot(Robot.Globals.shooterVelocity);
         }
 
-        if (p2.pressed(OwlsGamepad.Button.DPAD_UP)) robot.shooterVelocity += 50;
-        if (p2.pressed(OwlsGamepad.Button.DPAD_DOWN)) robot.shooterVelocity -= 50;
+        if (p2.pressed(OwlsGamepad.Button.DPAD_UP)) Robot.Globals.shooterVelocity += 50;
+        if (p2.pressed(OwlsGamepad.Button.DPAD_DOWN)) Robot.Globals.shooterVelocity -= 50;
 
         if (p2.pressed(OwlsGamepad.Button.LB)) {
             if (robot.isHumanIntake) spindexer.moveToNextPosition();
@@ -59,12 +61,12 @@ public class TeleOpMode extends OwlsOpMode {
 
         if (p1.pressed(OwlsGamepad.Button.X)) {
             actionManager.cancel(shootAction);
-            shootAction = actionManager.addAndReturn(new Shoot(robot, robot.artifactCount, robot.shooterVelocity));
+            shootAction = actionManager.addAndReturn(new Shoot(robot, robot.artifactCount, Robot.Globals.shooterVelocity));
         }
 
         if (p1.pressed(OwlsGamepad.Button.Y)) {
             actionManager.cancel(shootAction);
-            shootAction = actionManager.addAndReturn(new Shoot(robot, 1, robot.shooterVelocity));
+            shootAction = actionManager.addAndReturn(new Shoot(robot, 1, Robot.Globals.shooterVelocity));
         }
 
         if (p1.pressed(OwlsGamepad.Button.B) || p2.pressed(OwlsGamepad.Button.B)) {
@@ -99,9 +101,9 @@ public class TeleOpMode extends OwlsOpMode {
 
     @Override
     public void telemetry() {
-        telemetry.addData("Shooter target vel", robot.shooterVelocity);
+        telemetry.addData("Shooter target vel", Robot.Globals.shooterVelocity);
         telemetry.addData("Shooter vel", shooter.getVelocity());
-        telemetry.addData("Shooter tol", robot.shooterTolerance);
+        telemetry.addData("Shooter tol", Robot.Globals.shooterTolerance);
 
         telemetry.addData("Distance (mm)", distance.getDistanceMm());
         telemetry.addData("Detects Ball", distance.isBall());
@@ -109,12 +111,12 @@ public class TeleOpMode extends OwlsOpMode {
         telemetry.addData("Artifacts", robot.artifactCount);
         telemetry.addData("Spindexer pos", spindexer.findPosition());
         telemetry.addData("Spindexer motor", spindexer.getCurrent());
-        telemetry.addData("Spindexer speed", robot.spindexerSpeed);
+        telemetry.addData("Spindexer speed", Robot.Globals.spindexerSpeed);
 
-        telemetry.addData("Field Centric", robot.isFieldCentric);
-        telemetry.addData("Right Stick", robot.isRightStick);
-        telemetry.addData("Drive Speed", robot.driveSpeed);
-        telemetry.addData("Slow Speed", robot.slowDriveSpeed);
+        telemetry.addData("Field Centric", Robot.Globals.isFieldCentric);
+        telemetry.addData("Right Stick", Robot.Globals.isRightStick);
+        telemetry.addData("Drive Speed", Robot.Globals.driveSpeed);
+        telemetry.addData("Slow Speed", Robot.Globals.slowDriveSpeed);
 
     }
 }

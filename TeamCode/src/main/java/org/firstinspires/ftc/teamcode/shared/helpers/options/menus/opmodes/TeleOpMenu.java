@@ -11,30 +11,30 @@ public class TeleOpMenu extends MenuLib.Menu {
         super(host, gamepad1, gamepad2, telemetry, "TELEOP");
 
         addOption(MenuLib.Option.value(
-            () -> String.format("Drive Speed: %.2f", robot.driveSpeed),
-            () -> robot.driveSpeed = Math.max(0.0, robot.driveSpeed - 0.05),
-            () -> robot.driveSpeed = Math.min(1.0, robot.driveSpeed + 0.05)
+            () -> String.format("Drive Speed: %.2f", Robot.Globals.driveSpeed),
+            () -> Robot.Globals.driveSpeed = Math.max(0.0, Robot.Globals.driveSpeed - 0.05),
+            () -> Robot.Globals.driveSpeed = Math.min(1.0, Robot.Globals.driveSpeed + 0.05)
         ));
 
 
         addOption(MenuLib.Option.value(
-                () -> String.format("Slow Drive Speed: %.2f", robot.slowDriveSpeed),
-                () -> robot.slowDriveSpeed = Math.max(0.0, robot.slowDriveSpeed - 0.05),
-                () -> robot.slowDriveSpeed = Math.min(1.0, robot.slowDriveSpeed + 0.05)
+                () -> String.format("Slow Drive Speed: %.2f", Robot.Globals.slowDriveSpeed),
+                () -> Robot.Globals.slowDriveSpeed = Math.max(0.0, Robot.Globals.slowDriveSpeed - 0.05),
+                () -> Robot.Globals.slowDriveSpeed = Math.min(1.0, Robot.Globals.slowDriveSpeed + 0.05)
         ));
 
         addOption(MenuLib.Option.action(
-                () -> "Right Stick Driving: " + robot.isRightStick,
-                robot::flipStick));
+                () -> "Right Stick Driving: " + Robot.Globals.isRightStick,
+                Robot.Globals::flipStick));
 
         addOption(MenuLib.Option.action(() ->
-                "Field Centric: " + robot.isFieldCentric,
-                robot::flipFieldCentric));
+                "Field Centric: " + Robot.Globals.isFieldCentric,
+                Robot.Globals::flipFieldCentric));
 
         addOption(MenuLib.Option.value(
-                () -> "Shooter Tolerance: " + robot.shooterTolerance,
-                () -> robot.shooterTolerance = Math.max(0, robot.shooterTolerance - 1),
-                () -> robot.shooterTolerance =  Math.min(50, robot.shooterTolerance + 1)
+                () -> "Shooter Tolerance: " + Robot.Globals.shooterTolerance,
+                () -> Robot.Globals.shooterTolerance = Math.max(0, Robot.Globals.shooterTolerance - 1),
+                () -> Robot.Globals.shooterTolerance =  Math.min(50, Robot.Globals.shooterTolerance + 1)
         ));
 
         addOption(MenuLib.Option.info(() -> ""));

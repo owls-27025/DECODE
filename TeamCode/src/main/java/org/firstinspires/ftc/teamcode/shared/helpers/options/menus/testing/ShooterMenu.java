@@ -11,18 +11,18 @@ public class ShooterMenu extends MenuLib.Menu {
 
         addOption(MenuLib.Option.action(
                 () -> "Start Motor",
-                () -> robot.shooter.shoot(robot.shooterVelocity)
+                () -> robot.shooter.shoot(Robot.Globals.shooterVelocity)
         ));
 
         addOption(MenuLib.Option.value(
-                () -> "Target Velocity: " + robot.shooterVelocity,
+                () -> "Target Velocity: " + Robot.Globals.shooterVelocity,
                 () -> {
-                    robot.shooterVelocity -= 10;
-                    robot.shooter.shoot(robot.shooterVelocity);
+                    Robot.Globals.shooterVelocity -= 10;
+                    robot.shooter.shoot(Robot.Globals.shooterVelocity);
                 },
                 () -> {
-                    robot.shooterVelocity += 10;
-                    robot.shooter.shoot(robot.shooterVelocity);
+                    Robot.Globals.shooterVelocity += 10;
+                    robot.shooter.shoot(Robot.Globals.shooterVelocity);
                 }
         ));
 

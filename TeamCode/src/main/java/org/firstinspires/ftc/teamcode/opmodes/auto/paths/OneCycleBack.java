@@ -12,15 +12,15 @@ import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.shared.mechanisms.drivetrain.roadrunner.MecanumDrive;
 
 public class OneCycleBack implements AutoPath {
-    private final Robot.Alliances alliance;
+    private final Robot.Globals.Alliances alliance;
 
-    public OneCycleBack(Robot.Alliances alliance) {
+    public OneCycleBack(Robot.Globals.Alliances alliance) {
         this.alliance = alliance;
     }
 
     @Override
     public Pose2d getInitialPose() {
-        if (alliance == Robot.Alliances.RED) {
+        if (alliance == Robot.Globals.Alliances.RED) {
             return new Pose2d(60, 11.5, Math.toRadians(150));
         } else {
             return new Pose2d(60, -11.5, Math.toRadians(240));
@@ -36,7 +36,7 @@ public class OneCycleBack implements AutoPath {
     public Action build(MecanumDrive drive, RRActions rractions, Telemetry telemetry) {
         Pose2d initialPose = getInitialPose();
 
-        if (alliance == Robot.Alliances.RED) {
+        if (alliance == Robot.Globals.Alliances.RED) {
             TrajectoryActionBuilder leave = drive.actionBuilder(initialPose)
                     .strafeTo(new Vector2d(40, 30));
 

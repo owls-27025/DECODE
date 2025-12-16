@@ -12,16 +12,16 @@ public class AutoConfig extends MenuLib.Menu {
 
         addOption(MenuLib.Option.enumCycle(
                 "Alliance: ",
-                Robot.Alliances.class,
-                () -> robot.alliance,
-                v -> robot.alliance = v
+                Robot.Globals.Alliances.class,
+                () -> Robot.Globals.alliance,
+                v -> Robot.Globals.alliance = v
         ));
 
         addOption(MenuLib.Option.enumCycle(
                 "Path: ",
-                Robot.AutoStrategies.class,
-                () -> robot.autoStrategy,
-                v -> robot.autoStrategy = v
+                Robot.Globals.AutoStrategies.class,
+                () -> Robot.Globals.autoStrategy,
+                v -> Robot.Globals.autoStrategy = v
         ));
 
         addOption(MenuLib.Option.info(() -> ""));

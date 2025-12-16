@@ -9,15 +9,15 @@ import org.firstinspires.ftc.teamcode.shared.mechanisms.drivetrain.roadrunner.Me
 import java.lang.Math;
 
 public class OneCycleFront implements AutoPath {
-    private final Robot.Alliances alliance;
+    private final Robot.Globals.Alliances alliance;
 
-    public OneCycleFront(Robot.Alliances alliance) {
+    public OneCycleFront(Robot.Globals.Alliances alliance) {
         this.alliance = alliance;
     }
 
     @Override
     public Pose2d getInitialPose() {
-        if (alliance == Robot.Alliances.RED) {
+        if (alliance == Robot.Globals.Alliances.RED) {
             return new Pose2d(-50, 50, Math.toRadians(135));
         } else {
             return new Pose2d(-50, -50, Math.toRadians(235));
@@ -33,7 +33,7 @@ public class OneCycleFront implements AutoPath {
     public Action build(MecanumDrive drive, RRActions rractions, Telemetry telemetry) {
         Pose2d initialPose = getInitialPose();
 
-        if (alliance == Robot.Alliances.RED) {
+        if (alliance == Robot.Globals.Alliances.RED) {
             TrajectoryActionBuilder goToShoot = drive.actionBuilder(initialPose)
                     .splineToLinearHeading(new Pose2d(-35, 35, Math.toRadians(135)), Math.toRadians(135));
 

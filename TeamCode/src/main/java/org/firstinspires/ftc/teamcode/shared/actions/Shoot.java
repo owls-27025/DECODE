@@ -57,7 +57,7 @@ public class Shoot extends BaseAction {
 
             case SPIN_UP:
                 shooter.shoot(velocity);
-                if (Math.abs(shooter.getVelocity() - velocity) <= robot.shooterTolerance) {
+                if (Math.abs(shooter.getVelocity() - velocity) <= Robot.Globals.shooterTolerance) {
                     spindexer.flapUp();
                     enter(State.FIRE_WAIT);
                 }
@@ -83,7 +83,7 @@ public class Shoot extends BaseAction {
                 }
 
                 int posError = Math.abs(spindexer.getCurrent() - spindexer.getTarget());
-                if (posError < robot.tpr * 0.1) {
+                if (posError < Robot.Globals.tpr * 0.1) {
                     robot.artifactCount--;
                     shotsLeft--;
 

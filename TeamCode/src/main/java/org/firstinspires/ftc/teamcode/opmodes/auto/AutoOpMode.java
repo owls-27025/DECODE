@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.opmodes.auto;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
+import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.opmodes.OwlsOpMode;
 import org.firstinspires.ftc.teamcode.opmodes.auto.paths.AutoPath;
 import org.firstinspires.ftc.teamcode.opmodes.auto.paths.Leave;
@@ -52,7 +54,7 @@ public class AutoOpMode extends OwlsOpMode {
 
         telemetry.addLine("Auto ready");
         telemetry.addData("Path", path.getName());
-        telemetry.addData("Alliance", robot.alliance);
+        telemetry.addData("Alliance", Robot.Globals.alliance);
         telemetry.update();
     }
 
@@ -63,11 +65,11 @@ public class AutoOpMode extends OwlsOpMode {
     }
 
     private void buildAutoFromRobotConfig() {
-        switch (robot.autoStrategy) {
-            case ONECYCLEFRONT: path = new OneCycleFront(robot.alliance); break;
-            case ONECYCLEBACK:  path = new OneCycleBack(robot.alliance);  break;
+        switch (Robot.Globals.autoStrategy) {
+            case ONECYCLEFRONT: path = new OneCycleFront(Robot.Globals.alliance); break;
+            case ONECYCLEBACK:  path = new OneCycleBack(Robot.Globals.alliance);  break;
             case LEAVE:
-            default:            path = new Leave(robot.alliance);         break;
+            default:            path = new Leave(Robot.Globals.alliance);         break;
         }
 
         Pose2d initialPose = path.getInitialPose();
