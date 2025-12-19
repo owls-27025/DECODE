@@ -120,6 +120,7 @@ public class Robot {
     public boolean spindexerReady;
     public boolean shooterReady;
     public boolean startShoot;
+    public boolean manualShoot;
 
     public static class Globals {
         // ----------------------------

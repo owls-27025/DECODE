@@ -9,7 +9,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 
 public class IntakeAction extends BaseAction {
-    private State state = State.FORWARD;
+    private State state;
 
     private enum State {
         FORWARD,
@@ -19,6 +19,7 @@ public class IntakeAction extends BaseAction {
 
     public IntakeAction(Robot robot) {
         super(robot);
+        enter(State.FORWARD);
     }
 
     private void enter(State next) {
@@ -46,7 +47,7 @@ public class IntakeAction extends BaseAction {
 
             case STOP:
                 intake.stop();
-                return false;
+                break;
 
             case REVERSE:
                 intake.reverse();

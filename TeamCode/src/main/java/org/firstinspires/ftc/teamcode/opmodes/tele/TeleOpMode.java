@@ -64,20 +64,24 @@ public class TeleOpMode extends OwlsOpMode {
         // intake
         if (p1.pressed(OwlsGamepad.Button.A)) {
             actionManager.cancel(intakeAction);
-//            actionManager.cancel(spindexerAction);
+            actionManager.cancel(spindexerAction);
             intakeAction = actionManager.addAndReturn(new IntakeAction(robot));
-//            spindexerAction = actionManager.addAndReturn(new SpindexerAction(robot));
+            spindexerAction = actionManager.addAndReturn(new SpindexerAction(robot));
         }
 
-        // shoot
+        // auto shoot
         if (p1.pressed(OwlsGamepad.Button.X)) {
+            actionManager.cancel(shootAction);
+            shootAction = actionManager.addAndReturn(new ShootAction(robot));
             robot.startShoot = true;
         }
 
-        // manual shoot (set to 1)
+        // manual shoot
         if (p1.pressed(OwlsGamepad.Button.Y)) {
             actionManager.cancel(shootAction);
             shootAction = actionManager.addAndReturn(new ShootAction(robot));
+            robot.startShoot = true;
+            robot.manualShoot = true;
         }
 
         // cancel

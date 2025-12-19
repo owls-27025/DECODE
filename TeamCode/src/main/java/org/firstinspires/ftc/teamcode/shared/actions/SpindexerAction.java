@@ -17,17 +17,18 @@ public class SpindexerAction extends BaseAction {
         SHOOT_POS
     }
 
-    private States state = States.START;
+    private States state;
 
     private final ElapsedTime spindexerTimer;
     private final ElapsedTime stateTimer;
 
-    private boolean timerReset;
+    private boolean timerStarted;
 
     public SpindexerAction(Robot robot) {
         super(robot);
         spindexerTimer = new ElapsedTime();
         stateTimer = new ElapsedTime();
+        enter(States.START);
     }
 
     private void enter(States state) {
@@ -35,8 +36,6 @@ public class SpindexerAction extends BaseAction {
         spindexerTimer.reset();
         stateTimer.reset();
         robot.spindexerReady = false;
-        // TODO: 12/17/2025  We just reset the time above. Why are we setting timerReset to false?
-        timerReset = false;
     }
 
     @Override
@@ -67,19 +66,22 @@ public class SpindexerAction extends BaseAction {
                 }
                 break;
             case SHOOT_POS:
-                robot.spindexerReady = true;
-                if (robot.shooterReady && robot.startShoot) {
-                    if (!timerReset) {
-                        spindexerTimer.reset();
-                        timerReset = true;
+                if (robot.artifactCount > 0 || robot.manualShoot) {
+                    if (Math.abs(spindexer.getCurrent() - spindexer.getTarget()) <= 10) {
+                        robot.spindexerReady = true;
                     }
-                    spindexer.flapUp();
-                    if (spindexerTimer.time(TimeUnit.MILLISECONDS) >= 400) {
-                        spindexer.flapDown();
-                        spindexer.moveToNextPosition();
-                        timerReset = false;
+                    if (robot.shooterReady && robot.startShoot) {
+                        spindexer.flapUp();
+                        if (spindexerTimer.time(TimeUnit.MILLISECONDS) >= 400) {
+                            spindexer.flapDown();
+                            spindexer.moveToNextPosition();
+                            if (!robot.manualShoot) robot.artifactCount--;
+                            robot.spindexerReady = false;
+                            robot.manualShoot = false;
+                        }
                     }
-
+                } else {
+                    robot.startShoot = false;
                 }
                 break;
         }

@@ -18,7 +18,7 @@ public class ShootAction extends BaseAction {
 
     public ShootAction(Robot robot) {
         super(robot);
-        state = State.SPIN_UP;
+        enter(State.SPIN_UP);
     }
 
     private void enter(State next) {
@@ -28,8 +28,6 @@ public class ShootAction extends BaseAction {
 
     @Override
     public boolean run(@NonNull TelemetryPacket packet) {
-        if (isCancelled()) return false;
-
         if (robot.isHumanIntake) {
             state = State.HUMAN_INTAKE;
         }
