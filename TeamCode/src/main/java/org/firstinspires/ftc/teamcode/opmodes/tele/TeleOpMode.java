@@ -2,14 +2,12 @@ package org.firstinspires.ftc.teamcode.opmodes.tele;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.opmodes.OwlsOpMode;
 import org.firstinspires.ftc.teamcode.shared.actions.*;
 import org.firstinspires.ftc.teamcode.shared.helpers.OwlsGamepad;
 
-@TeleOp(name = "TeleOp", group = "OpModes")
 @SuppressWarnings("unused")
 public class TeleOpMode extends OwlsOpMode {
     private ActionManager actionManager;
@@ -27,8 +25,9 @@ public class TeleOpMode extends OwlsOpMode {
 
     @Override
     public void onStart() {
-        intakeAction = actionManager.addAndReturn(new Intake(robot));
-        shootAction = actionManager.addAndReturn(new Shoot(robot));
+        intakeAction = actionManager.addAndReturn(new IntakeAction(robot));
+        shootAction = actionManager.addAndReturn(new ShootAction(robot));
+        spindexerAction = actionManager.addAndReturn(new SpindexerAction(robot));
     }
 
     @Override
@@ -65,21 +64,20 @@ public class TeleOpMode extends OwlsOpMode {
         // intake
         if (p1.pressed(OwlsGamepad.Button.A)) {
             actionManager.cancel(intakeAction);
-            actionManager.cancel(spindexerAction);
-            intakeAction = actionManager.addAndReturn(new Intake(robot));
-            spindexerAction = actionManager.addAndReturn(new SpindexerAction(robot));
+//            actionManager.cancel(spindexerAction);
+            intakeAction = actionManager.addAndReturn(new IntakeAction(robot));
+//            spindexerAction = actionManager.addAndReturn(new SpindexerAction(robot));
         }
 
         // shoot
         if (p1.pressed(OwlsGamepad.Button.X)) {
-            actionManager.cancel(shootAction);
-            shootAction = actionManager.addAndReturn(new Shoot(robot));
+            robot.startShoot = true;
         }
 
         // manual shoot (set to 1)
         if (p1.pressed(OwlsGamepad.Button.Y)) {
             actionManager.cancel(shootAction);
-            shootAction = actionManager.addAndReturn(new Shoot(robot));
+            shootAction = actionManager.addAndReturn(new ShootAction(robot));
         }
 
         // cancel
@@ -89,13 +87,10 @@ public class TeleOpMode extends OwlsOpMode {
 
         // reverse intake
         if (p1.held(OwlsGamepad.Button.BACK)) {
-            intake.reverse();
             robot.intakeReversed = true;
         } else {
-            if (!actionManager.isRunning(intakeAction)) {
-                intake.stop();
-            }
             robot.intakeReversed = false;
+            robot.intakeReverseCompleted = true;
         }
 
         // human intake

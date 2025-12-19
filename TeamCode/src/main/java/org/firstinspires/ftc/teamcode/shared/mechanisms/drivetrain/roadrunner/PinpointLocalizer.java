@@ -32,7 +32,7 @@ public final class PinpointLocalizer implements Localizer {
     public PinpointLocalizer(Robot robot, HardwareMap hardwareMap, double inPerTick, Pose2d initialPose) {
         // TODO: make sure your config has a Pinpoint device with this name
         //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
-        driver = robot.registerItem(GoBildaPinpointDriver.class, robot.config.odometry);
+        driver = Robot.Config.registerItem(GoBildaPinpointDriver.class, Robot.Config.odometry);
 
         double mmPerTick = inPerTick * 25.4;
         driver.setEncoderResolution(1 / mmPerTick, DistanceUnit.MM);

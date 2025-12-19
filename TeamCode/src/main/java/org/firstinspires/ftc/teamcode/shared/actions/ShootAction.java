@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Robot;
 
-public class Shoot extends BaseAction {
+public class ShootAction extends BaseAction {
     private State state;
     private final ElapsedTime timer = new ElapsedTime();
 
@@ -16,8 +16,9 @@ public class Shoot extends BaseAction {
         HUMAN_INTAKE
     }
 
-    public Shoot(Robot robot) {
+    public ShootAction(Robot robot) {
         super(robot);
+        state = State.SPIN_UP;
     }
 
     private void enter(State next) {

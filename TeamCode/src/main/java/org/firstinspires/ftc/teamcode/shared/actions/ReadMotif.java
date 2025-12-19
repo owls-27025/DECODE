@@ -14,7 +14,7 @@ public class ReadMotif extends BaseAction {
     @Override
     public boolean run(@NonNull TelemetryPacket packet) {
         if (limelight.getMotif()) {
-            int offset = shooter.calculateMotifOffset(Robot.Colors.GPP);
+            int offset = shooter.calculateMotifOffset(Robot.Globals.Colors.GPP);
             if (offset == 0) return false;
             if (offset == 1) { spindexer.moveToNextPosition(); return false; }
             if (offset == -1) { spindexer.moveToPreviousPosition(); return false; }

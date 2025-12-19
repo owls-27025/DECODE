@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.shared.actions;
 import com.acmerobotics.roadrunner.Action;
 
 import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.shared.mechanisms.intake.Intake;
 
 public class RRActions {
     private final Robot robot;
@@ -12,11 +13,11 @@ public class RRActions {
     }
 
     public Action shoot(int artifacts, int velocity) {
-        return new Shoot(robot);
+        return new ShootAction(robot);
     }
 
     public Action intake() {
-        return new Intake(robot);
+        return new IntakeAction(robot);
     }
 
     public Action readMotif() { return new ReadMotif(robot); }

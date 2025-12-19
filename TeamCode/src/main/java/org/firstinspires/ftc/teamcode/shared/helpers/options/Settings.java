@@ -5,7 +5,6 @@ import org.firstinspires.ftc.teamcode.opmodes.OwlsOpMode;
 import org.firstinspires.ftc.teamcode.shared.helpers.options.libraries.MenuHostImpl;
 import org.firstinspires.ftc.teamcode.shared.helpers.options.menus.SettingsMenu;
 
-@TeleOp(name = "Settings", group = "Settings")
 @SuppressWarnings("unused")
 public class Settings extends OwlsOpMode {
     MenuHostImpl host;

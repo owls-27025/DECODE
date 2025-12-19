@@ -11,7 +11,7 @@ public class SpinUpShooter extends BaseAction {
 
     @Override
     public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-        shooter.shoot(robot.shooterVelocity);
+        shooter.shoot(Robot.Globals.shooterVelocity);
         return false;
     }
 }

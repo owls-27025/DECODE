@@ -15,7 +15,6 @@ import org.firstinspires.ftc.teamcode.shared.mechanisms.drivetrain.roadrunner.Me
 import org.firstinspires.ftc.teamcode.shared.helpers.options.libraries.MenuHostImpl;
 import org.firstinspires.ftc.teamcode.shared.helpers.options.menus.opmodes.AutoConfig;
 
-@Autonomous(name = "Auto", group = "OpModes")
 @SuppressWarnings("unused")
 public class AutoOpMode extends OwlsOpMode {
 

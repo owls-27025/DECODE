@@ -3,8 +3,12 @@ package org.firstinspires.ftc.teamcode.shared.actions;
 import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.shared.helpers.options.libraries.MenuLib;
 
-public class Intake extends BaseAction {
+import java.util.ArrayDeque;
+import java.util.Deque;
+
+public class IntakeAction extends BaseAction {
     private State state = State.FORWARD;
 
     private enum State {
@@ -13,16 +17,25 @@ public class Intake extends BaseAction {
         STOP
     }
 
-    public Intake(Robot robot) {
+    public IntakeAction(Robot robot) {
         super(robot);
     }
 
     private void enter(State next) {
+        stack.push(state);
         state = next;
     }
 
+    private final Deque<State> stack = new ArrayDeque<>();
+
     @Override
     public boolean run(@NonNull TelemetryPacket packet) {
+        if (robot.intakeReversed) {
+            enter(State.REVERSE);
+        } else if (robot.intakeReverseCompleted && !stack.isEmpty()) {
+            state = stack.pop();
+            robot.intakeReverseCompleted = false;
+        }
         switch (state) {
             case FORWARD:
                 intake.start();
@@ -37,9 +50,6 @@ public class Intake extends BaseAction {
 
             case REVERSE:
                 intake.reverse();
-                if (robot.artifactCount >= 3) {
-                    enter(State.STOP);
-                }
                 break;
         }
 

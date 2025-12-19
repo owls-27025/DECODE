@@ -19,36 +19,45 @@ public class SpindexerAction extends BaseAction {
 
     private States state = States.START;
 
-    private ElapsedTime timer;
+    private final ElapsedTime spindexerTimer;
+    private final ElapsedTime stateTimer;
 
     private boolean timerReset;
 
     public SpindexerAction(Robot robot) {
         super(robot);
-        timer = new ElapsedTime();
+        spindexerTimer = new ElapsedTime();
+        stateTimer = new ElapsedTime();
     }
 
     private void enter(States state) {
         this.state = state;
-        timer.reset();
+        spindexerTimer.reset();
+        stateTimer.reset();
         robot.spindexerReady = false;
+        // TODO: 12/17/2025  We just reset the time above. Why are we setting timerReset to false?
         timerReset = false;
     }
 
     @Override
     public boolean run(@NotNull TelemetryPacket telemetryPacket) {
+        telemetry.addLine("Spindexer State: " + state + " Time in State:" + stateTimer.time(TimeUnit.SECONDS));
+        telemetry.addLine("Timer Value: " + spindexerTimer.time(TimeUnit.MILLISECONDS));
+        if (robot.artifactCount <= 0) {
+            robot.startShoot = false;
+        }
         switch(state) {
             case START:
                 spindexer.intakePosition();
                 enter(States.INTAKE_POS);
                 break;
             case INTAKE_POS:
-                if (timer.time(TimeUnit.MILLISECONDS) >= 250) {
+                if (spindexerTimer.time(TimeUnit.MILLISECONDS) >= 250) {
                     if (distance.isBall()) {
                         if (robot.artifactCount < 3) {
                             spindexer.moveToNextPosition();
                             robot.artifactCount++;
-                            timer.reset();
+                            spindexerTimer.reset();
                         }
                         if (robot.artifactCount >= 3) {
                             spindexer.shootPosition();
@@ -59,19 +68,21 @@ public class SpindexerAction extends BaseAction {
                 break;
             case SHOOT_POS:
                 robot.spindexerReady = true;
-                if (robot.shooterReady) {
+                if (robot.shooterReady && robot.startShoot) {
                     if (!timerReset) {
-                        timer.reset();
+                        spindexerTimer.reset();
                         timerReset = true;
                     }
                     spindexer.flapUp();
-                    if (timer.time(TimeUnit.MILLISECONDS) >= 400) {
+                    if (spindexerTimer.time(TimeUnit.MILLISECONDS) >= 400) {
                         spindexer.flapDown();
+                        spindexer.moveToNextPosition();
                         timerReset = false;
                     }
+
                 }
                 break;
         }
-        return false;
+        return true;
     }
 }

@@ -63,7 +63,7 @@ public class Robot {
             }
         }
 
-        public <T extends HardwareDevice> T registerItem(Class<T> type, ConfigItem cfg) {
+        public static <T extends HardwareDevice> T registerItem(Class<T> type, ConfigItem cfg) {
             if (cfg == null || !cfg.itemActive) return noop(type);
 
             try {
@@ -116,8 +116,10 @@ public class Robot {
     public int artifactCount;
     public boolean isHumanIntake;
     public boolean intakeReversed;
+    public boolean intakeReverseCompleted;
     public boolean spindexerReady;
     public boolean shooterReady;
+    public boolean startShoot;
 
     public static class Globals {
         // ----------------------------
@@ -221,11 +223,14 @@ public class Robot {
     public Robot(HardwareMap hw, Telemetry telemetry) {
         Config.hw = hw;
 
+        // state variables
         artifactCount = 0;
         isHumanIntake = false;
         intakeReversed = false;
         spindexerReady = false;
+        startShoot = false;
 
+        // mechanism instances
         spindexer = new Spindexer(config);
         shooter = new Shooter(config);
         drivetrain = new Drivetrain(config);
@@ -234,6 +239,7 @@ public class Robot {
         distance = new Distance(config);
         intake = new Intake(config);
 
+        // telemetry
         this.telemetry = telemetry;
     }
 
