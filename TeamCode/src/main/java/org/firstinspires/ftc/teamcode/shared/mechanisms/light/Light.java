@@ -9,7 +9,8 @@ public class Light {
         RED(0.300),
         YELLOW(0.388),
         GREEN(0.500),
-        BLUE(0.611);
+        BLUE(0.611),
+        PURPLE(0.722);
 
         public final double servoPos;
 
@@ -41,6 +42,7 @@ public class Light {
     public void yellow() { set(LightColor.YELLOW); }
     public void green()  { set(LightColor.GREEN); }
     public void blue()   { set(LightColor.BLUE); }
+    public void purple()   { set(LightColor.PURPLE); }
 
     public void cycle() {
         set(current.next());

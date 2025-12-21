@@ -2,11 +2,13 @@ package org.firstinspires.ftc.teamcode.opmodes.tele;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.opmodes.OwlsOpMode;
 import org.firstinspires.ftc.teamcode.shared.actions.*;
 import org.firstinspires.ftc.teamcode.shared.helpers.OwlsGamepad;
+import org.firstinspires.ftc.teamcode.shared.mechanisms.distance.Distance;
 
 @SuppressWarnings("unused")
 public class TeleOpMode extends OwlsOpMode {
@@ -61,6 +63,10 @@ public class TeleOpMode extends OwlsOpMode {
             case 3: light.green(); break;
         }
 
+        if (distance.isBall()) {
+            light.purple();
+        }
+
         // intake
         if (p1.pressed(OwlsGamepad.Button.A)) {
             actionManager.cancel(intakeAction);
@@ -73,15 +79,18 @@ public class TeleOpMode extends OwlsOpMode {
         if (p1.pressed(OwlsGamepad.Button.X)) {
             actionManager.cancel(shootAction);
             shootAction = actionManager.addAndReturn(new ShootAction(robot));
+           // spindexerAction = actionManager.addAndReturn(new SpindexerAction(robot));
             robot.startShoot = true;
         }
 
         // manual shoot
         if (p1.pressed(OwlsGamepad.Button.Y)) {
             actionManager.cancel(shootAction);
-            shootAction = actionManager.addAndReturn(new ShootAction(robot));
-            robot.startShoot = true;
+            actionManager.cancel(spindexerAction);
             robot.manualShoot = true;
+            robot.startShoot = true;
+            shootAction = actionManager.addAndReturn(new ShootAction(robot));
+            spindexerAction = actionManager.addAndReturn(new SpindexerAction(robot));
         }
 
         // cancel

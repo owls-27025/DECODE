@@ -230,6 +230,7 @@ public class Robot {
         intakeReversed = false;
         spindexerReady = false;
         startShoot = false;
+        manualShoot = false;
 
         // mechanism instances
         spindexer = new Spindexer(config);

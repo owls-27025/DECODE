@@ -36,6 +36,7 @@ public class SpindexerAction extends BaseAction {
         spindexerTimer.reset();
         stateTimer.reset();
         robot.spindexerReady = false;
+        timerStarted = false;
     }
 
     @Override
@@ -58,11 +59,11 @@ public class SpindexerAction extends BaseAction {
                             robot.artifactCount++;
                             spindexerTimer.reset();
                         }
-                        if (robot.artifactCount >= 3) {
-                            spindexer.shootPosition();
-                            enter(States.SHOOT_POS);
-                        }
                     }
+                }
+                if (robot.artifactCount >= 3 || robot.manualShoot) {
+                    spindexer.shootPosition();
+                    enter(States.SHOOT_POS);
                 }
                 break;
             case SHOOT_POS:
@@ -70,14 +71,25 @@ public class SpindexerAction extends BaseAction {
                     if (Math.abs(spindexer.getCurrent() - spindexer.getTarget()) <= 10) {
                         robot.spindexerReady = true;
                     }
-                    if (robot.shooterReady && robot.startShoot) {
+
+                    if (robot.shooterReady && robot.startShoot && robot.spindexerReady) {
+                        if (!timerStarted) {
+                            spindexerTimer.reset();
+                            timerStarted = true;
+                        }
                         spindexer.flapUp();
                         if (spindexerTimer.time(TimeUnit.MILLISECONDS) >= 400) {
                             spindexer.flapDown();
                             spindexer.moveToNextPosition();
-                            if (!robot.manualShoot) robot.artifactCount--;
+                            //if (!robot.manualShoot)
+                            robot.artifactCount--;
                             robot.spindexerReady = false;
-                            robot.manualShoot = false;
+                            if (robot.manualShoot) {
+                                robot.manualShoot = false;
+                                robot.startShoot = false;
+                            }
+                            //spindexerTimer.reset();
+                            timerStarted = false;
                         }
                     }
                 } else {

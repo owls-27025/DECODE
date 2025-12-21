@@ -42,6 +42,10 @@ public class ShootAction extends BaseAction {
 
             case READY:
                 robot.shooterReady = true;
+                if (Math.abs(shooter.getVelocity() - Robot.Globals.shooterVelocity) > Robot.Globals.shooterTolerance) {
+                    enter(State.SPIN_UP);
+                    robot.shooterReady = false;
+                }
                 break;
             case HUMAN_INTAKE:
                 shooter.shoot(-600);
