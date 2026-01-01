@@ -17,11 +17,11 @@ public class Drivetrain {
     private final IMU imu;
     private final GoBildaPinpointDriver odo;
 
-    public Drivetrain(Robot.Config config) {
-        FR = config.registerItem(DcMotor.class, Robot.Config.FR);
-        FL = config.registerItem(DcMotor.class, Robot.Config.FL);
-        BR = config.registerItem(DcMotor.class, Robot.Config.BR);
-        BL = config.registerItem(DcMotor.class, Robot.Config.BL);
+    public Drivetrain(Robot.Configuration configuration) {
+        FR = configuration.registerItem(DcMotor.class, Robot.Configuration.FR);
+        FL = configuration.registerItem(DcMotor.class, Robot.Configuration.FL);
+        BR = configuration.registerItem(DcMotor.class, Robot.Configuration.BR);
+        BL = configuration.registerItem(DcMotor.class, Robot.Configuration.BL);
 
         if (FR != null) FR.setDirection(DcMotor.Direction.REVERSE);
         if (BL != null) BL.setDirection(DcMotor.Direction.REVERSE);
@@ -41,7 +41,7 @@ public class Drivetrain {
         if (FL != null) FL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         if (BL != null) BL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        imu = config.registerItem(IMU.class, Robot.Config.imu);
+        imu = configuration.registerItem(IMU.class, Robot.Configuration.imu);
         if (imu != null) {
             RevHubOrientationOnRobot Orientation = new RevHubOrientationOnRobot(
                     RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
@@ -49,7 +49,7 @@ public class Drivetrain {
             imu.initialize(new IMU.Parameters(Orientation));
         }
 
-        odo = config.registerItem(GoBildaPinpointDriver.class, Robot.Config.odometry);
+        odo = configuration.registerItem(GoBildaPinpointDriver.class, Robot.Configuration.odometry);
     }
 
     public double[] fieldCentricDrive(double x, double y) {

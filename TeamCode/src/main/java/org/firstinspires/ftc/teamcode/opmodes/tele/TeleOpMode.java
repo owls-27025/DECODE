@@ -2,13 +2,11 @@ package org.firstinspires.ftc.teamcode.opmodes.tele;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.opmodes.OwlsOpMode;
 import org.firstinspires.ftc.teamcode.shared.actions.*;
 import org.firstinspires.ftc.teamcode.shared.helpers.OwlsGamepad;
-import org.firstinspires.ftc.teamcode.shared.mechanisms.distance.Distance;
 
 @SuppressWarnings("unused")
 public class TeleOpMode extends OwlsOpMode {
@@ -34,22 +32,27 @@ public class TeleOpMode extends OwlsOpMode {
 
     @Override
     public void runLoop() {
-        if (!robot.isHumanIntake) {
-            shooter.shoot(Robot.Globals.shooterVelocity);
-        }
-
         // manual shooter vel change
         if (p2.pressed(OwlsGamepad.Button.DPAD_UP)) Robot.Globals.shooterVelocity += 50;
         if (p2.pressed(OwlsGamepad.Button.DPAD_DOWN)) Robot.Globals.shooterVelocity -= 50;
 
         // manual spindexer control
         if (p2.pressed(OwlsGamepad.Button.LB)) {
-            if (robot.isHumanIntake) spindexer.moveToNextPosition();
-            else spindexer.moveHalfPosition(false);
-        } else if (p2.pressed(OwlsGamepad.Button.RB)) {
-            if (robot.isHumanIntake) spindexer.moveToPreviousPosition();
-            else spindexer.moveHalfPosition(true);
+            if (robot.isHumanIntake) {
+                robot.humanLoadConfirm = true;
+            } else {
+                spindexer.moveHalfPosition(false);
+            }
         }
+
+        if (p2.pressed(OwlsGamepad.Button.RB)) {
+            if (robot.isHumanIntake) {
+                robot.humanLoadConfirm = true;
+            } else {
+                spindexer.moveHalfPosition(true);
+            }
+        }
+
 
         // manual spindexer pos
         if (p2.leftTriggerPressed(0.2)) spindexer.intakePosition();
@@ -69,39 +72,29 @@ public class TeleOpMode extends OwlsOpMode {
 
         // intake
         if (p1.pressed(OwlsGamepad.Button.A)) {
-            actionManager.cancel(intakeAction);
-            actionManager.cancel(spindexerAction);
-            intakeAction = actionManager.addAndReturn(new IntakeAction(robot));
-            spindexerAction = actionManager.addAndReturn(new SpindexerAction(robot));
+            robot.startIntake = true;
         }
 
         // auto shoot
         if (p1.pressed(OwlsGamepad.Button.X)) {
-            actionManager.cancel(shootAction);
-            shootAction = actionManager.addAndReturn(new ShootAction(robot));
-           // spindexerAction = actionManager.addAndReturn(new SpindexerAction(robot));
             robot.startShoot = true;
         }
 
         // manual shoot
         if (p1.pressed(OwlsGamepad.Button.Y)) {
-            actionManager.cancel(shootAction);
-            actionManager.cancel(spindexerAction);
             robot.manualShoot = true;
             robot.startShoot = true;
-            shootAction = actionManager.addAndReturn(new ShootAction(robot));
-            spindexerAction = actionManager.addAndReturn(new SpindexerAction(robot));
         }
 
         // cancel
         if (p1.pressed(OwlsGamepad.Button.B) || p2.pressed(OwlsGamepad.Button.B)) {
-            actionManager.cancelAll();
+            robot.cancel = true;
         }
 
         // reverse intake
         if (p1.held(OwlsGamepad.Button.BACK)) {
             robot.intakeReversed = true;
-        } else {
+        } else if (p1.released(OwlsGamepad.Button.BACK)) {
             robot.intakeReversed = false;
             robot.intakeReverseCompleted = true;
         }

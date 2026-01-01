@@ -7,8 +7,8 @@ import org.firstinspires.ftc.teamcode.Robot;
 public class Intake {
     private final DcMotor intake;
 
-    public Intake(Robot.Config config) {
-        intake = config.registerItem(DcMotor.class, Robot.Config.intake);
+    public Intake(Robot.Configuration configuration) {
+        intake = configuration.registerItem(DcMotor.class, Robot.Configuration.intake);
         if (intake != null) {
             intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }

@@ -8,8 +8,8 @@ import org.firstinspires.ftc.teamcode.Robot;
 public class Shooter {
     private final DcMotorEx shooter;
 
-    public Shooter(Robot.Config config) {
-        shooter = config.registerItem(DcMotorEx.class, Robot.Config.shooter);
+    public Shooter(Robot.Configuration configuration) {
+        shooter = configuration.registerItem(DcMotorEx.class, Robot.Configuration.shooter);
         if (shooter != null) {
             shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             shooter.setDirection(DcMotor.Direction.REVERSE);

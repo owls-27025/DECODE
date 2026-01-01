@@ -33,6 +33,12 @@ public class SettingsMenu extends MenuLib.Menu {
 
         addOption(MenuLib.Option.info(() -> "")); // spacer
 
+        addOption(MenuLib.Option.value(() -> "Debug: " + Robot.Globals.debugActions,
+                () -> Robot.Globals.debugActions = !Robot.Globals.debugActions,
+                () -> Robot.Globals.debugActions = !Robot.Globals.debugActions));
+
+        addOption(MenuLib.Option.info(() -> "")); // spacer
+
         addOption(MenuLib.Option.action(
                 () -> "Exit",
                 host::goBack

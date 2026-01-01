@@ -26,12 +26,12 @@ public class Spindexer {
     private final boolean[] isShootPos  = new boolean[POSITIONS];
     private double flapPosition;
 
-    public Spindexer(Robot.Config config) {
+    public Spindexer(Robot.Configuration configuration) {
         this.tpr = Robot.Globals.tpr;
         this.single = tpr * 2;
 
-        motor = config.registerItem(DcMotor.class, config.spindexerMotor);
-        flap  = config.registerItem(Servo.class, config.spindexerServo);
+        motor = configuration.registerItem(DcMotor.class, configuration.spindexerMotor);
+        flap  = configuration.registerItem(Servo.class, configuration.spindexerServo);
 
         Arrays.fill(isIntakePos, false);
         Arrays.fill(isShootPos, false);

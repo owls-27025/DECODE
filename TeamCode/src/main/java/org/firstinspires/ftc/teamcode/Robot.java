@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import androidx.xr.runtime.Config;
-
 import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -23,9 +21,13 @@ public class Robot {
     // ----------------------------
     // Config
     // ----------------------------
-    public Config config = new Config();
-    public static class Config {
-        public static HardwareMap hw;
+    private HardwareMap hw;
+    public Configuration configuration = new Configuration(hw);
+    public static class Configuration {
+        public Configuration(HardwareMap hw) {
+            this.hw = hw;
+        }
+        public HardwareMap hw;
 
         public static final ArrayList<ConfigItem> configItems = new ArrayList<>();
 
@@ -41,7 +43,7 @@ public class Robot {
         public static final ConfigItem spindexerServo = item("flap", true);
         public static final ConfigItem shooter        = item("shooter", true);
 
-        public static final ConfigItem odometry       = item("odometry", true);
+        public static final ConfigItem odometry       = item("odometry", false);
         public static final ConfigItem light          = item("light", true);
         public static final ConfigItem imu            = item("imu", true);
         public static final ConfigItem limelight      = item("limelight", true);
@@ -63,7 +65,7 @@ public class Robot {
             }
         }
 
-        public static <T extends HardwareDevice> T registerItem(Class<T> type, ConfigItem cfg) {
+        public <T extends HardwareDevice> T registerItem(Class<T> type, ConfigItem cfg) {
             if (cfg == null || !cfg.itemActive) return noop(type);
 
             try {
@@ -121,6 +123,9 @@ public class Robot {
     public boolean shooterReady;
     public boolean startShoot;
     public boolean manualShoot;
+    public boolean startIntake;
+    public boolean humanLoadConfirm;
+    public boolean cancel;
 
     public static class Globals {
         // ----------------------------
@@ -144,6 +149,8 @@ public class Robot {
         public static int spindexerShootTimeTicks = 15;
 
         public static int tpr = 145;
+
+        public static boolean debugActions = false;
 
         public enum Alliances { RED, BLUE }
         public static Alliances alliance = Alliances.RED;
@@ -222,7 +229,7 @@ public class Robot {
     // Constructor
     // ----------------------------
     public Robot(HardwareMap hw, Telemetry telemetry) {
-        Config.hw = hw;
+        this.hw = hw;
 
         // state variables
         artifactCount = 0;
@@ -231,15 +238,18 @@ public class Robot {
         spindexerReady = false;
         startShoot = false;
         manualShoot = false;
+        startIntake = false;
+        cancel = false;
+        humanLoadConfirm = false;
 
         // mechanism instances
-        spindexer = new Spindexer(config);
-        shooter = new Shooter(config);
-        drivetrain = new Drivetrain(config);
-        light = new Light(config);
-        limelight = new Limelight(config);
-        distance = new Distance(config);
-        intake = new Intake(config);
+        spindexer = new Spindexer(configuration);
+        shooter = new Shooter(configuration);
+        drivetrain = new Drivetrain(configuration);
+        light = new Light(configuration);
+        limelight = new Limelight(configuration);
+        distance = new Distance(configuration);
+        intake = new Intake(configuration);
 
         // telemetry
         this.telemetry = telemetry;

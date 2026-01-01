@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.opmodes.auto;
 
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.opmodes.OwlsOpMode;
@@ -10,7 +9,6 @@ import org.firstinspires.ftc.teamcode.opmodes.auto.paths.AutoPath;
 import org.firstinspires.ftc.teamcode.opmodes.auto.paths.Leave;
 import org.firstinspires.ftc.teamcode.opmodes.auto.paths.OneCycleBack;
 import org.firstinspires.ftc.teamcode.opmodes.auto.paths.OneCycleFront;
-import org.firstinspires.ftc.teamcode.shared.actions.RRActions;
 import org.firstinspires.ftc.teamcode.shared.mechanisms.drivetrain.roadrunner.MecanumDrive;
 import org.firstinspires.ftc.teamcode.shared.helpers.options.libraries.MenuHostImpl;
 import org.firstinspires.ftc.teamcode.shared.helpers.options.menus.opmodes.AutoConfig;
@@ -60,7 +58,8 @@ public class AutoOpMode extends OwlsOpMode {
     @Override
     public void onStart() {
         if (!built) buildAutoFromRobotConfig();
-        Actions.runBlocking(path.build(drive, rr, telemetry));
+
+        Actions.runBlocking(rr.withSubsystems(path.build(drive, rr, telemetry)));
     }
 
     private void buildAutoFromRobotConfig() {

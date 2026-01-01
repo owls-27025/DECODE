@@ -54,4 +54,12 @@ public abstract class BaseAction implements com.acmerobotics.roadrunner.Action {
     protected final boolean stopIfCancelled(TelemetryPacket packet) {
         return !cancelled;
     }
+
+    protected final void dbg(String caption, Object value) {
+        if (Robot.Globals.debugActions) telemetry.addData(caption, value);
+    }
+
+    protected final void dbgLine(String line) {
+        if (Robot.Globals.debugActions) telemetry.addLine(line);
+    }
 }

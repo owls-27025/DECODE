@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.shared.actions;
 
 import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Robot;
 
@@ -29,11 +28,14 @@ public class ShootAction extends BaseAction {
     @Override
     public boolean run(@NonNull TelemetryPacket packet) {
         if (robot.isHumanIntake) {
-            state = State.HUMAN_INTAKE;
+            if (state != State.HUMAN_INTAKE) enter(State.HUMAN_INTAKE);
+        } else {
+            if (state == State.HUMAN_INTAKE) enter(State.SPIN_UP);
         }
 
         switch (state) {
             case SPIN_UP:
+                robot.shooterReady = false;
                 shooter.shoot(Robot.Globals.shooterVelocity);
                 if (Math.abs(shooter.getVelocity() - Robot.Globals.shooterVelocity) <= Robot.Globals.shooterTolerance) {
                     enter(State.READY);
@@ -42,18 +44,20 @@ public class ShootAction extends BaseAction {
 
             case READY:
                 robot.shooterReady = true;
+                shooter.shoot(Robot.Globals.shooterVelocity);
                 if (Math.abs(shooter.getVelocity() - Robot.Globals.shooterVelocity) > Robot.Globals.shooterTolerance) {
                     enter(State.SPIN_UP);
-                    robot.shooterReady = false;
                 }
                 break;
+
             case HUMAN_INTAKE:
+                robot.shooterReady = false;
                 shooter.shoot(-600);
                 break;
         }
 
-        telemetry.addData("Shoot State", state);
+        dbg("Shooter State", state);
+
         return true;
     }
-
 }

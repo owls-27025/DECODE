@@ -227,10 +227,10 @@ public final class MecanumDrive {
 
         // TODO: make sure your config has motors with these names (or change them)
         //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
-        leftFront = Robot.Config.registerItem(DcMotorEx.class, Robot.Config.FL);
-        leftBack = Robot.Config.registerItem(DcMotorEx.class, Robot.Config.BL);
-        rightBack = Robot.Config.registerItem(DcMotorEx.class, Robot.Config.BR);
-        rightFront = Robot.Config.registerItem(DcMotorEx.class, Robot.Config.FR);
+        leftFront = robot.configuration.registerItem(DcMotorEx.class, Robot.Configuration.FL);
+        leftBack = robot.configuration.registerItem(DcMotorEx.class, Robot.Configuration.BL);
+        rightBack = robot.configuration.registerItem(DcMotorEx.class, Robot.Configuration.BR);
+        rightFront = robot.configuration.registerItem(DcMotorEx.class, Robot.Configuration.FR);
 
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
