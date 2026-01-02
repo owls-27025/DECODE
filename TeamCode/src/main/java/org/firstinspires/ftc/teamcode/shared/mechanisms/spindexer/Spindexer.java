@@ -30,8 +30,8 @@ public class Spindexer {
         this.tpr = Robot.Globals.tpr;
         this.single = tpr * 2;
 
-        motor = configuration.registerItem(DcMotor.class, configuration.spindexerMotor);
-        flap  = configuration.registerItem(Servo.class, configuration.spindexerServo);
+        motor = Robot.Configuration.registerItem(DcMotor.class, Robot.Configuration.spindexerMotor);
+        flap  = Robot.Configuration.registerItem(Servo.class, Robot.Configuration.spindexerServo);
 
         Arrays.fill(isIntakePos, false);
         Arrays.fill(isShootPos, false);

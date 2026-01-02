@@ -100,10 +100,10 @@ public class SpindexerAction extends BaseAction {
 
     @Override
     public boolean run(@NotNull TelemetryPacket telemetryPacket) {
-        telemetry.addLine("Spindexer State: " + state + " Time in State:" + stateTimer.time(TimeUnit.SECONDS));
-        telemetry.addLine("Timer Value: " + spindexerTimer.time(TimeUnit.MILLISECONDS));
-        telemetry.addLine("Positions: [0]=" + positions[0] + " [1]=" + positions[1] + " [2]=" + positions[2]);
-        telemetry.addLine("Current Position: " + spindexer.findPosition());
+        dbgLine("Spindexer State: " + state + " Time in State:" + stateTimer.time(TimeUnit.SECONDS));
+        dbgLine("Timer Value: " + spindexerTimer.time(TimeUnit.MILLISECONDS));
+        dbgLine("Positions: [0]=" + positions[0] + " [1]=" + positions[1] + " [2]=" + positions[2]);
+        dbgLine("Current Position: " + spindexer.findPosition());
 
         shotRequested = (robot.manualShoot || robot.startShoot) && state != States.SHOOT_POS;
         humanPlayerRequested = robot.isHumanIntake && state != States.HUMAN_PLAYER;

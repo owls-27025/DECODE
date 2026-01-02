@@ -188,6 +188,8 @@ public class Robot {
         public static double servoDownPos = 0.5;
         public static double intakeSpeed = 1.0;
 
+        public static boolean debugActions = false;
+
         // ----------------------------
         // Helpers
         // ----------------------------

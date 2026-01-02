@@ -60,7 +60,7 @@ public class IntakeAction extends BaseAction {
                 break;
         }
 
-        telemetry.addData("Intake State", state);
+        dbg("Intake State", state);
         return true;
     }
 
