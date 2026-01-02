@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.auto;
 
+import androidx.annotation.NonNull;
+
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 
@@ -90,6 +92,17 @@ public class RRActions {
                 }
 
                 return true;
+            }
+        };
+    }
+
+    public Action intake() {
+        return new Action() {
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                robot.startIntake = true;
+
+                return robot.artifactCount < 3;
             }
         };
     }

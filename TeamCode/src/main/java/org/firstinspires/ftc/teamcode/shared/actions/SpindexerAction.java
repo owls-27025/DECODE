@@ -57,10 +57,12 @@ public class SpindexerAction extends BaseAction {
         if (state == States.SHOOT_POS) {
             robot.intakeComplete = true;
 
-            if (positions[0] != -1) {
-                spindexer.goToTicks(positions[0] + (3 * Robot.Globals.tpr));
-            } else {
-                spindexer.shootPosition();
+            if (!robot.manualShoot) {
+                if (positions[0] != -1) {
+                    spindexer.goToTicks(positions[0] + (3 * Robot.Globals.tpr));
+                } else {
+                    spindexer.shootPosition();
+                }
             }
 
             if (robot.manualShoot) {
@@ -144,16 +146,14 @@ public class SpindexerAction extends BaseAction {
                 break;
 
             case INTAKE_POS:
-                if (spindexerTimer.time(TimeUnit.MILLISECONDS) >= 250) {
-                    if (distance.isBall()) {
-                        if (robot.artifactCount < 3) {
-                            positions[robot.artifactCount] = spindexer.getTarget();
+                if (distance.isBall() && !spindexer.isBusy()) {
+                    if (robot.artifactCount < 3) {
+                        positions[robot.artifactCount] = spindexer.getTarget();
 
-                            spindexer.moveToNextPosition();
-                            robot.artifactCount++;
+                        spindexer.moveToNextPosition();
+                        robot.artifactCount++;
 
-                            spindexerTimer.reset();
-                        }
+                        spindexerTimer.reset();
                     }
                 }
 
