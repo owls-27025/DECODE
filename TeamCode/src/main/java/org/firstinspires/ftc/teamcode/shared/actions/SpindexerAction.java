@@ -7,209 +7,259 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.TimeUnit;
 
+@SuppressWarnings("unused")
 public class SpindexerAction extends BaseAction {
-
-    private enum State {
+    private enum States {
+        START,
         INTAKE_POS,
-        SHOOT_POS
+        TRANSITION,
+        INDEXING,
+        SHOOT_POS,
+        HUMAN_PLAYER
     }
 
-    private State state = State.INTAKE_POS;
+    private States state;
 
-    private final boolean[] filled = new boolean[] { false, false, false };
+    private final ElapsedTime spindexerTimer;
+    private final ElapsedTime stateTimer;
 
-    private final ElapsedTime flapTimer = new ElapsedTime();
-    private final ElapsedTime ballCooldown = new ElapsedTime();
-    private final ElapsedTime seekTimer = new ElapsedTime();
+    private boolean timerStarted;
+    @SuppressWarnings("FieldCanBeLocal")
+    private boolean shotRequested;
+    private int shotsRemaining;
+    @SuppressWarnings("FieldCanBeLocal")
+    private boolean humanPlayerRequested;
+    @SuppressWarnings("FieldCanBeLocal")
+    private boolean intakeRequested;
 
-    private boolean lastBall = false;
-    private boolean flapActive = false;
+    private int[] positions;
 
-    private static final long INDEX_COOLDOWN_MS = 350;
-    private static final long FLAP_UP_MS = 400;
-    private static final long SEEK_COOLDOWN_MS = 120;
+    private boolean advanceHumanIntake;
+    private int humanSlotIndex;
 
     public SpindexerAction(Robot robot) {
         super(robot);
-        spindexer.intakePosition();
-        flapTimer.reset();
-        ballCooldown.reset();
-        seekTimer.reset();
-        syncCountFromSlots();
+        spindexerTimer = new ElapsedTime();
+        stateTimer = new ElapsedTime();
+        enter(States.START);
+        positions = new int[3];
+        java.util.Arrays.fill(positions, -1);
+        humanSlotIndex = 0;
     }
 
-    private void enter(State next) {
-        if (state == next) return;
-
-        state = next;
-        flapActive = false;
+    private void enter(States state) {
+        this.state = state;
+        spindexerTimer.reset();
+        stateTimer.reset();
         robot.spindexerReady = false;
-        flapTimer.reset();
+        timerStarted = false;
 
-        switch (state) {
-            case INTAKE_POS:
-                spindexer.intakePosition();
-                break;
-            case SHOOT_POS:
+        if (state == States.SHOOT_POS) {
+            robot.intakeComplete = true;
+
+            if (positions[0] != -1) {
+                spindexer.goToTicks(positions[0] + (3 * Robot.Globals.tpr));
+            } else {
                 spindexer.shootPosition();
-                break;
+            }
+
+            if (robot.manualShoot) {
+                shotsRemaining = 1;
+            } else if (robot.startShoot) {
+                shotsRemaining = robot.artifactCount;
+            } else {
+                shotsRemaining = 0;
+            }
+        } else if (state == States.INTAKE_POS) {
+            spindexer.intakePosition();
+            robot.startIntake = true;
+            robot.intakeComplete = false;
+        } else if (state == States.TRANSITION) {
+            spindexer.shootPosition();
+        } else if (state == States.HUMAN_PLAYER) {
+            robot.intakeComplete = true;
+
+            if (robot.artifactCount >= 3) {
+                spindexer.shootPosition();
+                return;
+            }
+
+            int tpr = Robot.Globals.tpr;
+
+            int nextEmptyIntake;
+            if (robot.artifactCount == 0 || positions[robot.artifactCount - 1] == -1) {
+                spindexer.shootPosition();
+                nextEmptyIntake = spindexer.getTarget();
+            } else {
+                nextEmptyIntake = positions[robot.artifactCount - 1] + (2 * tpr);
+            }
+
+            spindexer.goToTicks(nextEmptyIntake + (3 * tpr));
         }
-    }
-
-    private int pos() {
-        return spindexer.findPosition();
-    }
-
-    private boolean atIntakePos(int p) { return (p % 2) == 1; }
-    private boolean atShootPos(int p)  { return (p % 2) == 0; }
-
-    private int intakeSlotIndex(int p) { return (p - 1) / 2; }
-    private int shootSlotIndex(int p)  { return p / 2; }
-
-    private int countFilled() {
-        int c = 0;
-        for (int i = 0; i < 3; i++) if (filled[i]) c++;
-        return c;
-    }
-
-    private boolean anyFilled() {
-        for (int i = 0; i < 3; i++) if (filled[i]) return true;
-        return false;
-    }
-
-    private void syncCountFromSlots() {
-        robot.artifactCount = countFilled();
-    }
-
-    private void clearAllSlots() {
-        for (int i = 0; i < 3; i++) filled[i] = false;
-        syncCountFromSlots();
-    }
-
-    private void markLoadedAtCurrentIntake() {
-        int p = pos();
-        if (!atIntakePos(p)) return;
-
-        int slot = intakeSlotIndex(p);
-        if (!filled[slot]) {
-            filled[slot] = true;
-            syncCountFromSlots();
-        }
-    }
-
-    private void markShotAtCurrentShooter() {
-        int p = pos();
-        if (!atShootPos(p)) return;
-
-        int slot = shootSlotIndex(p);
-        filled[slot] = false;
-        syncCountFromSlots();
     }
 
     @Override
-    public boolean run(@NotNull TelemetryPacket packet) {
-        if (robot.artifactCount <= 0 && anyFilled()) {
-            clearAllSlots();
+    public boolean run(@NotNull TelemetryPacket telemetryPacket) {
+        telemetry.addLine("Spindexer State: " + state + " Time in State:" + stateTimer.time(TimeUnit.SECONDS));
+        telemetry.addLine("Timer Value: " + spindexerTimer.time(TimeUnit.MILLISECONDS));
+        telemetry.addLine("Positions: [0]=" + positions[0] + " [1]=" + positions[1] + " [2]=" + positions[2]);
+        telemetry.addLine("Current Position: " + spindexer.findPosition());
+
+        shotRequested = (robot.manualShoot || robot.startShoot) && state != States.SHOOT_POS;
+        humanPlayerRequested = robot.isHumanIntake && state != States.HUMAN_PLAYER;
+        intakeRequested = robot.startIntake && state != States.INTAKE_POS;
+
+        if (intakeRequested) {
+            intakeRequested = false;
+            enter(States.INTAKE_POS);
         }
 
-        boolean ball = distance.isBall();
-        boolean risingEdge = ball && !lastBall;
-        lastBall = ball;
-
-        boolean wantsShoot = robot.startShoot || robot.manualShoot;
-
-        if (state == State.INTAKE_POS) {
-
-            if (atIntakePos(pos())
-                    && risingEdge
-                    && ballCooldown.time(TimeUnit.MILLISECONDS) >= INDEX_COOLDOWN_MS) {
-
-                if (countFilled() < 3) {
-                    markLoadedAtCurrentIntake();
-                    spindexer.moveToNextPosition();
-                    ballCooldown.reset();
-                }
-            }
-
-            if (robot.isHumanIntake && robot.humanLoadConfirm) {
-                robot.humanLoadConfirm = false;
-
-                if (atIntakePos(pos()) && countFilled() < 3) {
-                    markLoadedAtCurrentIntake();
-                    spindexer.moveToNextPosition();
-                    ballCooldown.reset();
-                }
-            }
-
-            if (wantsShoot && anyFilled()) {
-                enter(State.SHOOT_POS);
-            }
-
-            if (countFilled() >= 3) {
-                enter(State.SHOOT_POS);
-            }
+        if (shotRequested) {
+            shotRequested = false;
+            enter(States.SHOOT_POS);
         }
 
-        if (state == State.SHOOT_POS) {
+        if (humanPlayerRequested) {
+            humanPlayerRequested = false;
+            enter(States.HUMAN_PLAYER);
+        }
 
-            if (atShootPos(pos())) {
-                robot.spindexerReady = Math.abs(spindexer.getCurrent() - spindexer.getTarget()) <= 10;
+        if (robot.leftRequested || robot.rightRequested) {
+            if (state == States.HUMAN_PLAYER) {
+                advanceHumanIntake = true;
             } else {
-                robot.spindexerReady = false;
-            }
-
-            if (wantsShoot && anyFilled() && !spindexer.isBusy()
-                    && seekTimer.time(TimeUnit.MILLISECONDS) >= SEEK_COOLDOWN_MS
-                    && atShootPos(pos())) {
-
-                int slot = shootSlotIndex(pos());
-                if (!filled[slot]) {
-                    spindexer.moveToNextPosition();
-                    seekTimer.reset();
+                if (robot.leftRequested) {
+                    spindexer.moveHalfPosition(false);
+                } else if  (robot.rightRequested) {
+                    spindexer.moveHalfPosition(true);
                 }
             }
+            robot.leftRequested = false;
+            robot.rightRequested = false;
+        }
 
-            boolean canFire = robot.shooterReady && robot.spindexerReady;
-            boolean hasAmmo = anyFilled();
+        switch (state) {
+            case START:
+                enter(States.INTAKE_POS);
+                break;
 
-            if (canFire && wantsShoot && hasAmmo && atShootPos(pos())) {
-                int slot = shootSlotIndex(pos());
-                if (filled[slot]) {
-                    if (!flapActive) {
-                        flapActive = true;
-                        flapTimer.reset();
-                        spindexer.flapUp();
+            case INTAKE_POS:
+                if (spindexerTimer.time(TimeUnit.MILLISECONDS) >= 250) {
+                    if (distance.isBall()) {
+                        if (robot.artifactCount < 3) {
+                            positions[robot.artifactCount] = spindexer.getTarget();
+
+                            spindexer.moveToNextPosition();
+                            robot.artifactCount++;
+
+                            spindexerTimer.reset();
+                        }
+                    }
+                }
+
+                if (robot.artifactCount >= 3) {
+                    enter(States.TRANSITION);
+                }
+                break;
+
+            case TRANSITION:
+                break;
+
+            case SHOOT_POS:
+                if ((shotsRemaining > 0 && robot.artifactCount > 0) || robot.manualShoot) {
+
+                    if (Math.abs(spindexer.getCurrent() - spindexer.getTarget()) <= 10) {
+                        robot.spindexerReady = true;
                     }
 
-                    if (flapTimer.time(TimeUnit.MILLISECONDS) >= FLAP_UP_MS) {
-                        spindexer.flapDown();
-                        markShotAtCurrentShooter();
-                        spindexer.moveToNextPosition();
-
-                        if (robot.manualShoot) {
-                            robot.manualShoot = false;
-                            robot.startShoot = false;
+                    if (robot.shooterReady && robot.spindexerReady) {
+                        if (!timerStarted) {
+                            spindexerTimer.reset();
+                            timerStarted = true;
+                            spindexer.flapUp();
                         }
 
-                        flapActive = false;
-                        robot.spindexerReady = false;
-                        ballCooldown.reset();
+                        if (spindexerTimer.time(TimeUnit.MILLISECONDS) >= 400) {
+                            spindexer.flapDown();
+
+                            spindexer.moveToNextPosition();
+
+                            if (!robot.manualShoot) {
+                                robot.artifactCount--;
+                                shotsRemaining--;
+
+                                positions[0] = positions[1];
+                                positions[1] = positions[2];
+                                positions[2] = -1;
+                            } else {
+                                shotsRemaining--;
+                            }
+
+                            robot.spindexerReady = false;
+                            timerStarted = false;
+                            spindexerTimer.reset();
+
+                            if (shotsRemaining == 0) {
+                                robot.manualShoot = false;
+                                robot.startShoot = false;
+
+                                java.util.Arrays.fill(positions, -1);
+
+                                enter(States.INTAKE_POS);
+                            } else {
+                                if (!robot.manualShoot) {
+                                    if (positions[0] != -1) {
+                                        spindexer.goToTicks(positions[0] + (3 * Robot.Globals.tpr));
+                                    } else {
+                                        spindexer.shootPosition();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    //noinspection DataFlowIssue
+                    robot.manualShoot = false;
+                    robot.startShoot = false;
+
+                    positions[0] = -1;
+                    positions[1] = -1;
+                    positions[2] = -1;
+
+                    enter(States.INTAKE_POS);
+                }
+                break;
+            case HUMAN_PLAYER:
+                if (!robot.isHumanIntake) {
+                    enter(States.TRANSITION);
+                }
+
+                if (Math.abs(spindexer.getCurrent() - spindexer.getTarget()) <= 10) {
+                    robot.spindexerReady = true;
+                }
+
+                if (robot.spindexerReady && spindexerTimer.time(TimeUnit.MILLISECONDS) >= 250) {
+                    if (advanceHumanIntake) {
+                        advanceHumanIntake = false;
+                        if (robot.artifactCount < 3) {
+                            positions[robot.artifactCount] = spindexer.getTarget() - (3 * Robot.Globals.tpr);
+
+                            robot.artifactCount++;
+
+                            spindexer.moveToNextPosition();
+
+                            robot.spindexerReady = false;
+                            spindexerTimer.reset();
+
+                            if (robot.artifactCount >= 3) {
+                                robot.isHumanIntake = false;
+                                enter(States.TRANSITION);
+                            }
+                        }
                     }
                 }
-            }
-
-            if (!wantsShoot && countFilled() < 3) {
-                enter(State.INTAKE_POS);
-            }
-
-            if (!anyFilled() && !robot.manualShoot) {
-                robot.startShoot = false;
-            }
+                break;
         }
-
-        dbg("Spindexer State", state);
-        dbg("Slots", (filled[0] ? "1" : "0") + (filled[1] ? "1" : "0") + (filled[2] ? "1" : "0"));
-        dbg("Artifacts", robot.artifactCount);
 
         return true;
     }

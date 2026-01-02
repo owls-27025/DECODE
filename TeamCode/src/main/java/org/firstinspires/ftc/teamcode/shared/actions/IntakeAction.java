@@ -3,46 +3,70 @@ package org.firstinspires.ftc.teamcode.shared.actions;
 import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.shared.helpers.options.libraries.MenuLib;
+
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 public class IntakeAction extends BaseAction {
-    private enum State { FORWARD, REVERSE, STOP }
-    private State state = State.FORWARD;
-    private State resumeState = State.FORWARD;
+    private State state;
+    private State previousState;
 
-    public IntakeAction(Robot robot) { super(robot); }
+    private enum State {
+        FORWARD,
+        REVERSE,
+        STOP
+    }
 
-    private void setState(State next) {
-        if (state == next) return;
-        if (state != State.REVERSE) resumeState = state;
+    public IntakeAction(Robot robot) {
+        super(robot);
+        enter(State.FORWARD);
+        previousState = state;
+    }
+
+    private void enter(State next) {
+        previousState = state;
         state = next;
     }
 
+
     @Override
     public boolean run(@NonNull TelemetryPacket packet) {
-        if (isCancelled()) return false;
-
-        boolean full = robot.artifactCount >= 3;
-
-        if (robot.intakeReversed) {
-            setState(State.REVERSE);
-        } else if (full) {
-            setState(State.STOP);
-        } else if (robot.startIntake) {
-            setState(State.FORWARD);
-            robot.startIntake = false;
-        } else if (state == State.REVERSE) {
-            setState(resumeState);
+        if (robot.startIntake && state != State.FORWARD) {
+            enter(State.FORWARD);
         }
 
+        if (robot.intakeReversed && state != State.REVERSE) {
+            enter(State.REVERSE);
+        }
         switch (state) {
-            case FORWARD: intake.start(); break;
-            case STOP:    intake.stop(); break;
-            case REVERSE: intake.reverse(); break;
+            case FORWARD:
+                intake.start();
+                if (robot.artifactCount >= 3 || robot.intakeComplete) {
+                    enter(State.STOP);
+                }
+                robot.startIntake = false;
+                break;
+
+            case STOP:
+                intake.stop();
+                break;
+
+            case REVERSE:
+                intake.reverse();
+                if (robot.intakeReverseCompleted) {
+                    enter(previousState);
+                }
+                break;
         }
 
-        dbg("Intake State", state);
+        telemetry.addData("Intake State", state);
         return true;
     }
 
-    @Override protected void onCancel() { intake.stop(); }
+    @Override
+    protected void onCancel() {
+        intake.stop();
+    }
+
 }

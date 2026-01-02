@@ -12,7 +12,7 @@ public class Limelight {
     private final Limelight3A limelight;
 
     public Limelight(Robot.Configuration configuration) {
-        limelight = configuration.registerItem(Limelight3A.class, Robot.Configuration.limelight);
+        limelight = Robot.Configuration.registerItem(Limelight3A.class, Robot.Configuration.limelight);
         if (limelight != null) {
             limelight.setPollRateHz(50);
             limelight.start();

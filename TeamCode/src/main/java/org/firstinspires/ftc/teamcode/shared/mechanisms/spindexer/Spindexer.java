@@ -57,7 +57,7 @@ public class Spindexer {
         flapPosition = Robot.Globals.servoDownPos;
     }
 
-    private void goToTicks(int targetTicks) {
+    public void goToTicks(int targetTicks) {
         if (motor == null) return;
         motor.setTargetPosition(targetTicks);
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);

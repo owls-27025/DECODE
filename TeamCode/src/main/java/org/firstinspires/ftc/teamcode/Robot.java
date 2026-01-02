@@ -21,13 +21,10 @@ public class Robot {
     // ----------------------------
     // Config
     // ----------------------------
-    private HardwareMap hw;
-    public Configuration configuration = new Configuration(hw);
+    public Configuration configuration = new Configuration();
+
     public static class Configuration {
-        public Configuration(HardwareMap hw) {
-            this.hw = hw;
-        }
-        public HardwareMap hw;
+        public static HardwareMap hw;
 
         public static final ArrayList<ConfigItem> configItems = new ArrayList<>();
 
@@ -43,7 +40,7 @@ public class Robot {
         public static final ConfigItem spindexerServo = item("flap", true);
         public static final ConfigItem shooter        = item("shooter", true);
 
-        public static final ConfigItem odometry       = item("odometry", false);
+        public static final ConfigItem odometry       = item("odometry", true);
         public static final ConfigItem light          = item("light", true);
         public static final ConfigItem imu            = item("imu", true);
         public static final ConfigItem limelight      = item("limelight", true);
@@ -65,7 +62,7 @@ public class Robot {
             }
         }
 
-        public <T extends HardwareDevice> T registerItem(Class<T> type, ConfigItem cfg) {
+        public static <T extends HardwareDevice> T registerItem(Class<T> type, ConfigItem cfg) {
             if (cfg == null || !cfg.itemActive) return noop(type);
 
             try {
@@ -124,8 +121,10 @@ public class Robot {
     public boolean startShoot;
     public boolean manualShoot;
     public boolean startIntake;
-    public boolean humanLoadConfirm;
-    public boolean cancel;
+    public boolean intakeComplete;
+    public boolean leftRequested;
+    public boolean rightRequested;
+    public boolean stop;
 
     public static class Globals {
         // ----------------------------
@@ -149,8 +148,6 @@ public class Robot {
         public static int spindexerShootTimeTicks = 15;
 
         public static int tpr = 145;
-
-        public static boolean debugActions = false;
 
         public enum Alliances { RED, BLUE }
         public static Alliances alliance = Alliances.RED;
@@ -229,7 +226,7 @@ public class Robot {
     // Constructor
     // ----------------------------
     public Robot(HardwareMap hw, Telemetry telemetry) {
-        this.hw = hw;
+        Configuration.hw = hw;
 
         // state variables
         artifactCount = 0;
@@ -239,8 +236,10 @@ public class Robot {
         startShoot = false;
         manualShoot = false;
         startIntake = false;
-        cancel = false;
-        humanLoadConfirm = false;
+        intakeComplete = false;
+        leftRequested = false;
+        rightRequested = false;
+        stop = false;
 
         // mechanism instances
         spindexer = new Spindexer(configuration);
