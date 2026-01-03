@@ -74,7 +74,7 @@ public class Spindexer {
     public void moveHalfPosition(boolean forward) { goRelativeTicks(forward ? tpr : -tpr); }
 
     public void flapUp() {
-        if (flap != null) flap.setPosition(1.0);
+        if (flap != null) flap.setPosition(0.45);
     }
 
     public void flapDown() {

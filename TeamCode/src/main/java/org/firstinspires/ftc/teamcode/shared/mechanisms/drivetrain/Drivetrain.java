@@ -18,13 +18,10 @@ public class Drivetrain {
     private final GoBildaPinpointDriver odo;
 
     public Drivetrain(Robot.Configuration configuration) {
-        FR = configuration.registerItem(DcMotor.class, Robot.Configuration.FR);
-        FL = configuration.registerItem(DcMotor.class, Robot.Configuration.FL);
-        BR = configuration.registerItem(DcMotor.class, Robot.Configuration.BR);
-        BL = configuration.registerItem(DcMotor.class, Robot.Configuration.BL);
-
-        if (FR != null) FR.setDirection(DcMotor.Direction.REVERSE);
-        if (BL != null) BL.setDirection(DcMotor.Direction.REVERSE);
+        FR = Robot.Configuration.registerItem(DcMotor.class, Robot.Configuration.FR);
+        FL = Robot.Configuration.registerItem(DcMotor.class, Robot.Configuration.FL);
+        BR = Robot.Configuration.registerItem(DcMotor.class, Robot.Configuration.BR);
+        BL = Robot.Configuration.registerItem(DcMotor.class, Robot.Configuration.BL);
 
         if (FR != null) FR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         if (FL != null) FL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -41,7 +38,7 @@ public class Drivetrain {
         if (FL != null) FL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         if (BL != null) BL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        imu = configuration.registerItem(IMU.class, Robot.Configuration.imu);
+        imu = Robot.Configuration.registerItem(IMU.class, Robot.Configuration.imu);
         if (imu != null) {
             RevHubOrientationOnRobot Orientation = new RevHubOrientationOnRobot(
                     RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
@@ -49,7 +46,7 @@ public class Drivetrain {
             imu.initialize(new IMU.Parameters(Orientation));
         }
 
-        odo = configuration.registerItem(GoBildaPinpointDriver.class, Robot.Configuration.odometry);
+        odo = Robot.Configuration.registerItem(GoBildaPinpointDriver.class, Robot.Configuration.odometry);
     }
 
     public double[] fieldCentricDrive(double x, double y) {

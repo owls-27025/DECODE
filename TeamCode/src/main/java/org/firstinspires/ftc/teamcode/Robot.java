@@ -38,12 +38,13 @@ public class Robot {
         public static final ConfigItem intake         = item("intake", true);
         public static final ConfigItem spindexerMotor = item("spindexer", true);
         public static final ConfigItem spindexerServo = item("flap", true);
-        public static final ConfigItem shooter        = item("shooter", true);
+        public static final ConfigItem shooter        = item("flywheel", true);
 
         public static final ConfigItem odometry       = item("odometry", true);
-        public static final ConfigItem light          = item("light", true);
+        public static final ConfigItem light          = item("light", false);
         public static final ConfigItem imu            = item("imu", true);
-        public static final ConfigItem limelight      = item("limelight", true);
+        public static final ConfigItem limelight      = item("limelight", false);
+        public static final ConfigItem hood           = item("hood", true);
 
         @SuppressWarnings("SameParameterValue")
         private static ConfigItem item(String name, boolean active) {
@@ -147,7 +148,7 @@ public class Robot {
         public static int humanWaitMs = 750;
         public static int spindexerShootTimeTicks = 15;
 
-        public static int tpr = 145;
+        public static int tpr = 104;
 
         public enum Alliances { RED, BLUE }
         public static Alliances alliance = Alliances.RED;
@@ -185,7 +186,7 @@ public class Robot {
         }
         public static Colors motif = Colors.GPP;
 
-        public static double servoDownPos = 0.5;
+        public static double servoDownPos = 0.23;
         public static double intakeSpeed = 1.0;
 
         public static boolean debugActions = false;
