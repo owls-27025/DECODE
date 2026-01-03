@@ -137,7 +137,7 @@ public class Robot {
         public static double slowDriveSpeed = 0.35;
 
         public static int shooterVelocity = 1050;
-        public static  int shooterTolerance = 50;
+        public static int shooterTolerance = 75;
 
         public static int forcedArtifacts = 1;
 
@@ -150,7 +150,7 @@ public class Robot {
         public static int tpr = 145;
 
         public enum Alliances { RED, BLUE }
-        public static Alliances alliance = Alliances.RED;
+        public static Alliances alliance = Alliances.BLUE;
 
         public enum Sides { GOAL, WALL }
         public static Sides side = Sides.GOAL;
@@ -158,7 +158,8 @@ public class Robot {
         public enum AutoStrategies {
             LEAVE("Leave"),
             ONECYCLEFRONT("One Cycle Front"),
-            ONECYCLEBACK("One Cycle Back");
+            ONECYCLEBACK("One Cycle Back"),
+            THREECYCLEFRONT("Three Cycle Front");
 
             public final String displayName;
 
@@ -173,7 +174,7 @@ public class Robot {
             }
         }
 
-        public static AutoStrategies autoStrategy = AutoStrategies.ONECYCLEFRONT;
+        public static AutoStrategies autoStrategy = AutoStrategies.THREECYCLEFRONT;
 
         public enum Colors {
             PPG(0),
@@ -188,7 +189,7 @@ public class Robot {
         public static double servoDownPos = 0.5;
         public static double intakeSpeed = 1.0;
 
-        public static boolean debugActions = false;
+        public static boolean debugActions = true;
 
         // ----------------------------
         // Helpers

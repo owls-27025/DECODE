@@ -39,13 +39,17 @@ public class IntakeAction extends BaseAction {
         if (robot.intakeReversed && state != State.REVERSE) {
             enter(State.REVERSE);
         }
+
+        if (robot.stop) {
+            enter(State.STOP);
+        }
+
         switch (state) {
             case FORWARD:
                 intake.start();
                 if (robot.artifactCount >= 3 || robot.intakeComplete) {
                     enter(State.STOP);
                 }
-                robot.startIntake = false;
                 break;
 
             case STOP:
@@ -60,7 +64,7 @@ public class IntakeAction extends BaseAction {
                 break;
         }
 
-        dbg("Intake State", state);
+//        dbg("Intake State", state);
         return true;
     }
 

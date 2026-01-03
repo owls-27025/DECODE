@@ -59,7 +59,8 @@ public class ShootAction extends BaseAction {
                 break;
         }
 
-        dbg("Shooter State", state);
+//        dbg("Shooter State", state);
+//        dbg("Shooter Velocity", shooter.getVelocity());
 
         return true;
     }

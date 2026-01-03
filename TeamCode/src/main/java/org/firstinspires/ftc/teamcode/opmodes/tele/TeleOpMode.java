@@ -14,7 +14,6 @@ public class TeleOpMode extends OwlsOpMode {
     private ActionManager actionManager;
     private Action intakeAction;
     private Action shootAction;
-    private Action humanIntakeAction;
     private Action spindexerAction;
 
     public enum PreviousIntakeState { STOPPED, FORWARD, NA }
@@ -49,15 +48,21 @@ public class TeleOpMode extends OwlsOpMode {
         else if (p2.rightTriggerPressed(0.2)) spindexer.shootPosition();
 
         // rgb
-        switch (robot.artifactCount) {
-            case 0: light.blue(); break;
-            case 1: light.red(); break;
-            case 2: light.yellow(); break;
-            case 3: light.green(); break;
-        }
-
-        if (distance.isBall()) {
-            light.purple();
+        if (!robot.intakeReversed) {
+            switch (robot.artifactCount) {
+                case 0:
+                    light.off();
+                    break;
+                case 1:
+                    light.red();
+                    break;
+                case 2:
+                    light.yellow();
+                    break;
+                case 3:
+                    light.green();
+                    break;
+            }
         }
 
         // intake
@@ -83,6 +88,7 @@ public class TeleOpMode extends OwlsOpMode {
         // reverse intake
         if (p1.held(OwlsGamepad.Button.BACK)) {
             robot.intakeReversed = true;
+            light.blue();
         } else {
             robot.intakeReversed = false;
             robot.intakeReverseCompleted = true;
@@ -125,5 +131,6 @@ public class TeleOpMode extends OwlsOpMode {
         telemetry.addData("Drive Speed", Robot.Globals.driveSpeed);
         telemetry.addData("Slow Speed", Robot.Globals.slowDriveSpeed);
 
+        telemetry.addData("Robot Stopped", robot.stop);
     }
 }

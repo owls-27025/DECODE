@@ -59,39 +59,17 @@ public class RRActions {
     public Action shoot(final int shots, final int velocity) {
         return new Action() {
             private boolean started = false;
-            private int remaining = shots;
-            private int lastCount = 0;
 
             @Override
             public boolean run(@NotNull TelemetryPacket packet) {
                 if (!started) {
-                    Robot.Globals.shooterVelocity = velocity;
-                    robot.manualShoot = false;
-                    robot.startShoot = true;
-
-                    lastCount = robot.artifactCount;
+                    robot.artifactCount = shots;
                     started = true;
+                    Robot.Globals.shooterVelocity = velocity;
+                    robot.startShoot = true;
                 }
 
-                int now = robot.artifactCount;
-                if (now < lastCount) {
-                    remaining -= (lastCount - now);
-                    lastCount = now;
-                } else {
-                    lastCount = now;
-                }
-
-                if (remaining <= 0) {
-                    robot.startShoot = false;
-                    return false;
-                }
-
-                if (robot.artifactCount <= 0) {
-                    robot.startShoot = false;
-                    return false;
-                }
-
-                return true;
+                return robot.artifactCount > 0;
             }
         };
     }
@@ -103,6 +81,17 @@ public class RRActions {
                 robot.startIntake = true;
 
                 return robot.artifactCount < 3;
+            }
+        };
+    }
+
+    public Action stop() {
+        return new Action() {
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                robot.stop = true;
+
+                return false;
             }
         };
     }
