@@ -240,13 +240,14 @@ public class SpindexerAction extends BaseAction {
                                     java.util.Arrays.fill(positions, -1);
 
                                     enter(States.INTAKE_POS);
-                                } else {
-                                    if (!robot.manualShoot) {
-                                        if (positions[0] != -1) {
-                                            spindexer.goToTicks(positions[0] + (3 * Robot.Globals.tpr));
-                                        }
-                                    }
                                 }
+//                                } else {
+//                                    if (!robot.manualShoot) {
+//                                        if (positions[0] != -1) {
+//                                            spindexer.goToTicks(positions[0] + (3 * Robot.Globals.tpr));
+//                                        }
+//                                    }
+//                                }
                             }
                         }
                     } else {
@@ -296,15 +297,17 @@ public class SpindexerAction extends BaseAction {
                     int intakeStart = positions[0] != -1 ? positions[0] + (3 * Robot.Globals.tpr) : spindexer.getTarget();
 
                     if (Math.abs(spindexer.getCurrent() - intakeStart) > 10) {
+                        dbg("Moving to ticks", intakeStart);
                         spindexer.goToTicks(intakeStart);
-                        break;
                     }
 
                     int motifOffset = calculateMotifOffset(robot.colors);
                     if (motifOffset == 1) {
                         spindexer.moveToNextPosition();
+                        dbgLine("Moved to Next Position");
                     } else if (motifOffset == -1) {
                         spindexer.moveToPreviousPosition();
+                        dbgLine("Moved to Previous Position");
                     }
 
                     enter(States.SHOOT_POS);
