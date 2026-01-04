@@ -127,8 +127,8 @@ public class SpindexerAction extends BaseAction {
                 humanPlayerRequested = false;
                 intakeRequested = false;
             }
-
             if (shotRequested) {
+                dbg("Shot requested", shotRequested);
                 shotRequested = false;
                 robot.startIntake = false;
                 if (!robot.sort) {
@@ -308,6 +308,7 @@ public class SpindexerAction extends BaseAction {
                     }
 
                     enter(States.SHOOT_POS);
+                    break;
             }
         return true;
     }
