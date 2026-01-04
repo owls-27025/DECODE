@@ -127,18 +127,21 @@ public class SpindexerAction extends BaseAction {
                 intakeRequested = false;
             }
 
-            if (intakeRequested) {
-                intakeRequested = false;
-                enter(States.INTAKE_POS);
-            }
-
+            // Prioritize shooting over resuming intake/human-player states so we don't
+            // re-enter intake before applying motif indexing after collecting game pieces.
             if (shotRequested) {
                 shotRequested = false;
+                robot.startIntake = false;
                 if (!robot.sort) {
                     enter(States.SHOOT_POS);
                 } else {
                     enter(States.INDEXING);
                 }
+            }
+
+            if (intakeRequested) {
+                intakeRequested = false;
+                enter(States.INTAKE_POS);
             }
 
             if (humanPlayerRequested) {
@@ -290,9 +293,17 @@ public class SpindexerAction extends BaseAction {
                     }
                     break;
                 case INDEXING:
-                    if (calculateMotifOffset(robot.colors) == 1) {
+                    int intakeStart = positions[0] != -1 ? positions[0] + (3 * Robot.Globals.tpr) : spindexer.getTarget();
+
+                    if (Math.abs(spindexer.getCurrent() - intakeStart) > 10) {
+                        spindexer.goToTicks(intakeStart);
+                        break;
+                    }
+
+                    int motifOffset = calculateMotifOffset(robot.colors);
+                    if (motifOffset == 1) {
                         spindexer.moveToNextPosition();
-                    } else if (calculateMotifOffset(robot.colors) == -1) {
+                    } else if (motifOffset == -1) {
                         spindexer.moveToPreviousPosition();
                     }
 
