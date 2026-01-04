@@ -125,6 +125,8 @@ public class Robot {
     public boolean leftRequested;
     public boolean rightRequested;
     public boolean stop;
+    public Globals.Colors colors;
+    public boolean sort;
 
     public static class Globals {
         // ----------------------------
@@ -159,7 +161,8 @@ public class Robot {
             LEAVE("Leave"),
             ONECYCLEFRONT("One Cycle Front"),
             ONECYCLEBACK("One Cycle Back"),
-            THREECYCLEFRONT("Three Cycle Front");
+            THREECYCLEFRONT("Three Cycle (Front)"),
+            THREECYCLEBACK("Three Cycle (Back)");
 
             public final String displayName;
 
@@ -184,7 +187,7 @@ public class Robot {
             public final int index;
             Colors(int index) { this.index = index; }
         }
-        public static Colors motif = Colors.GPP;
+        public static Colors motif;
 
         public static double servoDownPos = 0.5;
         public static double intakeSpeed = 1.0;

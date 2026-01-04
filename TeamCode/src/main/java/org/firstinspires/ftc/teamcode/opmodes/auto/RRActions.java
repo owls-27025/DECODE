@@ -24,9 +24,9 @@ public class RRActions {
     private void ensureSubsystems() {
         if (subsystemsAdded) return;
 
-        manager.add(new IntakeAction(robot));
-        manager.add(new ShootAction(robot));
-        manager.add(new SpindexerAction(robot));
+        manager.addAndReturn(new IntakeAction(robot));
+        manager.addAndReturn(new ShootAction(robot));
+        manager.addAndReturn(new SpindexerAction(robot));
 
         subsystemsAdded = true;
     }
@@ -67,6 +67,26 @@ public class RRActions {
                     started = true;
                     Robot.Globals.shooterVelocity = velocity;
                     robot.startShoot = true;
+                }
+
+                return robot.artifactCount > 0;
+            }
+        };
+    }
+
+    public Action shoot(final int shots, final int velocity, Robot.Globals.Colors colors) {
+        return new Action() {
+            private boolean started = false;
+
+            @Override
+            public boolean run(@NotNull TelemetryPacket packet) {
+                if (!started) {
+                    robot.artifactCount = shots;
+                    started = true;
+                    Robot.Globals.shooterVelocity = velocity;
+                    robot.startShoot = true;
+                    robot.colors = colors;
+                    robot.sort = true;
                 }
 
                 return robot.artifactCount > 0;

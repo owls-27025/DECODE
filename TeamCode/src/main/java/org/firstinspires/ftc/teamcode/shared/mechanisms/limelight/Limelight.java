@@ -18,22 +18,25 @@ public class Limelight {
             limelight.start();
         }
     }
-    public boolean getMotif() {
-        if (limelight == null) return false;
+
+    public void getMotif() {
+        if (limelight == null) {
+            Robot.Globals.motif = Robot.Globals.Colors.PGP;
+            return;
+        }
 
         LLResult result = limelight.getLatestResult();
-        if (result == null) return false;
+        if (result == null) return;
 
         List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
-        if (fiducials == null || fiducials.isEmpty()) return false;
+        if (fiducials == null || fiducials.isEmpty()) return;
 
         for (LLResultTypes.FiducialResult fiducial : fiducials) {
             int id = fiducial.getFiducialId();
-            if (id == 21) { Robot.Globals.motif = Robot.Globals.Colors.GPP; return true; }
-            if (id == 22) { Robot.Globals.motif = Robot.Globals.Colors.PGP; return true; }
-            if (id == 23) { Robot.Globals.motif = Robot.Globals.Colors.PPG; return true; }
+            if (id == 21) { Robot.Globals.motif = Robot.Globals.Colors.GPP; return; }
+            if (id == 22) { Robot.Globals.motif = Robot.Globals.Colors.PGP; return; }
+            if (id == 23) { Robot.Globals.motif = Robot.Globals.Colors.PPG; return; }
         }
-        return false;
     }
 
     public LLResult getLatestResult() {
