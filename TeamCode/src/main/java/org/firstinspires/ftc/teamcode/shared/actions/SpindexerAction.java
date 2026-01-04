@@ -59,6 +59,7 @@ public class SpindexerAction extends BaseAction {
             robot.intakeComplete = true;
 
             if (!robot.sort) {
+                dbgLine("Entering wrong if");
                 if (!robot.manualShoot) {
                     if (positions[0] != -1) {
                         spindexer.goToTicks(positions[0] + (3 * Robot.Globals.tpr));
@@ -127,8 +128,6 @@ public class SpindexerAction extends BaseAction {
                 intakeRequested = false;
             }
 
-            // Prioritize shooting over resuming intake/human-player states so we don't
-            // re-enter intake before applying motif indexing after collecting game pieces.
             if (shotRequested) {
                 shotRequested = false;
                 robot.startIntake = false;
@@ -293,6 +292,7 @@ public class SpindexerAction extends BaseAction {
                     }
                     break;
                 case INDEXING:
+                    dbgLine("Entered indexing");
                     int intakeStart = positions[0] != -1 ? positions[0] + (3 * Robot.Globals.tpr) : spindexer.getTarget();
 
                     if (Math.abs(spindexer.getCurrent() - intakeStart) > 10) {

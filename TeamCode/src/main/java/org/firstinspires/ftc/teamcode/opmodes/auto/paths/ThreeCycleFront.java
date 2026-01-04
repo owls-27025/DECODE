@@ -145,14 +145,14 @@ public class ThreeCycleFront implements AutoPath {
                             rractions.intake()
                     ),
                     goToShoot.build(),
-                    rractions.shoot(3, 1050, Robot.Globals.Colors.PPG),
-                    goToIntakeTwo.build(),
-                    new ParallelAction(
-                            intakeTwo.build(),
-                            rractions.intake()
-                    ),
-                    goToShoot.build(),
-                    rractions.shoot(3, 1050, Robot.Globals.Colors.PGP)
+                    rractions.shoot(3, 1050, Robot.Globals.Colors.PPG)
+//                    goToIntakeTwo.build(),
+//                    new ParallelAction(
+//                            intakeTwo.build(),
+//                            rractions.intake()
+//                    ),
+//                    goToShoot.build()
+//                    rractions.shoot(3, 1050, Robot.Globals.Colors.PGP)
 //                    goToIntakeThree.build(),
 //                    new ParallelAction(
 //                            intakeThree.build()
