@@ -227,8 +227,6 @@ public class SpindexerAction extends BaseAction {
                                     if (!robot.manualShoot) {
                                         if (positions[0] != -1) {
                                             spindexer.goToTicks(positions[0] + (3 * Robot.Globals.tpr));
-                                        } else {
-                                            spindexer.shootPosition();
                                         }
                                     }
                                 }

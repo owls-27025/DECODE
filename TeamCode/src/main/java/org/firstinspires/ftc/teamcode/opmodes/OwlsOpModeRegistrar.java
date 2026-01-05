@@ -38,5 +38,14 @@ public class OwlsOpModeRegistrar {
                         .build(),
                 Settings.class
         );
+
+        manager.register(
+                new OpModeMeta.Builder()
+                        .setName("PID Tning")
+                        .setGroup("Tests")
+                        .setFlavor(OpModeMeta.Flavor.TELEOP)
+                        .build(),
+                PIDTuning.class
+        );
     }
 }
