@@ -2,19 +2,22 @@ package org.firstinspires.ftc.teamcode.shared.mechanisms.shooter;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import org.firstinspires.ftc.teamcode.Robot;
 
 public class Shooter {
     private final DcMotorEx shooter;
+    private final Servo hood;
 
     public Shooter(Robot.Configuration configuration) {
         shooter = configuration.registerItem(DcMotorEx.class, Robot.Configuration.shooter);
         if (shooter != null) {
             shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            shooter.setDirection(DcMotor.Direction.REVERSE);
         }
+
+        hood = configuration.registerItem(Servo.class, Robot.Configuration.hood);
     }
 
     public void shoot(double velocity) {
@@ -31,6 +34,10 @@ public class Shooter {
     public double getVelocity() {
         return shooter == null ? 0.0 : shooter.getVelocity();
     }
+
+    public void setHood(double pos) { hood.setPosition(pos); }
+
+    public double getHood() { return hood.getPosition(); }
 
     public PIDFCoefficients getPIDFCoefficients() {
         return shooter.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
