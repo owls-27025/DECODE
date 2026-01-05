@@ -47,5 +47,14 @@ public class OwlsOpModeRegistrar {
                         .build(),
                 PIDTuning.class
         );
+
+        manager.register(
+                new OpModeMeta.Builder()
+                        .setName("Limelight Test")
+                        .setGroup("Test")
+                        .setFlavor(OpModeMeta.Flavor.TELEOP)
+                        .build(),
+                LimelightTest.class
+        );
     }
 }

@@ -23,7 +23,7 @@ public class Drivetrain {
         BR = configuration.registerItem(DcMotor.class, Robot.Configuration.BR);
         BL = configuration.registerItem(DcMotor.class, Robot.Configuration.BL);
 
-        if (FR != null) FR.setDirection(DcMotor.Direction.REVERSE);
+        if (FL != null) FL.setDirection(DcMotor.Direction.REVERSE);
         if (BL != null) BL.setDirection(DcMotor.Direction.REVERSE);
 
         if (FR != null) FR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

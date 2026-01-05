@@ -44,6 +44,8 @@ public class Robot {
         public static final ConfigItem light          = item("light", true);
         public static final ConfigItem imu            = item("imu", true);
         public static final ConfigItem limelight      = item("limelight", true);
+        public static final ConfigItem leftSweeper    = item("leftSweeper", true);
+        public static final ConfigItem rightSweeper   = item("rightSweeper", true);
 
         @SuppressWarnings("SameParameterValue")
         private static ConfigItem item(String name, boolean active) {
@@ -125,6 +127,8 @@ public class Robot {
     public boolean leftRequested;
     public boolean rightRequested;
     public boolean stop;
+    public Globals.Colors colors;
+    public boolean sort;
 
     public static class Globals {
         // ----------------------------
@@ -159,7 +163,8 @@ public class Robot {
             LEAVE("Leave"),
             ONECYCLEFRONT("One Cycle Front"),
             ONECYCLEBACK("One Cycle Back"),
-            THREECYCLEFRONT("Three Cycle Front");
+            THREECYCLEFRONT("Three Cycle (Front)"),
+            THREECYCLEBACK("Three Cycle (Back)");
 
             public final String displayName;
 
@@ -184,9 +189,9 @@ public class Robot {
             public final int index;
             Colors(int index) { this.index = index; }
         }
-        public static Colors motif = Colors.GPP;
+        public static Colors motif;
 
-        public static double servoDownPos = 0.5;
+        public static double flapDownPos = 0.23;
         public static double intakeSpeed = 1.0;
 
         public static boolean debugActions = true;

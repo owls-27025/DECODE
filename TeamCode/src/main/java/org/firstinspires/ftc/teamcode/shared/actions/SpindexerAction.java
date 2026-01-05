@@ -58,14 +58,17 @@ public class SpindexerAction extends BaseAction {
         if (state == States.SHOOT_POS) {
             robot.intakeComplete = true;
 
-            if (!robot.manualShoot) {
-                if (positions[0] != -1) {
-                    spindexer.goToTicks(positions[0] + (3 * Robot.Globals.tpr));
+            if (!robot.sort) {
+                dbgLine("Entering wrong if");
+                if (!robot.manualShoot) {
+                    if (positions[0] != -1) {
+                        spindexer.goToTicks(positions[0] + (3 * Robot.Globals.tpr));
+                    } else {
+                        spindexer.shootPosition();
+                    }
                 } else {
                     spindexer.shootPosition();
                 }
-            } else {
-                spindexer.shootPosition();
             }
 
             if (robot.manualShoot) {
@@ -97,10 +100,14 @@ public class SpindexerAction extends BaseAction {
                 nextEmptyIntake = spindexer.getTarget();
             } else {
                 nextEmptyIntake = positions[robot.artifactCount - 1] + (2 * tpr);
+                spindexer.goToTicks(nextEmptyIntake + (3 * tpr));
             }
-
-            spindexer.goToTicks(nextEmptyIntake + (3 * tpr));
         }
+    }
+
+    public void setColors(Robot.Globals.Colors colors) {
+        robot.colors = colors;
+        robot.sort = true;
     }
 
     @Override
@@ -110,7 +117,7 @@ public class SpindexerAction extends BaseAction {
 //        dbgLine("Positions: [0]=" + positions[0] + " [1]=" + positions[1] + " [2]=" + positions[2]);
 //        dbgLine("Current Position: " + spindexer.findPosition());
 
-        shotRequested = (robot.manualShoot || robot.startShoot) && state != States.SHOOT_POS;
+        shotRequested = (robot.manualShoot || robot.startShoot) && state != States.SHOOT_POS && state != States.INDEXING;
         humanPlayerRequested = robot.isHumanIntake && state != States.HUMAN_PLAYER;
         intakeRequested = robot.startIntake && state != States.INTAKE_POS;
 
@@ -120,15 +127,20 @@ public class SpindexerAction extends BaseAction {
                 humanPlayerRequested = false;
                 intakeRequested = false;
             }
+            if (shotRequested) {
+                dbg("Shot requested", shotRequested);
+                shotRequested = false;
+                robot.startIntake = false;
+                if (!robot.sort) {
+                    enter(States.SHOOT_POS);
+                } else {
+                    enter(States.INDEXING);
+                }
+            }
 
             if (intakeRequested) {
                 intakeRequested = false;
                 enter(States.INTAKE_POS);
-            }
-
-            if (shotRequested) {
-                shotRequested = false;
-                enter(States.SHOOT_POS);
             }
 
             if (humanPlayerRequested) {
@@ -178,6 +190,10 @@ public class SpindexerAction extends BaseAction {
                     break;
 
                 case SHOOT_POS:
+                    if (robot.sort) {
+                        robot.sort = false;
+                    }
+
 //                    dbgLine("Entered shoot");
                     if ((shotsRemaining > 0 && robot.artifactCount > 0) || robot.manualShoot) {
 //                        dbgLine("Shots remaining:" + shotsRemaining + ", artifact count: " + robot.artifactCount);
@@ -190,12 +206,13 @@ public class SpindexerAction extends BaseAction {
 //                        dbg("Spindexer Timer", spindexerTimer.time());
                         if (robot.shooterReady && robot.spindexerReady) {
 //                            dbgLine("Shooter/spindexer ready");
+
                             if (!timerStarted) {
                                 spindexerTimer.reset();
                                 timerStarted = true;
-//                                dbgLine("Flap Almost Up");
+                                dbgLine("Flap Almost Up");
                                 spindexer.flapUp();
-//                                dbgLine("Flap Up");
+                                dbgLine("Flap Up");
                             }
 
                             if (spindexerTimer.time(TimeUnit.MILLISECONDS) >= 400) {
@@ -223,13 +240,14 @@ public class SpindexerAction extends BaseAction {
                                     java.util.Arrays.fill(positions, -1);
 
                                     enter(States.INTAKE_POS);
-                                } else {
-                                    if (!robot.manualShoot) {
-                                        if (positions[0] != -1) {
-                                            spindexer.goToTicks(positions[0] + (3 * Robot.Globals.tpr));
-                                        }
-                                    }
                                 }
+//                                } else {
+//                                    if (!robot.manualShoot) {
+//                                        if (positions[0] != -1) {
+//                                            spindexer.goToTicks(positions[0] + (3 * Robot.Globals.tpr));
+//                                        }
+//                                    }
+//                                }
                             }
                         }
                     } else {
@@ -274,7 +292,36 @@ public class SpindexerAction extends BaseAction {
                         }
                     }
                     break;
+                case INDEXING:
+                    dbgLine("Entered indexing");
+                    int intakeStart = positions[0] != -1 ? positions[0] + (3 * Robot.Globals.tpr) : spindexer.getTarget();
+
+                    if (Math.abs(spindexer.getCurrent() - intakeStart) > 10) {
+                        dbg("Moving to ticks", intakeStart);
+                        spindexer.goToTicks(intakeStart);
+                    }
+
+                    int motifOffset = calculateMotifOffset(robot.colors);
+                    if (motifOffset == 1) {
+                        spindexer.moveToNextPosition();
+                        dbgLine("Moved to Next Position");
+                    } else if (motifOffset == -1) {
+                        spindexer.moveToPreviousPosition();
+                        dbgLine("Moved to Previous Position");
+                    }
+
+                    enter(States.SHOOT_POS);
+                    break;
             }
         return true;
+    }
+
+    public int calculateMotifOffset(Robot.Globals.Colors colors) {
+        int diff = Robot.Globals.motif.index - colors.index;
+
+        if (diff == 2) diff = -1;
+        if (diff == -2) diff = 1;
+
+        return diff;
     }
 }

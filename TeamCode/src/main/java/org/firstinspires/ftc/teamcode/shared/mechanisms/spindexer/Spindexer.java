@@ -49,12 +49,12 @@ public class Spindexer {
         }
 
         if (flap != null) {
-            flap.setPosition(Robot.Globals.servoDownPos);
+            flap.setPosition(Robot.Globals.flapDownPos);
         }
 
         Arrays.fill(colors, "-");
 
-        flapPosition = Robot.Globals.servoDownPos;
+        flapPosition = Robot.Globals.flapDownPos;
     }
 
     public void goToTicks(int targetTicks) {
@@ -74,11 +74,11 @@ public class Spindexer {
     public void moveHalfPosition(boolean forward) { goRelativeTicks(forward ? tpr : -tpr); }
 
     public void flapUp() {
-        if (flap != null) flap.setPosition(1.0);
+        if (flap != null) flap.setPosition(0.4);
     }
 
     public void flapDown() {
-        if (flap != null) flap.setPosition(Robot.Globals.servoDownPos);
+        if (flap != null) flap.setPosition(Robot.Globals.flapDownPos);
     }
 
     public int findPosition() {

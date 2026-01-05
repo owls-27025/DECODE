@@ -17,26 +17,27 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.opmodes.auto.RRActions;
 import org.firstinspires.ftc.teamcode.shared.mechanisms.drivetrain.roadrunner.MecanumDrive;
+import org.jetbrains.annotations.NotNull;
 
-public class ThreeCycleFront implements AutoPath {
+public class ThreeCycleBack implements AutoPath {
     private final Robot.Globals.Alliances alliance;
 
-    public ThreeCycleFront(Robot.Globals.Alliances alliance) {
+    public ThreeCycleBack(Robot.Globals.Alliances alliance) {
         this.alliance = alliance;
     }
 
     @Override
     public Pose2d getInitialPose() {
         if (alliance == Robot.Globals.Alliances.RED) {
-            return new Pose2d(-50, 50, Math.toRadians(135));
+            return new Pose2d(55, 10, Math.toRadians(180));
         } else {
-            return new Pose2d(-50, -50, Math.toRadians(235));
+            return new Pose2d(55, -10, Math.toRadians(180));
         }
     }
 
     @Override
     public String getName() {
-        return "Three Cycle (Front)";
+        return "Three Cycle (Back)";
     }
 
     @Override
@@ -95,18 +96,22 @@ public class ThreeCycleFront implements AutoPath {
 //                    goToShoot.build(),
 //                    rractions.shoot(3, 900)
             );
+
+
         } else {
             TrajectoryActionBuilder goToShoot = drive.actionBuilder(initialPose)
-                    .splineToLinearHeading(new Pose2d(-35, -35, Math.toRadians(-135)), Math.toRadians(-135));
+                    .turnTo(Math.toRadians(210))
+                    .strafeTo(new Vector2d(55, -10));
 
             TrajectoryActionBuilder goToIntakeOne = goToShoot.endTrajectory().fresh()
-                    .turnTo(Math.toRadians(-90))
-                    .strafeTo(new Vector2d(-10, -20));
+                    .turnTo(Math.toRadians(270))
+                    .strafeTo(new Vector2d(34.6, -25));
+
 
             TrajectoryActionBuilder intakeOne = goToIntakeOne.endTrajectory().fresh()
-                    .strafeTo(new Vector2d(-10, -40), new VelConstraint() {
+                    .strafeTo(new Vector2d(34.6, -45), new VelConstraint() {
                         @Override
-                        public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                        public double maxRobotVel(@NotNull Pose2dDual<Arclength> pose2dDual, @NotNull PosePath posePath, double v) {
                             return 6;
                         }
                     });
@@ -135,24 +140,25 @@ public class ThreeCycleFront implements AutoPath {
                         }
                     });
 
+
             return new SequentialAction(
                     rractions.stop(),
                     goToShoot.build(),
-                    rractions.shoot(3, 1050, Robot.Globals.Colors.GPP),
-                    goToIntakeOne.build(),
-                    new ParallelAction(
-                            intakeOne.build(),
-                            rractions.intake()
-                    ),
-                    goToShoot.build(),
-                    rractions.shoot(3, 1050, Robot.Globals.Colors.PPG)
+                    rractions.shoot(3, 1500),
+                    goToIntakeOne.build()
+//                    new ParallelAction(
+//                            intakeOne.build(),
+//                            rractions.intake()
+//                    )
+//                    goToShoot.build(),
+//                    rractions.shoot(3, 1050),
 //                    goToIntakeTwo.build(),
 //                    new ParallelAction(
 //                            intakeTwo.build(),
 //                            rractions.intake()
-//                    ),
+//                    )
 //                    goToShoot.build()
-//                    rractions.shoot(3, 1050, Robot.Globals.Colors.PGP)
+//                    rractions.shoot(3, 900),
 //                    goToIntakeThree.build(),
 //                    new ParallelAction(
 //                            intakeThree.build()
