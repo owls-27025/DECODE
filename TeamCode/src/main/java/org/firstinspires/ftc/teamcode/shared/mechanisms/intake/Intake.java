@@ -18,6 +18,8 @@ public class Intake {
 
         leftServo = configuration.registerItem(CRServo.class, Robot.Configuration.leftSweeper);
         rightServo = configuration.registerItem(CRServo.class, Robot.Configuration.rightSweeper);
+
+        leftServo.setDirection(CRServo.Direction.REVERSE);
     }
 
     public void start() {

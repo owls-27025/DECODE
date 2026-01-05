@@ -41,11 +41,11 @@ public class OwlsOpModeRegistrar {
 
         manager.register(
                 new OpModeMeta.Builder()
-                        .setName("Limelight Test")
+                        .setName("Servo Test")
                         .setGroup("Test")
                         .setFlavor(OpModeMeta.Flavor.TELEOP)
                         .build(),
-                LimelightTest.class
+                ServoTest.class
         );
     }
 }

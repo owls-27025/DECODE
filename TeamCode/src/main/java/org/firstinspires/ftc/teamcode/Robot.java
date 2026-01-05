@@ -38,14 +38,18 @@ public class Robot {
         public static final ConfigItem intake         = item("intake", true);
         public static final ConfigItem spindexerMotor = item("spindexer", true);
         public static final ConfigItem spindexerServo = item("flap", true);
-        public static final ConfigItem shooter        = item("shooter", true);
+        public static final ConfigItem shooter        = item("flywheel", true);
 
         public static final ConfigItem odometry       = item("odometry", true);
         public static final ConfigItem light          = item("light", true);
         public static final ConfigItem imu            = item("imu", true);
         public static final ConfigItem limelight      = item("limelight", true);
-        public static final ConfigItem leftSweeper    = item("leftSweeper", true);
-        public static final ConfigItem rightSweeper   = item("rightSweeper", true);
+        public static final ConfigItem leftSweeper    = item("left sweeper", true);
+        public static final ConfigItem rightSweeper   = item("right sweeper", true);
+
+        public static final ConfigItem hood           = item("hood", true);
+        public static final ConfigItem yaw            = item("yaw", true);
+        public static final ConfigItem pitch          = item("pitch", true);
 
         @SuppressWarnings("SameParameterValue")
         private static ConfigItem item(String name, boolean active) {
@@ -136,7 +140,7 @@ public class Robot {
         // ----------------------------
         public static double currentSpeed = 1.0;
 
-        public static double spindexerSpeed = 0.5;
+        public static double spindexerSpeed = 0.3;
         public static double driveSpeed = 1.0;
         public static double slowDriveSpeed = 0.35;
 
@@ -151,7 +155,7 @@ public class Robot {
         public static int humanWaitMs = 750;
         public static int spindexerShootTimeTicks = 15;
 
-        public static int tpr = 145;
+        public static int tpr = 104;
 
         public enum Alliances { RED, BLUE }
         public static Alliances alliance = Alliances.BLUE;

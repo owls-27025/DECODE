@@ -36,6 +36,9 @@ public class TeleOpMode extends OwlsOpMode {
         if (p2.pressed(OwlsGamepad.Button.DPAD_UP)) Robot.Globals.shooterVelocity += 50;
         if (p2.pressed(OwlsGamepad.Button.DPAD_DOWN)) Robot.Globals.shooterVelocity -= 50;
 
+        if (p1.pressed(OwlsGamepad.Button.DPAD_UP)) shooter.setHood(shooter.getHood() + 0.1);
+        if (p1.pressed(OwlsGamepad.Button.DPAD_DOWN)) shooter.setHood(shooter.getHood() - 0.1);
+
         // manual spindexer control
         if (p2.pressed(OwlsGamepad.Button.LB)) {
             robot.leftRequested = true;
