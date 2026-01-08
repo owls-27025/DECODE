@@ -52,14 +52,24 @@ public class ThreeCycleFront implements AutoPath {
                     .strafeTo(new Vector2d(-10, 20));
 
             TrajectoryActionBuilder intakeOne = goToIntakeOne.endTrajectory().fresh()
-                    .strafeTo(new Vector2d(-10, 50));
+                    .strafeTo(new Vector2d(-10, 40), new VelConstraint() {
+                        @Override
+                        public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                            return 6;
+                        }
+                    });
 
             TrajectoryActionBuilder goToIntakeTwo = goToShoot.endTrajectory().fresh()
                     .turnTo(Math.toRadians(90))
                     .strafeTo(new Vector2d(11.5, 25));
 
             TrajectoryActionBuilder intakeTwo = goToIntakeTwo.endTrajectory().fresh()
-                    .strafeTo(new Vector2d(11.5, 50));
+                    .strafeTo(new Vector2d(11.5, 45), new VelConstraint() {
+                        @Override
+                        public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                            return 6;
+                        }
+                    });
 
             TrajectoryActionBuilder goToIntakeThree = goToShoot.endTrajectory().fresh()
                     .turnTo(Math.toRadians(90))
@@ -72,21 +82,21 @@ public class ThreeCycleFront implements AutoPath {
             return new SequentialAction(
                     rractions.stop(),
                     goToShoot.build(),
-                    rractions.shoot(3, 1050)
-//                    goToIntakeOne.build(),
-//                    new ParallelAction(
-//                            intakeOne.build(),
+//                    rractions.shoot(3, 1050),
+                    goToIntakeOne.build(),
+                    new ParallelAction(
+                            intakeOne.build()
 //                            rractions.intake()
-//                    ),
-//                    goToShoot.build(),
-//                    rractions.shoot(3, 1050)
-//                    goToIntakeTwo.build(),
-//                    new ParallelAction(
-//                            intakeTwo.build(),
+                    ),
+                    goToShoot.build(),
+//                    rractions.shoot(3, 1050),
+                    goToIntakeTwo.build(),
+                    new ParallelAction(
+                            intakeTwo.build()
 //                            rractions.intake()
-//                    ),
-//                    goToShoot.build(),
-//                    rractions.shoot(3, 900),
+                    ),
+                    goToShoot.build()
+//                    rractions.shoot(3, 900)
 //                    goToIntakeThree.build(),
 //                    new ParallelAction(
 //                            intakeThree.build(),

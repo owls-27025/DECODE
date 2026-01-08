@@ -23,10 +23,16 @@ public class MeepMeepTesting {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-35, 35, Math.toRadians(135)))
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-50, 50, Math.toRadians(135)))
+                .splineToLinearHeading(new Pose2d(-35, 35, Math.toRadians(135)), Math.toRadians(135))
+                                .waitSeconds(5)
+                .turnTo(Math.toRadians(90))
+                .strafeTo(new Vector2d(-10, 20))
+                .strafeTo(new Vector2d(-10, -40))
+
 //                .turnTo(Math.toRadians(210))
-                .waitSeconds(5)
-                .turnTo(Math.toRadians(270))
+//                .waitSeconds(5)
+//                .turnTo(Math.toRadians(270))
 //                .strafeTo(new Vector2d(34.6, -25))
 //                .strafeTo(new Vector2d(34.6, -45), new VelConstraint() {
 //                    @Override

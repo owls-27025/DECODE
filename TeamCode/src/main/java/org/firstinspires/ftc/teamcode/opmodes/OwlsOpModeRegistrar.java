@@ -6,7 +6,9 @@ import com.qualcomm.robotcore.eventloop.opmode.OpModeRegistrar;
 import org.firstinspires.ftc.robotcore.internal.opmode.OpModeMeta;
 import org.firstinspires.ftc.teamcode.opmodes.auto.AutoOpMode;
 import org.firstinspires.ftc.teamcode.opmodes.tele.TeleOpMode;
-import org.firstinspires.ftc.teamcode.shared.helpers.options.Settings;
+import org.firstinspires.ftc.teamcode.opmodes.testing.PIDTuning;
+import org.firstinspires.ftc.teamcode.opmodes.testing.ServoTest;
+import org.firstinspires.ftc.teamcode.opmodes.testing.Settings;
 
 @SuppressWarnings("unused")
 public class OwlsOpModeRegistrar {
@@ -41,7 +43,7 @@ public class OwlsOpModeRegistrar {
 
         manager.register(
                 new OpModeMeta.Builder()
-                        .setName("PID Tning")
+                        .setName("PID Tuning")
                         .setGroup("Tests")
                         .setFlavor(OpModeMeta.Flavor.TELEOP)
                         .build(),

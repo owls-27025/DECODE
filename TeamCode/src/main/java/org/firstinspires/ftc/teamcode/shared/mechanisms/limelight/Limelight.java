@@ -27,6 +27,7 @@ public class Limelight {
 
     public void getMotif() {
 
+        setYawPos(0.17);
         if (limelight == null) {
             Robot.Globals.motif = Robot.Globals.Colors.PGP;
             return;
