@@ -15,6 +15,10 @@ public class Shooter {
         shooter = configuration.registerItem(DcMotorEx.class, Robot.Configuration.shooter);
         if (shooter != null) {
             shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            PIDFCoefficients pidf = getPIDFCoefficients();
+            pidf.p = 0; // default P
+            pidf.i = 0; // default I
+            setPIDFCoefficients(pidf);
         }
 
         hood = configuration.registerItem(Servo.class, Robot.Configuration.hood);
