@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.shared.mechanisms.shooter;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
+
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import org.firstinspires.ftc.teamcode.Robot;
 
@@ -14,9 +15,10 @@ public class Shooter {
         shooter = configuration.registerItem(DcMotorEx.class, Robot.Configuration.shooter);
         if (shooter != null) {
             shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            double d = shooter.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER).d;
-            double f = shooter.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER).f;
-            shooter.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(700, 0.25, d, f));
+            PIDFCoefficients pidf = getPIDFCoefficients();
+            pidf.p = 0; // default P
+            pidf.i = 0; // default I
+            setPIDFCoefficients(pidf);
         }
 
         hood = configuration.registerItem(Servo.class, Robot.Configuration.hood);
