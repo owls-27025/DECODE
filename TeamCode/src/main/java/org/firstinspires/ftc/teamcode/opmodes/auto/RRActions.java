@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.shared.actions.ActionManager;
@@ -11,6 +12,8 @@ import org.firstinspires.ftc.teamcode.shared.actions.IntakeAction;
 import org.firstinspires.ftc.teamcode.shared.actions.ShootAction;
 import org.firstinspires.ftc.teamcode.shared.actions.SpindexerAction;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.concurrent.TimeUnit;
 
 public class RRActions {
     private final Robot robot;
@@ -94,11 +97,64 @@ public class RRActions {
         };
     }
 
+    public Action shoot(final int shots, final int velocity, Robot.Globals.Colors colors, double angle) {
+        return new Action() {
+            private boolean started = false;
+
+            @Override
+            public boolean run(@NotNull TelemetryPacket packet) {
+                if (!started) {
+                    robot.artifactCount = shots;
+                    started = true;
+                    Robot.Globals.shooterVelocity = velocity;
+                    robot.startShoot = true;
+                    robot.sort = true;
+                    robot.colors = colors;
+                    robot.shooter.setHood(angle);
+                }
+
+                return robot.artifactCount > 0;
+            }
+        };
+    }
+
+    public Action shoot(final int shots, final int velocity, double angle) {
+        return new Action() {
+            private boolean started = false;
+
+            @Override
+            public boolean run(@NotNull TelemetryPacket packet) {
+                if (!started) {
+                    robot.artifactCount = shots;
+                    started = true;
+                    Robot.Globals.shooterVelocity = velocity;
+                    robot.startShoot = true;
+                    robot.sort = true;
+                    robot.shooter.setHood(angle);
+                }
+
+                return robot.artifactCount > 0;
+            }
+        };
+    }
+
     public Action intake() {
         return new Action() {
+            ElapsedTime timer = new ElapsedTime();
+            boolean started = false;
+
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                if (!started) {
+                    timer.reset();
+                    started = true;
+                }
                 robot.startIntake = true;
+
+                if (timer.time(TimeUnit.MILLISECONDS) > 4000) {
+                    robot.stop = true;
+                    return false;
+                }
 
                 return robot.artifactCount < 3;
             }
@@ -112,6 +168,15 @@ public class RRActions {
                 robot.stop = true;
 
                 return false;
+            }
+        };
+    }
+
+    public Action getMotif() {
+        return new Action() {
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                return !robot.limelight.getMotif();
             }
         };
     }

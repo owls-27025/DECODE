@@ -25,26 +25,38 @@ public class Limelight {
         pitch = Robot.Configuration.registerItem(Servo.class, Robot.Configuration.pitch);
     }
 
-    public void getMotif() {
+    public boolean getMotif() {
+        if (Robot.Globals.alliance == Robot.Globals.Alliances.RED) {
+            setYawPos(0.17);
+        } else if (Robot.Globals.alliance == Robot.Globals.Alliances.BLUE) {
+            setYawPos(0.83);
+        }
 
-        setYawPos(0.17);
         if (limelight == null) {
             Robot.Globals.motif = Robot.Globals.Colors.PGP;
-            return;
+            return false;
         }
 
         LLResult result = limelight.getLatestResult();
-        if (result == null) return;
+        if (result == null) {
+            Robot.Globals.motif = Robot.Globals.Colors.PGP;
+            return false;
+        }
 
         List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
-        if (fiducials == null || fiducials.isEmpty()) return;
+        if (fiducials == null || fiducials.isEmpty()) {
+            Robot.Globals.motif = Robot.Globals.Colors.PGP;
+            return false;
+        }
 
         for (LLResultTypes.FiducialResult fiducial : fiducials) {
             int id = fiducial.getFiducialId();
-            if (id == 21) { Robot.Globals.motif = Robot.Globals.Colors.GPP; return; }
-            if (id == 22) { Robot.Globals.motif = Robot.Globals.Colors.PGP; return; }
-            if (id == 23) { Robot.Globals.motif = Robot.Globals.Colors.PPG; return; }
+            if (id == 21) { Robot.Globals.motif = Robot.Globals.Colors.GPP; return true; }
+            if (id == 22) { Robot.Globals.motif = Robot.Globals.Colors.PGP; return true; }
+            if (id == 23) { Robot.Globals.motif = Robot.Globals.Colors.PPG; return true; }
         }
+
+        return false;
     }
 
     public LLResult getLatestResult() {

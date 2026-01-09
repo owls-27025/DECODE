@@ -268,5 +268,6 @@ public class Robot {
 
     public void update() {
         drivetrain.update();
+        shooter.update();
     }
 }

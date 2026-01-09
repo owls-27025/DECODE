@@ -52,8 +52,6 @@ public class AutoOpMode extends OwlsOpMode {
             built = true;
         }
 
-        limelight.getMotif();
-
         telemetry.addLine("Auto ready");
         telemetry.addData("Path", path.getName());
         telemetry.addData("Alliance", Robot.Globals.alliance);
