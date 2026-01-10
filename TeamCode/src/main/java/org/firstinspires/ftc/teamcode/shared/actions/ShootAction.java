@@ -11,6 +11,7 @@ public class ShootAction extends BaseAction {
 
     private enum State {
         SPIN_UP,
+        TARGETING,
         READY,
         HUMAN_INTAKE
     }
@@ -41,6 +42,8 @@ public class ShootAction extends BaseAction {
                     enter(State.READY);
                 }
                 break;
+            case TARGETING:
+                robot.shooterReady = false;
 
             case READY:
                 robot.shooterReady = true;

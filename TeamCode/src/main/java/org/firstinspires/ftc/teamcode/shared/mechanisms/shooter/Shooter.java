@@ -48,11 +48,11 @@ public class Shooter {
     }
 
     public void update() {
-//        if (getPIDFCoefficients() != null) {
-//            PIDFCoefficients pidf = getPIDFCoefficients();
-//            pidf.p = 20; // default P
-//            pidf.i = 0.25; // default I
-//            setPIDFCoefficients(pidf);
-//        }
+        if (getPIDFCoefficients() != null) {
+            PIDFCoefficients pidf = getPIDFCoefficients();
+            pidf.p = 25; // default P
+            pidf.i = 0.65; // default I
+            setPIDFCoefficients(pidf);
+        }
     }
 }

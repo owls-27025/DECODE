@@ -138,6 +138,8 @@ public class Robot {
         // ----------------------------
         // Constants
         // ----------------------------
+        public static boolean delayAuto = false;
+
         public static double currentSpeed = 1.0;
 
         public static double spindexerSpeed = 0.3;
@@ -165,8 +167,8 @@ public class Robot {
 
         public enum AutoStrategies {
             LEAVE("Leave"),
-            ONECYCLEFRONT("One Cycle Front"),
-            ONECYCLEBACK("One Cycle Back"),
+            ONECYCLEFRONT("One Cycle (Front)"),
+            ONECYCLEBACK("One Cycle (Back)"),
             THREECYCLEFRONT("Three Cycle (Front)"),
             THREECYCLEBACK("Three Cycle (Back)");
 

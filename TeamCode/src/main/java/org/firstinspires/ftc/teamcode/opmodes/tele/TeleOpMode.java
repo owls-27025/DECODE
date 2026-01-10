@@ -129,6 +129,8 @@ public class TeleOpMode extends OwlsOpMode {
         telemetry.addData("Spindexer motor", spindexer.getCurrent());
         telemetry.addData("Spindexer speed", Robot.Globals.spindexerSpeed);
 
+        telemetry.addData("Hood Pos", shooter.getHood());
+
         telemetry.addData("Field Centric", Robot.Globals.isFieldCentric);
         telemetry.addData("Right Stick", Robot.Globals.isRightStick);
         telemetry.addData("Drive Speed", Robot.Globals.driveSpeed);

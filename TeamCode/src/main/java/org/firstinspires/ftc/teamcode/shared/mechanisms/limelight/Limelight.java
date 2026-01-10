@@ -78,4 +78,8 @@ public class Limelight {
     public void setPitchPos(double pos) {
         pitch.setPosition(pos);
     }
+
+    public boolean getBack() {
+        return limelight.getLatestResult().getBotpose().getPosition().x > 35;
+    }
 }

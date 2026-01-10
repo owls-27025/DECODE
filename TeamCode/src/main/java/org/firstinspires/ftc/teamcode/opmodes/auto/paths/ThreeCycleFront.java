@@ -49,7 +49,7 @@ public class ThreeCycleFront implements AutoPath {
 
             TrajectoryActionBuilder goToIntakeOne = goToShoot.endTrajectory().fresh()
                     .turnTo(Math.toRadians(90))
-                    .strafeTo(new Vector2d(-10, 20));
+                    .strafeTo(new Vector2d(-10, 14));
 
             TrajectoryActionBuilder intakeOne = goToIntakeOne.endTrajectory().fresh()
                     .strafeTo(new Vector2d(-10, 40), new VelConstraint() {
@@ -61,10 +61,10 @@ public class ThreeCycleFront implements AutoPath {
 
             TrajectoryActionBuilder goToIntakeTwo = goToShoot.endTrajectory().fresh()
                     .turnTo(Math.toRadians(90))
-                    .strafeTo(new Vector2d(11.5, 25));
+                    .strafeTo(new Vector2d(11.5, 14));
 
             TrajectoryActionBuilder intakeTwo = goToIntakeTwo.endTrajectory().fresh()
-                    .strafeTo(new Vector2d(11.5, 45), new VelConstraint() {
+                    .strafeTo(new Vector2d(11.5, 40), new VelConstraint() {
                         @Override
                         public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
                             return 6;
@@ -111,7 +111,7 @@ public class ThreeCycleFront implements AutoPath {
 
             TrajectoryActionBuilder goToIntakeOne = goToShoot.endTrajectory().fresh()
                     .turnTo(Math.toRadians(-90))
-                    .strafeTo(new Vector2d(-10, -20));
+                    .strafeTo(new Vector2d(-10, -14));
 
             TrajectoryActionBuilder intakeOne = goToIntakeOne.endTrajectory().fresh()
                     .strafeTo(new Vector2d(-10, -40), new VelConstraint() {
@@ -127,10 +127,10 @@ public class ThreeCycleFront implements AutoPath {
 
             TrajectoryActionBuilder goToIntakeTwo = goToShoot.endTrajectory().fresh()
                     .turnTo(Math.toRadians(-90))
-                    .strafeTo(new Vector2d(11.5, -25));
+                    .strafeTo(new Vector2d(11.5, -14));
 
             TrajectoryActionBuilder intakeTwo = goToIntakeTwo.endTrajectory().fresh()
-                    .strafeTo(new Vector2d(11.5, -45), new VelConstraint() {
+                    .strafeTo(new Vector2d(11.5, -40), new VelConstraint() {
                         @Override
                         public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
                             return 6;
