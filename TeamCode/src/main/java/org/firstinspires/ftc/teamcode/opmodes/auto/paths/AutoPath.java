@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.shared.mechanisms.drivetrain.roadrunner.Me
 public interface AutoPath {
     Pose2d getInitialPose();
     String getName();
+    double defaultVelocity();
 
     Action build(MecanumDrive drive, RRActions rractions, Telemetry telemetry);
 }

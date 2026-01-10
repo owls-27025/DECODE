@@ -28,6 +28,11 @@ public class OneCycleBack implements AutoPath {
     }
 
     @Override
+    public double defaultVelocity() {
+        return 1400;
+    }
+
+    @Override
     public String getName() {
         return "One Cycle (Back)";
     }

@@ -138,7 +138,7 @@ public class Robot {
         // ----------------------------
         // Constants
         // ----------------------------
-        public static boolean delayAuto = false;
+        public static int delayAuto = 0;
 
         public static double currentSpeed = 1.0;
 

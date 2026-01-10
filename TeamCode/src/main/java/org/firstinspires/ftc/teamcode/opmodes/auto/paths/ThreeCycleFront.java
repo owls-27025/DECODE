@@ -26,6 +26,11 @@ public class ThreeCycleFront implements AutoPath {
     }
 
     @Override
+    public double defaultVelocity() {
+        return 1100;
+    }
+
+    @Override
     public Pose2d getInitialPose() {
         if (alliance == Robot.Globals.Alliances.RED) {
             return new Pose2d(-50, 50, Math.toRadians(135));
@@ -162,9 +167,7 @@ public class ThreeCycleFront implements AutoPath {
             if (!Robot.Globals.gate) {
                 return new SequentialAction(
                         rractions.stop(),
-                        new ParallelAction(
-                                goToShoot.build()
-                        ),
+                        goToShoot.build(),
                         rractions.shoot(3, 1150),
                         goToIntakeOne.build(),
                         new ParallelAction(

@@ -37,6 +37,11 @@ public class ThreeCycleBack implements AutoPath {
     }
 
     @Override
+    public double defaultVelocity() {
+        return 1550;
+    }
+
+    @Override
     public String getName() {
         return "Three Cycle (Back)";
     }
@@ -49,7 +54,7 @@ public class ThreeCycleBack implements AutoPath {
 
         if (alliance == Robot.Globals.Alliances.RED) {
             TrajectoryActionBuilder goToShoot = drive.actionBuilder(initialPose)
-                    .splineToLinearHeading(new Pose2d(55, -15, Math.toRadians(160)), Math.toRadians(160));
+                    .splineToLinearHeading(new Pose2d(50, -15, Math.toRadians(155)), Math.toRadians(155));
 
             TrajectoryActionBuilder goToIntakeOne = goToShoot.endTrajectory().fresh()
                     .turnTo(Math.toRadians(90))
@@ -64,6 +69,9 @@ public class ThreeCycleBack implements AutoPath {
                         }
                     });
 
+            TrajectoryActionBuilder shootTwo = intakeOne.endTrajectory().fresh()
+                    .splineToLinearHeading(new Pose2d(50, -15, Math.toRadians(155)), Math.toRadians(155));
+
             TrajectoryActionBuilder goToIntakeTwo = goToShoot.endTrajectory().fresh()
                     .turnTo(Math.toRadians(90))
                     .strafeTo(new Vector2d(12.5, 25));
@@ -75,6 +83,9 @@ public class ThreeCycleBack implements AutoPath {
                             return 5;
                         }
                     });
+
+            TrajectoryActionBuilder leave = shootTwo.endTrajectory().fresh()
+                    .strafeTo(new Vector2d(45, 20));
 
             TrajectoryActionBuilder goToIntakeThree = goToShoot.endTrajectory().fresh()
                     .turnTo(Math.toRadians(90))
@@ -95,25 +106,21 @@ public class ThreeCycleBack implements AutoPath {
                             goToShoot.build(),
                             rractions.getMotif()
                     ),
-                    rractions.shoot(3, 1500),
+                    rractions.shoot(3, 1550),
                     goToIntakeOne.build(),
                     new ParallelAction(
                             intakeOne.build(),
                             rractions.intake()
                     ),
-                    goToShoot.build(),
-                    rractions.shoot(3, 1500),
-                    goToIntakeTwo.build(),
-                    new ParallelAction(
-                            intakeTwo.build(),
-                            rractions.intake()
-                    )
+                    shootTwo.build(),
+                    rractions.shoot(3, 1550),
+                    leave.build()
             );
 
 
         } else {
             TrajectoryActionBuilder goToShoot = drive.actionBuilder(initialPose)
-                    .splineToLinearHeading(new Pose2d(55, -15, Math.toRadians(200)), Math.toRadians(200));
+                    .splineToLinearHeading(new Pose2d(51, -15, Math.toRadians(205)), Math.toRadians(205));
 
             TrajectoryActionBuilder goToIntakeOne = goToShoot.endTrajectory().fresh()
                     .turnTo(Math.toRadians(270))
@@ -127,6 +134,12 @@ public class ThreeCycleBack implements AutoPath {
                             return 5;
                         }
                     });
+
+            TrajectoryActionBuilder shootTwo = intakeOne.endTrajectory().fresh()
+                    .splineToLinearHeading(new Pose2d(51, -15, Math.toRadians(205)), Math.toRadians(205));
+
+            TrajectoryActionBuilder leave = shootTwo.endTrajectory().fresh()
+                    .strafeTo(new Vector2d(45, -20));
 
             TrajectoryActionBuilder goToIntakeTwo = goToShoot.endTrajectory().fresh()
                     .turnTo(Math.toRadians(270))
@@ -155,23 +168,16 @@ public class ThreeCycleBack implements AutoPath {
 
             return new SequentialAction(
                     rractions.stop(),
-                    new ParallelAction(
-                            goToShoot.build(),
-                            rractions.getMotif()
-                    ),
-                    rractions.shoot(3, 1500),
+                    goToShoot.build(),
+                    rractions.shoot(3, 1550),
                     goToIntakeOne.build(),
                     new ParallelAction(
                             intakeOne.build(),
                             rractions.intake()
                     ),
-                    goToShoot.build(),
-                    rractions.shoot(3, 1500),
-                    goToIntakeTwo.build(),
-                    new ParallelAction(
-                            intakeTwo.build(),
-                            rractions.intake()
-                    )
+                    shootTwo.build(),
+                    rractions.shoot(3, 1550),
+                    leave.build()
             );
         }
     }

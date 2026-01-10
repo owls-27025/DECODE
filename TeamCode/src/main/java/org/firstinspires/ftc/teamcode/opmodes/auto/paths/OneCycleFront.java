@@ -25,6 +25,11 @@ public class OneCycleFront implements AutoPath {
     }
 
     @Override
+    public double defaultVelocity() {
+        return 900;
+    }
+
+    @Override
     public String getName() {
         return "One Cycle (Front)";
     }
