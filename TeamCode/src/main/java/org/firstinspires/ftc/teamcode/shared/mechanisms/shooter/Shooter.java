@@ -13,7 +13,7 @@ public class Shooter {
     private final Servo hood;
 
     public Shooter(Robot.Configuration configuration) {
-        shooter = configuration.registerItem(DcMotorEx.class, Robot.Configuration.shooter);
+        shooter = Robot.Configuration.registerItem(DcMotorEx.class, Robot.Configuration.shooter);
         if (shooter != null) {
             shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             shooter.setDirection(DcMotor.Direction.FORWARD);

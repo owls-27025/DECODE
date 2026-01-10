@@ -41,7 +41,7 @@ public class Drivetrain {
         if (FL != null) FL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         if (BL != null) BL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        imu = configuration.registerItem(IMU.class, Robot.Configuration.imu);
+        imu = Robot.Configuration.registerItem(IMU.class, Robot.Configuration.imu);
         if (imu != null) {
             RevHubOrientationOnRobot Orientation = new RevHubOrientationOnRobot(
                     RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
@@ -49,7 +49,7 @@ public class Drivetrain {
             imu.initialize(new IMU.Parameters(Orientation));
         }
 
-        odo = configuration.registerItem(GoBildaPinpointDriver.class, Robot.Configuration.odometry);
+        odo = Robot.Configuration.registerItem(GoBildaPinpointDriver.class, Robot.Configuration.odometry);
     }
 
     public double[] fieldCentricDrive(double x, double y) {
