@@ -142,6 +142,7 @@ public class RRActions {
         return new Action() {
             ElapsedTime timer = new ElapsedTime();
             boolean started = false;
+            int lastArtifactCount = robot.artifactCount;
 
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
@@ -150,6 +151,10 @@ public class RRActions {
                     started = true;
                 }
                 robot.startIntake = true;
+                if (lastArtifactCount != robot.artifactCount) {
+                    timer.reset();
+                }
+                lastArtifactCount = robot.artifactCount;
 
                 if (timer.time(TimeUnit.MILLISECONDS) > 4000) {
                     robot.stop = true;

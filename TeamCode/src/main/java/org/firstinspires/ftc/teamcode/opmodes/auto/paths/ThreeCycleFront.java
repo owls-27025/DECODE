@@ -45,13 +45,14 @@ public class ThreeCycleFront implements AutoPath {
 
         if (alliance == Robot.Globals.Alliances.RED) {
             TrajectoryActionBuilder goToShoot = drive.actionBuilder(initialPose)
-                    .splineToLinearHeading(new Pose2d(-40, 40, Math.toRadians(135)), Math.toRadians(135));
+                    .splineToLinearHeading(new Pose2d(-40, 40, Math.toRadians(140)), Math.toRadians(140));
 
             TrajectoryActionBuilder goToIntakeOne = goToShoot.endTrajectory().fresh()
                     .turnTo(Math.toRadians(90))
-                    .strafeTo(new Vector2d(-10, 14));
+                    .strafeTo(new Vector2d(-10, 16));
 
             TrajectoryActionBuilder intakeOne = goToIntakeOne.endTrajectory().fresh()
+                    .strafeTo(new Vector2d(-10, 24))
                     .strafeTo(new Vector2d(-10, 40), new VelConstraint() {
                         @Override
                         public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
@@ -61,9 +62,10 @@ public class ThreeCycleFront implements AutoPath {
 
             TrajectoryActionBuilder goToIntakeTwo = goToShoot.endTrajectory().fresh()
                     .turnTo(Math.toRadians(90))
-                    .strafeTo(new Vector2d(11.5, 14));
+                    .strafeTo(new Vector2d(11.5, 16));
 
             TrajectoryActionBuilder intakeTwo = goToIntakeTwo.endTrajectory().fresh()
+                    .strafeTo(new Vector2d(11.5, 24))
                     .strafeTo(new Vector2d(11.5, 40), new VelConstraint() {
                         @Override
                         public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
@@ -84,11 +86,11 @@ public class ThreeCycleFront implements AutoPath {
 
             return new SequentialAction(
                     rractions.stop(),
-                    goToShoot.build(),
                     new ParallelAction(
-                            rractions.getMotif(),
-                            rractions.shoot(3, 1000, Robot.Globals.Colors.GPP, 0)
+                            goToShoot.build(),
+                            rractions.getMotif()
                     ),
+                    rractions.shoot(3, 1000, Robot.Globals.Colors.GPP, 0),
                     goToIntakeOne.build(),
                     new ParallelAction(
                             intakeOne.build(),
@@ -100,20 +102,18 @@ public class ThreeCycleFront implements AutoPath {
                     new ParallelAction(
                             intakeTwo.build(),
                             rractions.intake()
-                    ),
-                    goToShoot.build(),
-                    rractions.shoot(3, 1000, Robot.Globals.Colors.PGP, 0),
-                    leave.build()
+                    )
             );
         } else {
             TrajectoryActionBuilder goToShoot = drive.actionBuilder(initialPose)
-                    .splineToLinearHeading(new Pose2d(-40, -40, Math.toRadians(-135)), Math.toRadians(-135));
+                    .splineToLinearHeading(new Pose2d(-40, -40, Math.toRadians(225)), Math.toRadians(225));
 
             TrajectoryActionBuilder goToIntakeOne = goToShoot.endTrajectory().fresh()
                     .turnTo(Math.toRadians(-90))
-                    .strafeTo(new Vector2d(-10, -14));
+                    .strafeTo(new Vector2d(-10, -16));
 
             TrajectoryActionBuilder intakeOne = goToIntakeOne.endTrajectory().fresh()
+                    .strafeTo(new Vector2d(-10, -24))
                     .strafeTo(new Vector2d(-10, -40), new VelConstraint() {
                         @Override
                         public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
@@ -123,13 +123,19 @@ public class ThreeCycleFront implements AutoPath {
 
             TrajectoryActionBuilder hitGate = intakeOne.endTrajectory().fresh()
                     .strafeTo(new Vector2d(0, -50))
-                    .strafeTo(new Vector2d(0, -55));
+                    .strafeTo(new Vector2d(0, -55), new VelConstraint() {
+                        @Override
+                        public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                            return 6;
+                        }
+                    });
 
             TrajectoryActionBuilder goToIntakeTwo = goToShoot.endTrajectory().fresh()
                     .turnTo(Math.toRadians(-90))
-                    .strafeTo(new Vector2d(11.5, -14));
+                    .strafeTo(new Vector2d(11.5, -16));
 
             TrajectoryActionBuilder intakeTwo = goToIntakeTwo.endTrajectory().fresh()
+                    .strafeTo(new Vector2d(11.5, -24))
                     .strafeTo(new Vector2d(11.5, -40), new VelConstraint() {
                         @Override
                         public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
@@ -154,11 +160,11 @@ public class ThreeCycleFront implements AutoPath {
 
             return new SequentialAction(
                     rractions.stop(),
-                    goToShoot.build(),
                     new ParallelAction(
-                            rractions.getMotif(),
-                            rractions.shoot(3, 1000, Robot.Globals.Colors.GPP, 0)
+                            goToShoot.build(),
+                            rractions.getMotif()
                     ),
+                    rractions.shoot(3, 1000, Robot.Globals.Colors.GPP, 0),
                     goToIntakeOne.build(),
                     new ParallelAction(
                             intakeOne.build(),
@@ -170,10 +176,7 @@ public class ThreeCycleFront implements AutoPath {
                     new ParallelAction(
                             intakeTwo.build(),
                             rractions.intake()
-                    ),
-                    goToShoot.build(),
-                    rractions.shoot(3, 1000, Robot.Globals.Colors.PGP, 0),
-                    leave.build()
+                    )
             );
         }
     }

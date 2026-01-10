@@ -12,7 +12,7 @@ public class Distance {
     }
 
     public boolean isBall() {
-        return distance != null && distance.getDistance(DistanceUnit.MM) < 130;
+        return distance != null && distance.getDistance(DistanceUnit.MM) < 110;
     }
 
     public double getDistanceMm() {

@@ -23,9 +23,8 @@ public class MeepMeepTesting {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-50, -50, Math.toRadians(235)))
-                .splineToLinearHeading(new Pose2d(-44, -44, Math.toRadians(235)), Math.toRadians(235))
-                .strafeTo(new Vector2d(-55, -14))
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-50, 50, Math.toRadians(135)))
+                .splineToLinearHeading(new Pose2d(-44, 44, Math.toRadians(140)), Math.toRadians(140))
 //                                .waitSeconds(5)
 //                .turnTo(Math.toRadians(90))
 //                .strafeTo(new Vector2d(-10, 20))
@@ -46,27 +45,40 @@ public class MeepMeepTesting {
 //                .waitSeconds(5)
                 // three cycle back ^^
                 // three cycle front vv
+                // shoot placeholder
                 .waitSeconds(5)
+                // go to intake one
                 .turnTo(Math.toRadians(-90))
                 .strafeTo(new Vector2d(-10, -25))
                 .strafeTo(new Vector2d(-10, -50))
+                // go to + hit gate
                 .strafeTo(new Vector2d(0, -50))
                 .strafeTo(new Vector2d(0, -55))
+                // go to shoot
                 .strafeTo(new Vector2d(-35, -35))
                 .turnTo(Math.toRadians(235))
+                // shoot placeholder
                 .waitSeconds(5)
+                // go to intake two
                 .turnTo(Math.toRadians(-90))
                 .strafeTo(new Vector2d(11.5, -25))
                 .strafeTo(new Vector2d(11.5, -50))
+                // go to shoot
                 .strafeTo(new Vector2d(-35, -35))
                 .turnTo(Math.toRadians(235))
+                // shoot placeholder
                 .waitSeconds(5)
+                // go to intake three
                 .turnTo(Math.toRadians(-90))
                 .strafeTo(new Vector2d(34.6, -25))
                 .strafeTo(new Vector2d(34.6, -50))
+                // go to shoot
                 .strafeTo(new Vector2d(-35, -35))
                 .turnTo(Math.toRadians(235))
+                // shoot placeholder
                 .waitSeconds(5)
+                // go to leave position
+                .strafeTo(new Vector2d(-55, -14))
                 .build());
 
 

@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode.shared.mechanisms.spindexer;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.Robot;
 
 import java.util.Arrays;
@@ -11,7 +13,7 @@ public class Spindexer {
     public final double[] intakePositions = new double[]{1.0, 3.0, 5.0};
     public final double[] shootPositions  = new double[]{0.0, 2.0, 4.0};
 
-    private final DcMotor motor;
+    private final DcMotorEx motor;
     private final Servo flap;
 
     private static final int SLOTS = 3;
@@ -30,7 +32,7 @@ public class Spindexer {
         this.tpr = Robot.Globals.tpr;
         this.single = tpr * 2;
 
-        motor = Robot.Configuration.registerItem(DcMotor.class, Robot.Configuration.spindexerMotor);
+        motor = Robot.Configuration.registerItem(DcMotorEx.class, Robot.Configuration.spindexerMotor);
         flap  = Robot.Configuration.registerItem(Servo.class, Robot.Configuration.spindexerServo);
 
         Arrays.fill(isIntakePos, false);
@@ -149,5 +151,11 @@ public class Spindexer {
 
     private double clamp(double v) {
         return Math.max(0.0, Math.min(1.0, v));
+    }
+
+    private void update() {
+        if (motor.getCurrent(CurrentUnit.AMPS) > 93429873249834987.0) {
+            // no
+        }
     }
 }

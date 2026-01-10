@@ -72,29 +72,23 @@ public class ThreeCycleBack implements AutoPath {
 
             return new SequentialAction(
                     rractions.stop(),
+                    new ParallelAction(
+                            goToShoot.build(),
+                            rractions.getMotif()
+                    ),
+                    rractions.shoot(3, 1500, Robot.Globals.Colors.GPP, 1.0),
+                    goToIntakeOne.build(),
+                    new ParallelAction(
+                            intakeOne.build(),
+                            rractions.intake()
+                    ),
                     goToShoot.build(),
-                    rractions.shoot(3, 1050)
-//                    goToIntakeOne.build(),
-//                    new ParallelAction(
-//                            intakeOne.build(),
-//                            rractions.intake()
-//                    ),
-//                    goToShoot.build(),
-//                    rractions.shoot(3, 1050)
-//                    goToIntakeTwo.build(),
-//                    new ParallelAction(
-//                            intakeTwo.build(),
-//                            rractions.intake()
-//                    ),
-//                    goToShoot.build(),
-//                    rractions.shoot(3, 900),
-//                    goToIntakeThree.build(),
-//                    new ParallelAction(
-//                            intakeThree.build(),
-//                            rractions.intake()
-//                    ),
-//                    goToShoot.build(),
-//                    rractions.shoot(3, 900)
+                    rractions.shoot(3, 1500, Robot.Globals.Colors.GPP, 1.0),
+                    goToIntakeTwo.build(),
+                    new ParallelAction(
+                            intakeTwo.build(),
+                            rractions.intake()
+                    )
             );
 
 
@@ -143,29 +137,23 @@ public class ThreeCycleBack implements AutoPath {
 
             return new SequentialAction(
                     rractions.stop(),
+                    new ParallelAction(
+                            goToShoot.build(),
+                            rractions.getMotif()
+                    ),
+                    rractions.shoot(3, 1500, Robot.Globals.Colors.GPP, 1.0),
+                    goToIntakeOne.build(),
+                    new ParallelAction(
+                            intakeOne.build(),
+                            rractions.intake()
+                    ),
                     goToShoot.build(),
-                    rractions.shoot(3, 1500),
-                    goToIntakeOne.build()
-//                    new ParallelAction(
-//                            intakeOne.build(),
-//                            rractions.intake()
-//                    )
-//                    goToShoot.build(),
-//                    rractions.shoot(3, 1050),
-//                    goToIntakeTwo.build(),
-//                    new ParallelAction(
-//                            intakeTwo.build(),
-//                            rractions.intake()
-//                    )
-//                    goToShoot.build()
-//                    rractions.shoot(3, 900),
-//                    goToIntakeThree.build(),
-//                    new ParallelAction(
-//                            intakeThree.build()
-//                            rractions.intake()
-//                    );
-//                    goToShoot.build()
-//                    rractions.shoot(3, 900)
+                    rractions.shoot(3, 1500, Robot.Globals.Colors.GPP, 1.0),
+                    goToIntakeTwo.build(),
+                    new ParallelAction(
+                            intakeTwo.build(),
+                            rractions.intake()
+                    )
             );
         }
     }
