@@ -1,7 +1,10 @@
 package org.firstinspires.ftc.teamcode.opmodes.auto;
 
+import androidx.annotation.NonNull;
+
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.shared.actions.ActionManager;
@@ -9,6 +12,8 @@ import org.firstinspires.ftc.teamcode.shared.actions.IntakeAction;
 import org.firstinspires.ftc.teamcode.shared.actions.ShootAction;
 import org.firstinspires.ftc.teamcode.shared.actions.SpindexerAction;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.concurrent.TimeUnit;
 
 public class RRActions {
     private final Robot robot;
@@ -22,9 +27,9 @@ public class RRActions {
     private void ensureSubsystems() {
         if (subsystemsAdded) return;
 
-        manager.add(new IntakeAction(robot));
-        manager.add(new ShootAction(robot));
-        manager.add(new SpindexerAction(robot));
+        manager.addAndReturn(new IntakeAction(robot));
+        manager.addAndReturn(new ShootAction(robot));
+        manager.addAndReturn(new SpindexerAction(robot));
 
         subsystemsAdded = true;
     }
@@ -57,39 +62,126 @@ public class RRActions {
     public Action shoot(final int shots, final int velocity) {
         return new Action() {
             private boolean started = false;
-            private int remaining = shots;
-            private int lastCount = 0;
 
             @Override
             public boolean run(@NotNull TelemetryPacket packet) {
                 if (!started) {
+                    robot.artifactCount = shots;
+                    started = true;
                     Robot.Globals.shooterVelocity = velocity;
-                    robot.manualShoot = false;
                     robot.startShoot = true;
+                }
 
-                    lastCount = robot.artifactCount;
+                return robot.artifactCount > 0;
+            }
+        };
+    }
+
+    public Action shoot(final int shots, final int velocity, Robot.Globals.Colors colors) {
+        return new Action() {
+            private boolean started = false;
+
+            @Override
+            public boolean run(@NotNull TelemetryPacket packet) {
+                if (!started) {
+                    robot.artifactCount = shots;
+                    started = true;
+                    Robot.Globals.shooterVelocity = velocity;
+                    robot.startShoot = true;
+                    robot.colors = colors;
+                    robot.sort = true;
+                }
+
+                return robot.artifactCount > 0;
+            }
+        };
+    }
+
+    public Action shoot(final int shots, final int velocity, Robot.Globals.Colors colors, double angle) {
+        return new Action() {
+            private boolean started = false;
+
+            @Override
+            public boolean run(@NotNull TelemetryPacket packet) {
+                if (!started) {
+                    robot.artifactCount = shots;
+                    started = true;
+                    Robot.Globals.shooterVelocity = velocity;
+                    robot.startShoot = true;
+                    robot.sort = true;
+                    robot.colors = colors;
+                    robot.shooter.setHood(angle);
+                }
+
+                return robot.artifactCount > 0;
+            }
+        };
+    }
+
+    public Action shoot(final int shots, final int velocity, double angle) {
+        return new Action() {
+            private boolean started = false;
+
+            @Override
+            public boolean run(@NotNull TelemetryPacket packet) {
+                if (!started) {
+                    robot.artifactCount = shots;
+                    started = true;
+                    Robot.Globals.shooterVelocity = velocity;
+                    robot.startShoot = true;
+                    robot.sort = true;
+                    robot.shooter.setHood(angle);
+                }
+
+                return robot.artifactCount > 0;
+            }
+        };
+    }
+
+    public Action intake() {
+        return new Action() {
+            ElapsedTime timer = new ElapsedTime();
+            boolean started = false;
+            int lastArtifactCount = robot.artifactCount;
+
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                if (!started) {
+                    timer.reset();
                     started = true;
                 }
-
-                int now = robot.artifactCount;
-                if (now < lastCount) {
-                    remaining -= (lastCount - now);
-                    lastCount = now;
-                } else {
-                    lastCount = now;
+                robot.startIntake = true;
+                if (lastArtifactCount != robot.artifactCount) {
+                    timer.reset();
                 }
+                lastArtifactCount = robot.artifactCount;
 
-                if (remaining <= 0) {
-                    robot.startShoot = false;
+                if (timer.time(TimeUnit.MILLISECONDS) > 4000) {
+                    robot.stop = true;
                     return false;
                 }
 
-                if (robot.artifactCount <= 0) {
-                    robot.startShoot = false;
-                    return false;
-                }
+                return robot.artifactCount < 3;
+            }
+        };
+    }
 
-                return true;
+    public Action stop() {
+        return new Action() {
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                robot.stop = true;
+
+                return false;
+            }
+        };
+    }
+
+    public Action getMotif() {
+        return new Action() {
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                return !robot.limelight.getMotif();
             }
         };
     }

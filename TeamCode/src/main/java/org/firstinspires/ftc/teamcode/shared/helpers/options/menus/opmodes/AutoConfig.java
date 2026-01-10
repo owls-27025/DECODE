@@ -24,6 +24,18 @@ public class AutoConfig extends MenuLib.Menu {
                 v -> Robot.Globals.autoStrategy = v
         ));
 
+        addOption(MenuLib.Option.value(
+                () -> "Delay: " + Robot.Globals.delayAuto,
+                () -> Robot.Globals.delayAuto = !Robot.Globals.delayAuto,
+                () -> Robot.Globals.delayAuto = !Robot.Globals.delayAuto
+        ));
+
+        addOption(MenuLib.Option.value(
+                () -> "Gate: " + Robot.Globals.delayAuto,
+                () -> Robot.Globals.gate = !Robot.Globals.gate,
+                () -> Robot.Globals.gate = !Robot.Globals.gate
+        ));
+
         addOption(MenuLib.Option.info(() -> ""));
 
         addOption(MenuLib.Option.action(

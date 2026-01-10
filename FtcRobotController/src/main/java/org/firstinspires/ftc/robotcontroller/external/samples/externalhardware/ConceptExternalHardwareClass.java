@@ -27,7 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.robotcontroller.external.samples;
+package org.firstinspires.ftc.robotcontroller.external.samples.externalhardware;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -70,7 +70,7 @@ public class ConceptExternalHardwareClass extends LinearOpMode {
 
     // Create a RobotHardware object to be used to access robot hardware.
     // Prefix any hardware functions with "robot." to access this class.
-    RobotHardware   robot       = new RobotHardware(this);
+//    RobotHardware   robot       = new RobotHardware(this);
 
     @Override
     public void runOpMode() {
@@ -80,7 +80,7 @@ public class ConceptExternalHardwareClass extends LinearOpMode {
         double handOffset   = 0;
 
         // initialize all the hardware, using the hardware class. See how clean and simple this is?
-        robot.init();
+//        robot.init();
 
         // Send telemetry message to signify robot waiting;
         // Wait for the game to start (driver presses START)
@@ -96,31 +96,31 @@ public class ConceptExternalHardwareClass extends LinearOpMode {
             turn  =  gamepad1.right_stick_x;
 
             // Combine drive and turn for blended motion. Use RobotHardware class
-            robot.driveRobot(drive, turn);
+//            robot.driveRobot(drive, turn);
 
             // Use gamepad left & right Bumpers to open and close the claw
             // Use the SERVO constants defined in RobotHardware class.
             // Each time around the loop, the servos will move by a small amount.
             // Limit the total offset to half of the full travel range
-            if (gamepad1.right_bumper)
-                handOffset += robot.HAND_SPEED;
-            else if (gamepad1.left_bumper)
-                handOffset -= robot.HAND_SPEED;
-            handOffset = Range.clip(handOffset, -0.5, 0.5);
+//            if (gamepad1.right_bumper)
+//                handOffset += robot.HAND_SPEED;
+//            else if (gamepad1.left_bumper)
+//                handOffset -= robot.HAND_SPEED;
+//            handOffset = Range.clip(handOffset, -0.5, 0.5);
 
             // Move both servos to new position.  Use RobotHardware class
-            robot.setHandPositions(handOffset);
+//            robot.setHandPositions(handOffset);
 
             // Use gamepad buttons to move arm up (Y) and down (A)
             // Use the MOTOR constants defined in RobotHardware class.
-            if (gamepad1.y)
-                arm = robot.ARM_UP_POWER;
-            else if (gamepad1.a)
-                arm = robot.ARM_DOWN_POWER;
-            else
-                arm = 0;
-
-            robot.setArmPower(arm);
+//            if (gamepad1.y)
+//                arm = robot.ARM_UP_POWER;
+//            else if (gamepad1.a)
+//                arm = robot.ARM_DOWN_POWER;
+//            else
+//                arm = 0;
+//
+//            robot.setArmPower(arm);
 
             // Send telemetry messages to explain controls and show robot status
             telemetry.addData("Drive", "Left Stick");

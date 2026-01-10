@@ -14,7 +14,6 @@ public class TeleOpMode extends OwlsOpMode {
     private ActionManager actionManager;
     private Action intakeAction;
     private Action shootAction;
-    private Action humanIntakeAction;
     private Action spindexerAction;
 
     public enum PreviousIntakeState { STOPPED, FORWARD, NA }
@@ -41,6 +40,9 @@ public class TeleOpMode extends OwlsOpMode {
         if (p2.pressed(OwlsGamepad.Button.DPAD_UP)) Robot.Globals.shooterVelocity += 50;
         if (p2.pressed(OwlsGamepad.Button.DPAD_DOWN)) Robot.Globals.shooterVelocity -= 50;
 
+        if (p1.pressed(OwlsGamepad.Button.DPAD_UP)) shooter.setHood(shooter.getHood() + 0.1);
+        if (p1.pressed(OwlsGamepad.Button.DPAD_DOWN)) shooter.setHood(shooter.getHood() - 0.1);
+
         // manual spindexer control
         if (p2.pressed(OwlsGamepad.Button.LB)) {
             robot.leftRequested = true;
@@ -53,15 +55,21 @@ public class TeleOpMode extends OwlsOpMode {
         else if (p2.rightTriggerPressed(0.2)) spindexer.shootPosition();
 
         // rgb
-        switch (robot.artifactCount) {
-            case 0: light.blue(); break;
-            case 1: light.red(); break;
-            case 2: light.yellow(); break;
-            case 3: light.green(); break;
-        }
-
-        if (distance.isBall()) {
-            light.purple();
+        if (!robot.intakeReversed) {
+            switch (robot.artifactCount) {
+                case 0:
+                    light.off();
+                    break;
+                case 1:
+                    light.red();
+                    break;
+                case 2:
+                    light.yellow();
+                    break;
+                case 3:
+                    light.green();
+                    break;
+            }
         }
 
         // intake
@@ -87,6 +95,7 @@ public class TeleOpMode extends OwlsOpMode {
         // reverse intake
         if (p1.held(OwlsGamepad.Button.BACK)) {
             robot.intakeReversed = true;
+            light.blue();
         } else {
             robot.intakeReversed = false;
             robot.intakeReverseCompleted = true;
@@ -124,10 +133,13 @@ public class TeleOpMode extends OwlsOpMode {
         telemetry.addData("Spindexer motor", spindexer.getCurrent());
         telemetry.addData("Spindexer speed", Robot.Globals.spindexerSpeed);
 
+        telemetry.addData("Hood Pos", shooter.getHood());
+
         telemetry.addData("Field Centric", Robot.Globals.isFieldCentric);
         telemetry.addData("Right Stick", Robot.Globals.isRightStick);
         telemetry.addData("Drive Speed", Robot.Globals.driveSpeed);
         telemetry.addData("Slow Speed", Robot.Globals.slowDriveSpeed);
 
+        telemetry.addData("Robot Stopped", robot.stop);
     }
 }

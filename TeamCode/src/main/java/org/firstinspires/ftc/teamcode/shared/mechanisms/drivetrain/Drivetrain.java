@@ -18,10 +18,13 @@ public class Drivetrain {
     private final GoBildaPinpointDriver odo;
 
     public Drivetrain(Robot.Configuration configuration) {
-        FR = Robot.Configuration.registerItem(DcMotor.class, Robot.Configuration.FR);
-        FL = Robot.Configuration.registerItem(DcMotor.class, Robot.Configuration.FL);
-        BR = Robot.Configuration.registerItem(DcMotor.class, Robot.Configuration.BR);
-        BL = Robot.Configuration.registerItem(DcMotor.class, Robot.Configuration.BL);
+        FR = configuration.registerItem(DcMotor.class, Robot.Configuration.FR);
+        FL = configuration.registerItem(DcMotor.class, Robot.Configuration.FL);
+        BR = configuration.registerItem(DcMotor.class, Robot.Configuration.BR);
+        BL = configuration.registerItem(DcMotor.class, Robot.Configuration.BL);
+
+        if (FL != null) FL.setDirection(DcMotor.Direction.REVERSE);
+        if (BL != null) BL.setDirection(DcMotor.Direction.REVERSE);
 
         if (FR != null) FR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         if (FL != null) FL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

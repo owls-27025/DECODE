@@ -2,8 +2,10 @@ package org.firstinspires.ftc.teamcode.shared.mechanisms.shooter;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import org.firstinspires.ftc.teamcode.Robot;
 
 public class Shooter {
@@ -17,7 +19,7 @@ public class Shooter {
             shooter.setDirection(DcMotor.Direction.FORWARD);
         }
 
-        hood = Robot.Configuration.registerItem(Servo.class, Robot.Configuration.hood);
+        hood = configuration.registerItem(Servo.class, Robot.Configuration.hood);
     }
 
     public void shoot(double velocity) {
@@ -35,11 +37,24 @@ public class Shooter {
         return shooter == null ? 0.0 : shooter.getVelocity();
     }
 
-    public void setHoodPosition(double position) {
-        hood.setPosition(position);
+    public void setHood(double pos) { hood.setPosition(pos); }
+
+    public double getHood() { return hood.getPosition(); }
+
+    public PIDFCoefficients getPIDFCoefficients() {
+        return shooter.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    public double getHoodPosition() {
-        return hood.getPosition();
+    public void setPIDFCoefficients(PIDFCoefficients pidf) {
+        shooter.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidf);
+    }
+
+    public void update() {
+        if (getPIDFCoefficients() != null) {
+            PIDFCoefficients pidf = getPIDFCoefficients();
+            pidf.p = 25; // default P
+            pidf.i = 0.65; // default I
+            setPIDFCoefficients(pidf);
+        }
     }
 }

@@ -43,8 +43,13 @@ public class Robot {
         public static final ConfigItem odometry       = item("odometry", true);
         public static final ConfigItem light          = item("light", false);
         public static final ConfigItem imu            = item("imu", true);
-        public static final ConfigItem limelight      = item("limelight", false);
+        public static final ConfigItem limelight      = item("limelight", true);
+        public static final ConfigItem leftSweeper    = item("left sweeper", true);
+        public static final ConfigItem rightSweeper   = item("right sweeper", true);
+
         public static final ConfigItem hood           = item("hood", true);
+        public static final ConfigItem yaw            = item("yaw", true);
+        public static final ConfigItem pitch          = item("pitch", true);
 
         @SuppressWarnings("SameParameterValue")
         private static ConfigItem item(String name, boolean active) {
@@ -126,11 +131,15 @@ public class Robot {
     public boolean leftRequested;
     public boolean rightRequested;
     public boolean stop;
+    public Globals.Colors colors;
+    public boolean sort;
 
     public static class Globals {
         // ----------------------------
         // Constants
         // ----------------------------
+        public static boolean delayAuto = false;
+
         public static double currentSpeed = 1.0;
 
         public static double spindexerSpeed = 0.5;
@@ -138,7 +147,7 @@ public class Robot {
         public static double slowDriveSpeed = 0.35;
 
         public static int shooterVelocity = 1050;
-        public static  int shooterTolerance = 50;
+        public static int shooterTolerance = 75;
 
         public static int forcedArtifacts = 1;
 
@@ -151,15 +160,17 @@ public class Robot {
         public static int tpr = 104;
 
         public enum Alliances { RED, BLUE }
-        public static Alliances alliance = Alliances.RED;
+        public static Alliances alliance = Alliances.BLUE;
 
         public enum Sides { GOAL, WALL }
         public static Sides side = Sides.GOAL;
 
         public enum AutoStrategies {
             LEAVE("Leave"),
-            ONECYCLEFRONT("One Cycle Front"),
-            ONECYCLEBACK("One Cycle Back");
+            ONECYCLEFRONT("One Cycle (Front)"),
+            ONECYCLEBACK("One Cycle (Back)"),
+            THREECYCLEFRONT("Three Cycle (Front)"),
+            THREECYCLEBACK("Three Cycle (Back)");
 
             public final String displayName;
 
@@ -174,7 +185,7 @@ public class Robot {
             }
         }
 
-        public static AutoStrategies autoStrategy = AutoStrategies.ONECYCLEFRONT;
+        public static AutoStrategies autoStrategy = AutoStrategies.THREECYCLEFRONT;
 
         public enum Colors {
             PPG(0),
@@ -184,12 +195,16 @@ public class Robot {
             public final int index;
             Colors(int index) { this.index = index; }
         }
-        public static Colors motif = Colors.GPP;
+        public static Colors motif;
 
-        public static double servoDownPos = 0.23;
+        public static double flapDownPos = 0.23;
         public static double intakeSpeed = 1.0;
 
-        public static boolean debugActions = false;
+        public static boolean debugActions = true;
+
+        public static boolean back = false;
+        public static boolean gate = false;
+        public static int cycles = 3;
 
         // ----------------------------
         // Helpers
@@ -259,5 +274,6 @@ public class Robot {
 
     public void update() {
         drivetrain.update();
+        shooter.update();
     }
 }
