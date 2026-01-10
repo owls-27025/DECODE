@@ -43,13 +43,13 @@ public class Robot {
         public static final ConfigItem odometry       = item("odometry", true);
         public static final ConfigItem light          = item("light", false);
         public static final ConfigItem imu            = item("imu", true);
-        public static final ConfigItem limelight      = item("limelight", true);
-        public static final ConfigItem leftSweeper    = item("left sweeper", true);
-        public static final ConfigItem rightSweeper   = item("right sweeper", true);
+        public static final ConfigItem limelight      = item("limelight", false);
+        public static final ConfigItem leftSweeper    = item("left sweeper", false);
+        public static final ConfigItem rightSweeper   = item("right sweeper", false);
 
-        public static final ConfigItem hood           = item("hood", true);
-        public static final ConfigItem yaw            = item("yaw", true);
-        public static final ConfigItem pitch          = item("pitch", true);
+        public static final ConfigItem hood           = item("hood", false);
+        public static final ConfigItem yaw            = item("yaw", false);
+        public static final ConfigItem pitch          = item("pitch", false);
 
         @SuppressWarnings("SameParameterValue")
         private static ConfigItem item(String name, boolean active) {
@@ -157,7 +157,7 @@ public class Robot {
         public static int humanWaitMs = 750;
         public static int spindexerShootTimeTicks = 15;
 
-        public static int tpr = 104;
+        public static int tpr = 145;
 
         public enum Alliances { RED, BLUE }
         public static Alliances alliance = Alliances.BLUE;
