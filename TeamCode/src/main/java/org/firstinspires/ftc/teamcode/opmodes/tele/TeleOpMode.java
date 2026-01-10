@@ -29,11 +29,13 @@ public class TeleOpMode extends OwlsOpMode {
         shootAction = actionManager.addAndReturn(new ShootAction(robot));
         spindexerAction = actionManager.addAndReturn(new SpindexerAction(robot));
 
-        shooter.setHood(0.05);
+        shooter.setHoodPosition(0.05);
     }
 
     @Override
     public void runLoop() {
+        if (p1.pressed(OwlsGamepad.Button.DPAD_UP)) shooter.setHoodPosition(Math.min(shooter.getHoodPosition() + 0.05, 0.65));
+        if (p1.pressed(OwlsGamepad.Button.DPAD_DOWN)) shooter.setHoodPosition(Math.max(shooter.getHoodPosition() - 0.05, 0.05));
         // manual shooter vel change
         if (p2.pressed(OwlsGamepad.Button.DPAD_UP)) Robot.Globals.shooterVelocity += 50;
         if (p2.pressed(OwlsGamepad.Button.DPAD_DOWN)) Robot.Globals.shooterVelocity -= 50;
