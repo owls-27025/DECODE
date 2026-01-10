@@ -25,9 +25,15 @@ public class AutoConfig extends MenuLib.Menu {
         ));
 
         addOption(MenuLib.Option.value(
-                () -> "Delay: ",
+                () -> "Delay: " + Robot.Globals.delayAuto,
                 () -> Robot.Globals.delayAuto = !Robot.Globals.delayAuto,
                 () -> Robot.Globals.delayAuto = !Robot.Globals.delayAuto
+        ));
+
+        addOption(MenuLib.Option.value(
+                () -> "Gate: " + Robot.Globals.delayAuto,
+                () -> Robot.Globals.gate = !Robot.Globals.gate,
+                () -> Robot.Globals.gate = !Robot.Globals.gate
         ));
 
         addOption(MenuLib.Option.info(() -> ""));

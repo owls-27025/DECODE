@@ -202,6 +202,10 @@ public class Robot {
 
         public static boolean debugActions = true;
 
+        public static boolean back = false;
+        public static boolean gate = false;
+        public static int cycles = 3;
+
         // ----------------------------
         // Helpers
         // ----------------------------

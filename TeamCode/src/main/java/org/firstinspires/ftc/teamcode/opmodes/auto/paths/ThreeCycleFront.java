@@ -43,6 +43,8 @@ public class ThreeCycleFront implements AutoPath {
     public Action build(MecanumDrive drive, RRActions rractions, Telemetry telemetry) {
         Pose2d initialPose = getInitialPose();
 
+        Robot.Globals.back = false;
+
         if (alliance == Robot.Globals.Alliances.RED) {
             TrajectoryActionBuilder goToShoot = drive.actionBuilder(initialPose)
                     .splineToLinearHeading(new Pose2d(-40, 40, Math.toRadians(140)), Math.toRadians(140));
@@ -158,26 +160,50 @@ public class ThreeCycleFront implements AutoPath {
             TrajectoryActionBuilder leave = goToShoot.endTrajectory().fresh()
                     .strafeTo(new Vector2d(-55, -14));
 
-            return new SequentialAction(
-                    rractions.stop(),
-                    new ParallelAction(
-                            goToShoot.build(),
-                            rractions.getMotif()
-                    ),
-                    rractions.shoot(3, 1000, Robot.Globals.Colors.GPP, 0),
-                    goToIntakeOne.build(),
-                    new ParallelAction(
-                            intakeOne.build(),
-                            rractions.intake()
-                    ),
-                    goToShoot.build(),
-                    rractions.shoot(3, 1000, Robot.Globals.Colors.PPG, 0),
-                    goToIntakeTwo.build(),
-                    new ParallelAction(
-                            intakeTwo.build(),
-                            rractions.intake()
-                    )
-            );
+            if (!Robot.Globals.gate) {
+                return new SequentialAction(
+                        rractions.stop(),
+                        new ParallelAction(
+                                goToShoot.build(),
+                                rractions.getMotif()
+                        ),
+                        rractions.shoot(3, 1000, Robot.Globals.Colors.GPP, 0),
+                        goToIntakeOne.build(),
+                        new ParallelAction(
+                                intakeOne.build(),
+                                rractions.intake()
+                        ),
+                        goToShoot.build(),
+                        rractions.shoot(3, 1000, Robot.Globals.Colors.PPG, 0),
+                        goToIntakeTwo.build(),
+                        new ParallelAction(
+                                intakeTwo.build(),
+                                rractions.intake()
+                        )
+                );
+            } else {
+                return new SequentialAction(
+                        rractions.stop(),
+                        new ParallelAction(
+                                goToShoot.build(),
+                                rractions.getMotif()
+                        ),
+                        rractions.shoot(3, 1000, Robot.Globals.Colors.GPP, 0),
+                        goToIntakeOne.build(),
+                        new ParallelAction(
+                                intakeOne.build(),
+                                rractions.intake()
+                        ),
+                        hitGate.build(),
+                        goToShoot.build(),
+                        rractions.shoot(3, 1000, Robot.Globals.Colors.PPG, 0),
+                        goToIntakeTwo.build(),
+                        new ParallelAction(
+                                intakeTwo.build(),
+                                rractions.intake()
+                        )
+                );
+            }
         }
     }
 }

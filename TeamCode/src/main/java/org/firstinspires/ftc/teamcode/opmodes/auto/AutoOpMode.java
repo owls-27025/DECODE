@@ -62,6 +62,7 @@ public class AutoOpMode extends OwlsOpMode {
         telemetry.addData("Alliance", Robot.Globals.alliance);
         telemetry.addData("Delay Auto", Robot.Globals.delayAuto);
         telemetry.addData("Motif", Robot.Globals.motif);
+        telemetry.addData("Hit Gate", Robot.Globals.gate);
         telemetry.update();
     }
 

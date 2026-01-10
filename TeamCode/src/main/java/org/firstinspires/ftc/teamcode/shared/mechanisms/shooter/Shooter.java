@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.shared.mechanisms.shooter;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
@@ -15,6 +16,7 @@ public class Shooter {
         shooter = configuration.registerItem(DcMotorEx.class, Robot.Configuration.shooter);
         if (shooter != null) {
             shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            shooter.setDirection(DcMotor.Direction.FORWARD);
         }
 
         hood = configuration.registerItem(Servo.class, Robot.Configuration.hood);

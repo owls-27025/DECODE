@@ -76,6 +76,7 @@ public class Spindexer {
     public void moveHalfPosition(boolean forward) { goRelativeTicks(forward ? tpr : -tpr); }
 
     public void flapUp() {
+        // for old robot: 1.0, for new robot: 0.4
         if (flap != null) flap.setPosition(0.4);
     }
 
