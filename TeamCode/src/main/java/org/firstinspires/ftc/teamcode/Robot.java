@@ -142,7 +142,7 @@ public class Robot {
 
         public static double currentSpeed = 1.0;
 
-        public static double spindexerSpeed = 0.5;
+        public static double spindexerSpeed = 0.75;
         public static double driveSpeed = 1.0;
         public static double slowDriveSpeed = 0.35;
 
