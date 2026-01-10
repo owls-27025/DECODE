@@ -41,7 +41,7 @@ public class Robot {
         public static final ConfigItem shooter        = item("flywheel", true);
 
         public static final ConfigItem odometry       = item("odometry", true);
-        public static final ConfigItem light          = item("light", false);
+        public static final ConfigItem light          = item("light", true);
         public static final ConfigItem imu            = item("imu", true);
         public static final ConfigItem limelight      = item("limelight", false);
         public static final ConfigItem leftSweeper    = item("left sweeper", false);
