@@ -179,8 +179,15 @@ public class RRActions {
 
     public Action getMotif() {
         return new Action() {
+            final ElapsedTime timer = new ElapsedTime();
+            boolean started = false;
+
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                if (!started) {
+                    timer.reset();
+                    started = true;
+                }
                 return !robot.limelight.getMotif();
             }
         };

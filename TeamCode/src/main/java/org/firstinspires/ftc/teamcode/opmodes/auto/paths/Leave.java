@@ -20,10 +20,15 @@ public class Leave implements AutoPath {
     @Override
     public Pose2d getInitialPose() {
         if (alliance == Robot.Globals.Alliances.RED) {
-            return new Pose2d(60, 10, Math.toRadians(0));
+            return new Pose2d(55, 10, Math.toRadians(180));
         } else {
-            return new Pose2d(60, -10, Math.toRadians(0));
+            return new Pose2d(55, -10, Math.toRadians(180));
         }
+    }
+
+    @Override
+    public double defaultVelocity() {
+        return 0;
     }
 
     @Override
@@ -37,8 +42,8 @@ public class Leave implements AutoPath {
 
         return drive.actionBuilder(initialPose)
                 .strafeTo(alliance == Robot.Globals.Alliances.RED
-                        ? new Vector2d(57, 30)
-                        : new Vector2d(57, -30))
+                        ? new Vector2d(53, 30)
+                        : new Vector2d(53, -30))
                 .build();
     }
 }

@@ -68,18 +68,20 @@ public class AutoOpMode extends OwlsOpMode {
 
     @Override
     public void onStart() {
-        delayTimer.reset();
-
         if (!built) buildAutoFromRobotConfig();
+
+        delayTimer.reset();
+        shooter.shoot(path.defaultVelocity());
+
+        if (Robot.Globals.delayAuto != 0) {
+            delayTimer.reset();
+            while (delayTimer.time(TimeUnit.SECONDS) < Robot.Globals.delayAuto);
+        }
 
         Actions.runBlocking(rr.withSubsystems(path.build(drive, rr, telemetry)));
     }
 
     private void buildAutoFromRobotConfig() {
-        if (Robot.Globals.delayAuto) {
-            delayTimer.reset();
-            while (delayTimer.time(TimeUnit.MILLISECONDS) < 3000);
-        }
         switch (Robot.Globals.autoStrategy) {
             case ONECYCLEFRONT: path = new OneCycleFront(Robot.Globals.alliance); break;
             case ONECYCLEBACK:  path = new OneCycleBack(Robot.Globals.alliance);  break;

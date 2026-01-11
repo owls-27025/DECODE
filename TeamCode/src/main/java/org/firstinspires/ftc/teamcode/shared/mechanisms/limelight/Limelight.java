@@ -29,7 +29,7 @@ public class Limelight {
         if (!Robot.Globals.back) {
             if (Robot.Globals.alliance == Robot.Globals.Alliances.RED) {
                 setPitchPos(0.5);
-                setYawPos(0.17);
+                setYawPos(0);
             } else if (Robot.Globals.alliance == Robot.Globals.Alliances.BLUE) {
                 setPitchPos(0.5);
                 setYawPos(0.83);

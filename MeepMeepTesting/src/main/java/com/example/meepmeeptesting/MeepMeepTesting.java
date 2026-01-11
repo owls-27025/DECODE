@@ -5,6 +5,8 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Pose2dDual;
 import com.acmerobotics.roadrunner.PosePath;
 import com.acmerobotics.roadrunner.Rotation2d;
+import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.VelConstraint;
 import com.noahbres.meepmeep.MeepMeep;
@@ -24,62 +26,35 @@ public class MeepMeepTesting {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(55, -10, Math.toRadians(180)))
-                .splineToLinearHeading(new Pose2d(55, -15, Math.toRadians(200)), Math.toRadians(200))
-                .waitSeconds(5)
+        TrajectoryActionBuilder goToShoot = myBot.getDrive().actionBuilder(new Pose2d(-55, 14, Math.toRadians(0)))
+                .splineToLinearHeading(new Pose2d(-40, 40, Math.toRadians(140)), Math.toRadians(140));
+
+        TrajectoryActionBuilder goToIntakeOne = goToShoot.endTrajectory().fresh()
                 .turnTo(Math.toRadians(90))
-                .strafeTo(new Vector2d(-10, -20))
-                .strafeTo(new Vector2d(-10, -40))
-                .turnTo(Math.toRadians(210))
-                .waitSeconds(5)
-                .turnTo(Math.toRadians(270))
-                .strafeTo(new Vector2d(34.6, -25))
-                .strafeTo(new Vector2d(34.6, -45), new VelConstraint() {
-                    @Override
-                    public double maxRobotVel(@NotNull Pose2dDual<Arclength> pose2dDual, @NotNull PosePath posePath, double v) {
-                        return 6;
-                    }
-                })
-                .turnTo(Math.toRadians(210))
-                .strafeTo(new Vector2d(55, -10))
-                .waitSeconds(5)
-                // three cycle back ^^
-                // three cycle front vv
-                // shoot placeholder
-                .waitSeconds(5)
-                // go to intake one
-                .turnTo(Math.toRadians(-90))
-                .strafeTo(new Vector2d(-10, -25))
-                .strafeTo(new Vector2d(-10, -50))
-                // go to + hit gate
-                .strafeTo(new Vector2d(0, -50))
-                .strafeTo(new Vector2d(0, -55))
-                // go to shoot
-                .strafeTo(new Vector2d(-35, -35))
-                .turnTo(Math.toRadians(235))
-                // shoot placeholder
-                .waitSeconds(5)
-                // go to intake two
-                .turnTo(Math.toRadians(-90))
-                .strafeTo(new Vector2d(11.5, -25))
-                .strafeTo(new Vector2d(11.5, -50))
-                // go to shoot
-                .strafeTo(new Vector2d(-35, -35))
-                .turnTo(Math.toRadians(235))
-                // shoot placeholder
-                .waitSeconds(5)
-                // go to intake three
-                .turnTo(Math.toRadians(-90))
-                .strafeTo(new Vector2d(34.6, -25))
-                .strafeTo(new Vector2d(34.6, -50))
-                // go to shoot
-                .strafeTo(new Vector2d(-35, -35))
-                .turnTo(Math.toRadians(235))
-                // shoot placeholder
-                .waitSeconds(5)
-                // go to leave position
-                .strafeTo(new Vector2d(-55, -14))
-                .build());
+                .strafeTo(new Vector2d(-10, 16));
+
+        TrajectoryActionBuilder intakeOne = goToIntakeOne.endTrajectory().fresh()
+                .strafeTo(new Vector2d(-10, 24))
+                .strafeTo(new Vector2d(-10, 40));
+
+        TrajectoryActionBuilder goToIntakeTwo = goToShoot.endTrajectory().fresh()
+                .turnTo(Math.toRadians(90))
+                .strafeTo(new Vector2d(12.5, 16));
+
+        TrajectoryActionBuilder intakeTwo = goToIntakeTwo.endTrajectory().fresh()
+                .strafeTo(new Vector2d(12.5, 24))
+                .strafeTo(new Vector2d(12.5, 40));
+
+        TrajectoryActionBuilder leave = goToShoot.endTrajectory().fresh()
+                .strafeTo(new Vector2d(-55, 14));
+
+        TrajectoryActionBuilder hitGate = intakeOne.endTrajectory().fresh()
+                .strafeTo(new Vector2d(0, 50))
+                .strafeTo(new Vector2d(0, 55));
+
+        myBot.runAction(new SequentialAction(
+                goToShoot.build()
+        ));
 
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_DECODE_OFFICIAL)

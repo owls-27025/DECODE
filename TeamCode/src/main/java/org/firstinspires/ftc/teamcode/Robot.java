@@ -51,6 +51,8 @@ public class Robot {
         public static final ConfigItem yaw            = item("yaw", true);
         public static final ConfigItem pitch          = item("pitch", true);
 
+        public static final ConfigItem intakeServo    = item("intake servo", true);
+
         @SuppressWarnings("SameParameterValue")
         private static ConfigItem item(String name, boolean active) {
             ConfigItem c = new ConfigItem(name, active);
@@ -138,7 +140,7 @@ public class Robot {
         // ----------------------------
         // Constants
         // ----------------------------
-        public static boolean delayAuto = false;
+        public static int delayAuto = 0;
 
         public static double currentSpeed = 1.0;
 

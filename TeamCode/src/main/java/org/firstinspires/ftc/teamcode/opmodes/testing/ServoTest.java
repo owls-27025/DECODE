@@ -13,7 +13,7 @@ public class ServoTest extends OwlsOpMode {
 
     @Override
     public void runLoop() {
-        limelight.getMotif();
+//        limelight.getMotif();
         if (p1.pressed(OwlsGamepad.Button.DPAD_UP)) limelight.setPitchPos(limelight.getPitchPos() + 0.01);
         if (p1.pressed(OwlsGamepad.Button.DPAD_DOWN)) limelight.setPitchPos(limelight.getPitchPos() - 0.01);
         if (p1.pressed(OwlsGamepad.Button.DPAD_RIGHT)) limelight.setYawPos(limelight.getYawPos() + 0.01);
@@ -24,6 +24,6 @@ public class ServoTest extends OwlsOpMode {
     public void telemetry() {
         telemetry.addData("pitch position", limelight.getPitchPos());
         telemetry.addData("yaw position", limelight.getYawPos());
-        telemetry.addData("motif", Robot.Globals.motif);
+//        telemetry.addData("motif", Robot.Globals.motif);
     }
 }
