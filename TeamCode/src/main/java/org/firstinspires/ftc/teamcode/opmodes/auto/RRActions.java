@@ -181,6 +181,7 @@ public class RRActions {
         return new Action() {
             final ElapsedTime timer = new ElapsedTime();
             boolean started = false;
+            boolean detectedMotif = false;
 
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
@@ -188,7 +189,12 @@ public class RRActions {
                     timer.reset();
                     started = true;
                 }
-                return !robot.limelight.getMotif();
+
+                if (robot.limelight.getMotif() || timer.time(TimeUnit.MILLISECONDS) > 3000) {
+                    detectedMotif = true;
+                }
+
+                return !detectedMotif;
             }
         };
     }

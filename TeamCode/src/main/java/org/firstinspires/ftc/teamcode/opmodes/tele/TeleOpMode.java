@@ -29,6 +29,8 @@ public class TeleOpMode extends OwlsOpMode {
         shootAction = actionManager.addAndReturn(new ShootAction(robot));
         spindexerAction = actionManager.addAndReturn(new SpindexerAction(robot));
 
+        Robot.Globals.shooterVelocity = 1100;
+
         shooter.setHood(0.05);
     }
 
@@ -109,6 +111,16 @@ public class TeleOpMode extends OwlsOpMode {
 
         // reset artifact count
         if (p1.pressed(OwlsGamepad.Button.LS)) robot.artifactCount = 0;
+
+        if (p2.pressed(OwlsGamepad.Button.A)) {
+            spindexer.move(true);
+            robot.stop = true;
+        }
+
+        if (p2.pressed(OwlsGamepad.Button.Y)) {
+            spindexer.move(false);
+            robot.stop = true;
+        }
 
         drivetrain.drive(p1);
 

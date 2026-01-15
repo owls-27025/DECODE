@@ -17,6 +17,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.opmodes.auto.RRActions;
 import org.firstinspires.ftc.teamcode.shared.mechanisms.drivetrain.roadrunner.MecanumDrive;
+import org.jetbrains.annotations.NotNull;
 
 public class ThreeCycleFront implements AutoPath {
     private final Robot.Globals.Alliances alliance;
@@ -28,7 +29,7 @@ public class ThreeCycleFront implements AutoPath {
     @Override
     public Pose2d getInitialPose() {
         if (alliance == Robot.Globals.Alliances.RED) {
-            return new Pose2d(-50, 50, Math.toRadians(135));
+            return new Pose2d(-50, 50, Math.toRadians(123));
         } else {
             return new Pose2d(-50, -50, Math.toRadians(235));
         }
@@ -52,30 +53,33 @@ public class ThreeCycleFront implements AutoPath {
 
         if (alliance == Robot.Globals.Alliances.RED) {
             TrajectoryActionBuilder goToShoot = drive.actionBuilder(initialPose)
-                    .splineToLinearHeading(new Pose2d(-40, 40, Math.toRadians(140)), Math.toRadians(140));
+                    .splineToLinearHeading(new Pose2d(-30, 30, Math.toRadians(135)), Math.toRadians(135));
 
             TrajectoryActionBuilder goToIntakeOne = goToShoot.endTrajectory().fresh()
                     .turnTo(Math.toRadians(90))
-                    .strafeTo(new Vector2d(-10, 16));
+                    .strafeTo(new Vector2d(-11.6, 16));
 
             TrajectoryActionBuilder intakeOne = goToIntakeOne.endTrajectory().fresh()
-                    .strafeTo(new Vector2d(-10, 24))
-                    .strafeTo(new Vector2d(-10, 40), new VelConstraint() {
+                    .strafeTo(new Vector2d(-11.6, 30))
+                    .strafeTo(new Vector2d(-11.6, 44), new VelConstraint() {
                         @Override
-                        public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                        public double maxRobotVel(@NotNull Pose2dDual<Arclength> pose2dDual, @NotNull PosePath posePath, double v) {
                             return 5;
                         }
                     });
 
-            TrajectoryActionBuilder goToIntakeTwo = goToShoot.endTrajectory().fresh()
+            TrajectoryActionBuilder goToShootTwo = drive.actionBuilder(initialPose)
+                    .splineToLinearHeading(new Pose2d(-30, 30, Math.toRadians(135)), Math.toRadians(135));
+
+            TrajectoryActionBuilder goToIntakeTwo = goToShootTwo.endTrajectory().fresh()
                     .turnTo(Math.toRadians(90))
-                    .strafeTo(new Vector2d(12.5, 16));
+                    .strafeTo(new Vector2d(11.5, 16));
 
             TrajectoryActionBuilder intakeTwo = goToIntakeTwo.endTrajectory().fresh()
-                    .strafeTo(new Vector2d(12.5, 24))
-                    .strafeTo(new Vector2d(12.5, 40), new VelConstraint() {
+                    .strafeTo(new Vector2d(11.5, 30))
+                    .strafeTo(new Vector2d(11.5, 44), new VelConstraint() {
                         @Override
-                        public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                        public double maxRobotVel(@NotNull Pose2dDual<Arclength> pose2dDual, @org.jetbrains.annotations.NotNull PosePath posePath, double v) {
                             return 5;
                         }
                     });
@@ -87,7 +91,7 @@ public class ThreeCycleFront implements AutoPath {
                     .strafeTo(new Vector2d(0, 50))
                     .strafeTo(new Vector2d(0, 55), new VelConstraint() {
                         @Override
-                        public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                        public double maxRobotVel(@NotNull Pose2dDual<Arclength> pose2dDual, @NotNull PosePath posePath, double v) {
                             return 6;
                         }
                     });
@@ -100,8 +104,19 @@ public class ThreeCycleFront implements AutoPath {
                                 goToShoot.build(),
                                 rractions.getMotif()
                         ),
-                        rractions.shoot(3, 1000, Robot.Globals.Colors.GPP, 0),
-                        leave.build()
+                        rractions.shoot(3, 1100, Robot.Globals.Colors.GPP, 0),
+                        goToIntakeOne.build(),
+                        new ParallelAction(
+                                intakeOne.build(),
+                                rractions.intake()
+                        ),
+                        goToShootTwo.build(),
+                        rractions.shoot(3, 1100, Robot.Globals.Colors.PPG, 0),
+                        goToIntakeTwo.build(),
+                        new ParallelAction(
+                                intakeTwo.build(),
+                                rractions.intake()
+                        )
                 );
             } else {
                 return new SequentialAction(
@@ -110,15 +125,15 @@ public class ThreeCycleFront implements AutoPath {
                                 goToShoot.build(),
                                 rractions.getMotif()
                         ),
-                        rractions.shoot(3, 1000, Robot.Globals.Colors.GPP, 0),
+                        rractions.shoot(3, 1100, Robot.Globals.Colors.GPP, 0),
                         goToIntakeOne.build(),
                         new ParallelAction(
                                 intakeOne.build(),
                                 rractions.intake()
                         ),
                         hitGate.build(),
-                        goToShoot.build(),
-                        rractions.shoot(3, 1000, Robot.Globals.Colors.PPG, 0),
+                        goToShootTwo.build(),
+                        rractions.shoot(3, 1100, Robot.Globals.Colors.PPG, 0),
                         goToIntakeTwo.build(),
                         new ParallelAction(
                                 intakeTwo.build(),
@@ -128,7 +143,7 @@ public class ThreeCycleFront implements AutoPath {
             }
         } else {
             TrajectoryActionBuilder goToShoot = drive.actionBuilder(initialPose)
-                    .splineToLinearHeading(new Pose2d(-40, -40, Math.toRadians(225)), Math.toRadians(225));
+                    .splineToLinearHeading(new Pose2d(-30, -30, Math.toRadians(225)), Math.toRadians(225));
 
             TrajectoryActionBuilder goToIntakeOne = goToShoot.endTrajectory().fresh()
                     .turnTo(Math.toRadians(-90))
@@ -143,7 +158,10 @@ public class ThreeCycleFront implements AutoPath {
                         }
                     });
 
-            TrajectoryActionBuilder goToIntakeTwo = goToShoot.endTrajectory().fresh()
+            TrajectoryActionBuilder goToShootTwo = intakeOne.endTrajectory().fresh()
+                    .splineToLinearHeading(new Pose2d(-30, -30, Math.toRadians(225)), Math.toRadians(225));
+
+            TrajectoryActionBuilder goToIntakeTwo = goToShootTwo.endTrajectory().fresh()
                     .turnTo(Math.toRadians(-90))
                     .strafeTo(new Vector2d(12.5, -16));
 
@@ -175,14 +193,14 @@ public class ThreeCycleFront implements AutoPath {
                                 goToShoot.build(),
                                 rractions.getMotif()
                         ),
-                        rractions.shoot(3, 1000, Robot.Globals.Colors.GPP, 0),
+                        rractions.shoot(3, 1100, Robot.Globals.Colors.GPP, 0),
                         goToIntakeOne.build(),
                         new ParallelAction(
                                 intakeOne.build(),
                                 rractions.intake()
                         ),
-                        goToShoot.build(),
-                        rractions.shoot(3, 1000, Robot.Globals.Colors.PPG, 0),
+                        goToShootTwo.build(),
+                        rractions.shoot(3, 1100, Robot.Globals.Colors.PPG, 0),
                         goToIntakeTwo.build(),
                         new ParallelAction(
                                 intakeTwo.build(),
@@ -196,15 +214,15 @@ public class ThreeCycleFront implements AutoPath {
                                 goToShoot.build(),
                                 rractions.getMotif()
                         ),
-                        rractions.shoot(3, 1000, Robot.Globals.Colors.GPP, 0),
+                        rractions.shoot(3, 1100, Robot.Globals.Colors.GPP, 0),
                         goToIntakeOne.build(),
                         new ParallelAction(
                                 intakeOne.build(),
                                 rractions.intake()
                         ),
                         hitGate.build(),
-                        goToShoot.build(),
-                        rractions.shoot(3, 1000, Robot.Globals.Colors.PPG, 0),
+                        goToShootTwo.build(),
+                        rractions.shoot(3, 1100, Robot.Globals.Colors.PPG, 0),
                         goToIntakeTwo.build(),
                         new ParallelAction(
                                 intakeTwo.build(),

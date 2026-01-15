@@ -87,18 +87,6 @@ public class ThreeCycleBack implements AutoPath {
             TrajectoryActionBuilder leave = shootTwo.endTrajectory().fresh()
                     .strafeTo(new Vector2d(45, 20));
 
-            TrajectoryActionBuilder goToIntakeThree = goToShoot.endTrajectory().fresh()
-                    .turnTo(Math.toRadians(90))
-                    .strafeTo(new Vector2d(34.6, 25));
-
-            TrajectoryActionBuilder intakeThree = goToIntakeThree.endTrajectory().fresh()
-                    .strafeTo(new Vector2d(34.6, 40), new VelConstraint() {
-                        @Override
-                        public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
-                            return 5;
-                        }
-                    });
-
 
             return new SequentialAction(
                     rractions.stop(),
@@ -106,14 +94,14 @@ public class ThreeCycleBack implements AutoPath {
                             goToShoot.build(),
                             rractions.getMotif()
                     ),
-                    rractions.shoot(3, 1550, Robot.Globals.Colors.GPP, 1.0),
+                    rractions.shoot(3, 1450, Robot.Globals.Colors.GPP, 1.0),
                     goToIntakeOne.build(),
                     new ParallelAction(
                             intakeOne.build(),
                             rractions.intake()
                     ),
                     shootTwo.build(),
-                    rractions.shoot(3, 1550, Robot.Globals.Colors.GPP, 1.0)
+                    rractions.shoot(3, 1450, Robot.Globals.Colors.GPP, 1.0)
             );
 
 
@@ -171,14 +159,14 @@ public class ThreeCycleBack implements AutoPath {
                             goToShoot.build(),
                             rractions.getMotif()
                     ),
-                    rractions.shoot(3, 1500, Robot.Globals.Colors.GPP, 1.0),
-                    goToIntakeOne.build(),
-                    new ParallelAction(
-                            intakeOne.build(),
-                            rractions.intake()
-                    ),
-                    shootTwo.build(),
-                    rractions.shoot(3, 1550, Robot.Globals.Colors.GPP, 1.0),
+                    rractions.shoot(3, 1450, Robot.Globals.Colors.GPP, 1.0),
+//                    goToIntakeOne.build(),
+//                    new ParallelAction(
+//                            intakeOne.build(),
+//                            rractions.intake()
+//                    ),
+//                    shootTwo.build(),
+//                    rractions.shoot(3, 1450, Robot.Globals.Colors.GPP, 1.0),
                     leave.build()
             );
         }

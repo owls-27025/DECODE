@@ -35,8 +35,13 @@ public class Limelight {
                 setYawPos(0.83);
             }
         } else {
-            setPitchPos(0.5);
-            setYawPos(0.5);
+            if (Robot.Globals.alliance == Robot.Globals.Alliances.RED) {
+                setPitchPos(0.5);
+                setYawPos(0.35);
+            } else if (Robot.Globals.alliance == Robot.Globals.Alliances.BLUE) {
+                setPitchPos(0.5);
+                setYawPos(0.65);
+            }
         }
 
         if (limelight == null) {

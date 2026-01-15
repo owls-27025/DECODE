@@ -159,4 +159,12 @@ public class Spindexer {
             // no
         }
     }
+
+    public void move(boolean clockwise) {
+        if (clockwise) {
+            motor.setTargetPosition(motor.getTargetPosition() + 5);
+        } else {
+            motor.setTargetPosition(motor.getTargetPosition() - 5);
+        }
+    }
 }

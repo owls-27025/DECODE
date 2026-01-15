@@ -48,4 +48,7 @@ public class Intake {
     public void setPower(double power) {
         if (intake != null) intake.setPower(power);
     }
+
+    public void servoUp() { intakeServo.setPosition(0.6); }
+    public void servoDown() { intakeServo.setPosition(0.0); }
 }

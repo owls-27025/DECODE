@@ -13,4 +13,5 @@ repositories {
 
 dependencies {
     implementation 'com.acmerobotics.roadrunner:MeepMeep:0.1.7'
+    implementation 'com.google.firebase:firebase-database:22.0.1'
 }
