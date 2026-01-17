@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.opmodes.auto;
 
-import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 
@@ -94,7 +93,7 @@ public class AutoOpMode extends OwlsOpMode {
         Pose2d initialPose = path.getInitialPose();
         drive = new MecanumDrive(robot, hardwareMap, initialPose);
         rr = new RRActions(robot);
-        robot.stop = true;
+        robot.forceStop = true;
     }
 
     private boolean menuHostIsUninitialized() {

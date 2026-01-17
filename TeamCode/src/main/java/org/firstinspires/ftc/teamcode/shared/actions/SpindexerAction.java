@@ -63,12 +63,13 @@ public class SpindexerAction extends BaseAction {
             robot.intakeComplete = true;
 
             if (!robot.sort) {
-                dbgLine("Entering wrong if");
                 if (!robot.manualShoot) {
-                    if (positions[0] != -1) {
-                        spindexer.goToTicks(positions[0] + (3 * Robot.Globals.tpr));
-                    } else {
-                        spindexer.shootPosition();
+                    if (robot.artifactCount != 3) {
+                        if (positions[0] != -1) {
+                            spindexer.goToTicks(positions[0] + (3 * Robot.Globals.tpr));
+                        } else {
+                            spindexer.shootPosition();
+                        }
                     }
                 } else {
                     spindexer.shootPosition();
@@ -125,7 +126,7 @@ public class SpindexerAction extends BaseAction {
         humanPlayerRequested = robot.isHumanIntake && state != States.HUMAN_PLAYER;
         intakeRequested = robot.startIntake && state != States.INTAKE_POS;
 
-            if (robot.stop) {
+            if (robot.forceStop) {
                 enter(States.STOP);
                 shotRequested = false;
                 humanPlayerRequested = false;
@@ -190,7 +191,7 @@ public class SpindexerAction extends BaseAction {
                     break;
 
                 case STOP:
-                    robot.stop = false;
+                    robot.forceStop = false;
                     break;
 
                 case SHOOT_POS:
@@ -253,13 +254,6 @@ public class SpindexerAction extends BaseAction {
 
                                         enter(States.INTAKE_POS);
                                     }
-//                                } else {
-//                                    if (!robot.manualShoot) {
-//                                        if (positions[0] != -1) {
-//                                            spindexer.goToTicks(positions[0] + (3 * Robot.Globals.tpr));
-//                                        }
-//                                    }
-//                                }
                                 }
                             }
                         }

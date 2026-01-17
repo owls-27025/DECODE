@@ -86,7 +86,7 @@ public class TeleOpMode extends OwlsOpMode {
 
         // cancel
         if (p1.pressed(OwlsGamepad.Button.B) || p2.pressed(OwlsGamepad.Button.B)) {
-            robot.stop = true;
+            robot.forceStop = true;
         }
 
         // reverse intake
@@ -137,6 +137,6 @@ public class TeleOpMode extends OwlsOpMode {
         telemetry.addData("Drive Speed", Robot.Globals.driveSpeed);
         telemetry.addData("Slow Speed", Robot.Globals.slowDriveSpeed);
 
-        telemetry.addData("Robot Stopped", robot.stop);
+        telemetry.addData("Robot Stopped", robot.forceStop);
     }
 }

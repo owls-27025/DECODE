@@ -157,7 +157,7 @@ public class RRActions {
                 lastArtifactCount = robot.artifactCount;
 
                 if (timer.time(TimeUnit.MILLISECONDS) > 4000) {
-                    robot.stop = true;
+                    robot.forceStop = true;
                     return false;
                 }
 
@@ -170,7 +170,7 @@ public class RRActions {
         return new Action() {
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                robot.stop = true;
+                robot.forceStop = true;
 
                 return false;
             }

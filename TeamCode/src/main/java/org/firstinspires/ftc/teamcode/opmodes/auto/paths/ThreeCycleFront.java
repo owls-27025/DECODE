@@ -1,23 +1,15 @@
 package org.firstinspires.ftc.teamcode.opmodes.auto.paths;
 
-import androidx.annotation.NonNull;
-
 import com.acmerobotics.roadrunner.Action;
-import com.acmerobotics.roadrunner.Arclength;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.Pose2dDual;
-import com.acmerobotics.roadrunner.PosePath;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
-import com.acmerobotics.roadrunner.VelConstraint;
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.opmodes.auto.RRActions;
 import org.firstinspires.ftc.teamcode.shared.mechanisms.drivetrain.roadrunner.MecanumDrive;
-import org.jetbrains.annotations.NotNull;
 
 public class ThreeCycleFront implements AutoPath {
     private final Robot.Globals.Alliances alliance;
@@ -56,18 +48,12 @@ public class ThreeCycleFront implements AutoPath {
                     .splineToLinearHeading(new Pose2d(-35, 35, Math.toRadians(140)), Math.toRadians(140));
 
             TrajectoryActionBuilder goToIntakeOne = goToShoot.endTrajectory().fresh()
-//                .turnTo(Math.toRadians(90))
                     .setTangent(Math.toRadians(275))
                     .splineToSplineHeading(new Pose2d(-12.5, 35, Math.toRadians(90)), Math.toRadians(50));
 
             TrajectoryActionBuilder intakeOne = goToIntakeOne.endTrajectory().fresh()
                     .strafeTo(new Vector2d(-11.5, 35))
-                    .strafeTo(new Vector2d(-11.5, 57), new VelConstraint() {
-                        @Override
-                        public double maxRobotVel(@NotNull Pose2dDual<Arclength> pose2dDual, @NotNull PosePath posePath, double v) {
-                            return 5;
-                        }
-                    });
+                    .strafeTo(new Vector2d(-11.5, 57), (pose2dDual, posePath, v) -> 5);
 
             TrajectoryActionBuilder goToIntakeTwo = goToShoot.endTrajectory().fresh()
                     .turnTo(Math.toRadians(90))
@@ -76,12 +62,7 @@ public class ThreeCycleFront implements AutoPath {
 
             TrajectoryActionBuilder intakeTwo = goToIntakeTwo.endTrajectory().fresh()
                     .strafeTo(new Vector2d(9, 35))
-                    .strafeTo(new Vector2d(9, 60), new VelConstraint() {
-                        @Override
-                        public double maxRobotVel(@NotNull Pose2dDual<Arclength> pose2dDual, @NotNull PosePath posePath, double v) {
-                            return 5;
-                        }
-                    });
+                    .strafeTo(new Vector2d(9, 60), (pose2dDual, posePath, v) -> 5);
 
 
             return new SequentialAction(
@@ -111,21 +92,7 @@ public class ThreeCycleFront implements AutoPath {
 
             TrajectoryActionBuilder intakeOne = goToIntakeOne.endTrajectory().fresh()
                     .strafeTo(new Vector2d(-10, -24))
-                    .strafeTo(new Vector2d(-10, -40), new VelConstraint() {
-                        @Override
-                        public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
-                            return 5;
-                        }
-                    });
-
-            TrajectoryActionBuilder hitGate = intakeOne.endTrajectory().fresh()
-                    .strafeTo(new Vector2d(0, -50))
-                    .strafeTo(new Vector2d(0, -55), new VelConstraint() {
-                        @Override
-                        public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
-                            return 6;
-                        }
-                    });
+                    .strafeTo(new Vector2d(-10, -40), (pose2dDual, posePath, v) -> 5);
 
             TrajectoryActionBuilder goToIntakeTwo = goToShoot.endTrajectory().fresh()
                     .turnTo(Math.toRadians(-90))
@@ -133,27 +100,7 @@ public class ThreeCycleFront implements AutoPath {
 
             TrajectoryActionBuilder intakeTwo = goToIntakeTwo.endTrajectory().fresh()
                     .strafeTo(new Vector2d(12.5, -24))
-                    .strafeTo(new Vector2d(12.5, -40), new VelConstraint() {
-                        @Override
-                        public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
-                            return 5;
-                        }
-                    });
-
-            TrajectoryActionBuilder goToIntakeThree = goToShoot.endTrajectory().fresh()
-                    .turnTo(Math.toRadians(-90))
-                    .strafeTo(new Vector2d(34.6, -25));
-
-            TrajectoryActionBuilder intakeThree = goToIntakeThree.endTrajectory().fresh()
-                    .strafeTo(new Vector2d(34.6, -40), new VelConstraint() {
-                        @Override
-                        public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
-                            return 5;
-                        }
-                    });
-
-            TrajectoryActionBuilder leave = goToShoot.endTrajectory().fresh()
-                    .strafeTo(new Vector2d(-55, -14));
+                    .strafeTo(new Vector2d(12.5, -40), (pose2dDual, posePath, v) -> 5);
 
             return new SequentialAction(
                     rractions.stop(),
