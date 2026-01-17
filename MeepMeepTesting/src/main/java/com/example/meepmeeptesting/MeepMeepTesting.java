@@ -25,41 +25,52 @@ public class MeepMeepTesting {
 
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
-                .setStartPose(new Pose2d(60, 11.7, Math.toRadians(180)))
+                .setStartPose(new Pose2d(-50, -50, Math.toRadians(225)))
                 .build();
 
-        TrajectoryActionBuilder goToShoot = myBot.getDrive().actionBuilder(myBot.getDrive().getPoseEstimate())
-                .splineToLinearHeading(new Pose2d(50, 15, Math.toRadians(155)), Math.toRadians(155));
+//        TrajectoryActionBuilder goToShoot = myBot.getDrive().actionBuilder(myBot.getPose())
+//                .splineToLinearHeading(new Pose2d(-35, 35, Math.toRadians(135)), Math.toRadians(135));
+//
+//        TrajectoryActionBuilder goToIntakeOne = goToShoot.endTrajectory().fresh()
+//                .turnTo(Math.toRadians(90))
+//                .strafeTo(new Vector2d(-11.5, 20));
+//
+//        TrajectoryActionBuilder intakeOne = goToIntakeOne.endTrajectory().fresh()
+//                .strafeTo(new Vector2d(-11.5, 35))
+//                .strafeTo(new Vector2d(-11.5, 50), (pose2dDual, posePath, v) -> 9);
+//
+//        TrajectoryActionBuilder goToIntakeTwo = goToShoot.endTrajectory().fresh()
+//                .turnTo(Math.toRadians(90))
+//                .strafeTo(new Vector2d(11.5, 20));
+//
+//        TrajectoryActionBuilder intakeTwo = goToIntakeTwo.endTrajectory().fresh()
+//                .strafeTo(new Vector2d(11.5, 35))
+//                .strafeTo(new Vector2d(11.5, 50), (pose2dDual, posePath, v) -> 9);
+//
+//        TrajectoryActionBuilder goToLeaveShoot = intakeTwo.endTrajectory().fresh()
+//                .splineToLinearHeading(new Pose2d(-57, 15, Math.toRadians(-270)), Math.toRadians(-270));
+
+        TrajectoryActionBuilder goToShoot = myBot.getDrive().actionBuilder(myBot.getPose())
+                .splineToLinearHeading(new Pose2d(-35, -35, Math.toRadians(225)), Math.toRadians(225));
 
         TrajectoryActionBuilder goToIntakeOne = goToShoot.endTrajectory().fresh()
-//                .turnTo(Math.toRadians(90))
-//                .setTangent(Math.toRadians(275))
-//                .splineToSplineHeading(new Pose2d(-12.5, 35, Math.toRadians(90)), Math.toRadians(50));
-                .turnTo(Math.toRadians(90))
-                .strafeTo(new Vector2d(34.6, 25));
+                .turnTo(Math.toRadians(-90))
+                .strafeTo(new Vector2d(-10, -16));
 
         TrajectoryActionBuilder intakeOne = goToIntakeOne.endTrajectory().fresh()
-                .strafeTo(new Vector2d(-11.5, 35))
-                .strafeTo(new Vector2d(-11.5, 50), new VelConstraint() {
-                    @Override
-                    public double maxRobotVel(@NotNull Pose2dDual<Arclength> pose2dDual, @NotNull PosePath posePath, double v) {
-                        return 5;
-                    }
-                });
+                .strafeTo(new Vector2d(-10, -24))
+                .strafeTo(new Vector2d(-10, -40), (pose2dDual, posePath, v) -> 9);
 
         TrajectoryActionBuilder goToIntakeTwo = goToShoot.endTrajectory().fresh()
-                .turnTo(Math.toRadians(90))
-                .setTangent(Math.toRadians(275))
-                .splineToLinearHeading(new Pose2d(11.5, 35, Math.toRadians(90)), Math.toRadians(70));
+                .turnTo(Math.toRadians(-90))
+                .strafeTo(new Vector2d(12.5, -16));
 
         TrajectoryActionBuilder intakeTwo = goToIntakeTwo.endTrajectory().fresh()
-                .strafeTo(new Vector2d(11.5, 35))
-                .strafeTo(new Vector2d(11.5, 50), new VelConstraint() {
-                    @Override
-                    public double maxRobotVel(@NotNull Pose2dDual<Arclength> pose2dDual, @NotNull PosePath posePath, double v) {
-                        return 5;
-                    }
-                });
+                .strafeTo(new Vector2d(12.5, -24))
+                .strafeTo(new Vector2d(12.5, -40), (pose2dDual, posePath, v) -> 9);
+
+        TrajectoryActionBuilder goToLeaveShoot = intakeTwo.endTrajectory().fresh()
+                .splineToLinearHeading(new Pose2d(-57, -15, Math.toRadians(270)), Math.toRadians(270));
 
         myBot.runAction(new SequentialAction(
                 goToShoot.build(),
@@ -67,7 +78,8 @@ public class MeepMeepTesting {
                 intakeOne.build(),
                 goToShoot.build(),
                 goToIntakeTwo.build(),
-                intakeTwo.build()
+                intakeTwo.build(),
+                goToLeaveShoot.build()
         ));
 
 

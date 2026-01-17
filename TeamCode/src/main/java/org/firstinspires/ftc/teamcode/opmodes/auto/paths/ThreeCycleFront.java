@@ -45,25 +45,26 @@ public class ThreeCycleFront implements AutoPath {
 
         if (alliance == Robot.Globals.Alliances.RED) {
             TrajectoryActionBuilder goToShoot = drive.actionBuilder(initialPose)
-                    .splineToLinearHeading(new Pose2d(-35, 35, Math.toRadians(140)), Math.toRadians(140));
+                    .splineToLinearHeading(new Pose2d(-35, 35, Math.toRadians(-225)), Math.toRadians(-225));
 
             TrajectoryActionBuilder goToIntakeOne = goToShoot.endTrajectory().fresh()
-                    .setTangent(Math.toRadians(275))
-                    .splineToSplineHeading(new Pose2d(-12.5, 35, Math.toRadians(90)), Math.toRadians(50));
+                    .turnTo(Math.toRadians(90))
+                    .strafeTo(new Vector2d(-10, 16));
 
             TrajectoryActionBuilder intakeOne = goToIntakeOne.endTrajectory().fresh()
-                    .strafeTo(new Vector2d(-11.5, 35))
-                    .strafeTo(new Vector2d(-11.5, 57), (pose2dDual, posePath, v) -> 5);
+                    .strafeTo(new Vector2d(-10, 24))
+                    .strafeTo(new Vector2d(-10, 40), (pose2dDual, posePath, v) -> 9);
 
             TrajectoryActionBuilder goToIntakeTwo = goToShoot.endTrajectory().fresh()
                     .turnTo(Math.toRadians(90))
-                    .setTangent(Math.toRadians(275))
-                    .splineToLinearHeading(new Pose2d(9, 35, Math.toRadians(90)), Math.toRadians(70));
+                    .strafeTo(new Vector2d(12.5, 16));
 
             TrajectoryActionBuilder intakeTwo = goToIntakeTwo.endTrajectory().fresh()
-                    .strafeTo(new Vector2d(9, 35))
-                    .strafeTo(new Vector2d(9, 60), (pose2dDual, posePath, v) -> 5);
+                    .strafeTo(new Vector2d(12.5, 24))
+                    .strafeTo(new Vector2d(12.5, 40), (pose2dDual, posePath, v) -> 9);
 
+            TrajectoryActionBuilder goToLeaveShoot = intakeTwo.endTrajectory().fresh()
+                    .splineToLinearHeading(new Pose2d(-57, 15, Math.toRadians(-270)), Math.toRadians(-270));
 
             return new SequentialAction(
                     rractions.stop(),
@@ -80,7 +81,9 @@ public class ThreeCycleFront implements AutoPath {
                     new ParallelAction(
                             intakeTwo.build(),
                             rractions.intake()
-                    )
+                    ),
+                    goToLeaveShoot.build(),
+                    rractions.shoot(3, 1000)
             );
         } else {
             TrajectoryActionBuilder goToShoot = drive.actionBuilder(initialPose)
@@ -92,7 +95,7 @@ public class ThreeCycleFront implements AutoPath {
 
             TrajectoryActionBuilder intakeOne = goToIntakeOne.endTrajectory().fresh()
                     .strafeTo(new Vector2d(-10, -24))
-                    .strafeTo(new Vector2d(-10, -40), (pose2dDual, posePath, v) -> 5);
+                    .strafeTo(new Vector2d(-10, -40), (pose2dDual, posePath, v) -> 9);
 
             TrajectoryActionBuilder goToIntakeTwo = goToShoot.endTrajectory().fresh()
                     .turnTo(Math.toRadians(-90))
@@ -100,7 +103,10 @@ public class ThreeCycleFront implements AutoPath {
 
             TrajectoryActionBuilder intakeTwo = goToIntakeTwo.endTrajectory().fresh()
                     .strafeTo(new Vector2d(12.5, -24))
-                    .strafeTo(new Vector2d(12.5, -40), (pose2dDual, posePath, v) -> 5);
+                    .strafeTo(new Vector2d(12.5, -40), (pose2dDual, posePath, v) -> 9);
+
+            TrajectoryActionBuilder goToLeaveShoot = intakeTwo.endTrajectory().fresh()
+                    .splineToLinearHeading(new Pose2d(-57, -15, Math.toRadians(270)), Math.toRadians(270));
 
             return new SequentialAction(
                     rractions.stop(),
@@ -117,7 +123,9 @@ public class ThreeCycleFront implements AutoPath {
                     new ParallelAction(
                             intakeTwo.build(),
                             rractions.intake()
-                    )
+                    ),
+                    goToLeaveShoot.build(),
+                    rractions.shoot(3, 1000)
             );
         }
     }
