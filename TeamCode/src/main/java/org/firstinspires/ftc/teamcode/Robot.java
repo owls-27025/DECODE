@@ -144,12 +144,13 @@ public class Robot {
 
         public static double currentSpeed = 1.0;
 
-        public static double spindexerSpeed = 0.3;
+        public static double spindexerSpeed = 0.75;
         public static double driveSpeed = 1.0;
         public static double slowDriveSpeed = 0.35;
 
         public static int shooterVelocity = 1050;
-        public static int shooterTolerance = 75;
+        public static int shooterLowTolerance = 30;
+        public static int shooterHighTolerance = 200;
 
         public static int forcedArtifacts = 1;
 

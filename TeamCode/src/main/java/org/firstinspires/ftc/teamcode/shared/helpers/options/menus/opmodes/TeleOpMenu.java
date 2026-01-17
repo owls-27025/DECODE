@@ -32,9 +32,9 @@ public class TeleOpMenu extends MenuLib.Menu {
                 Robot.Globals::flipFieldCentric));
 
         addOption(MenuLib.Option.value(
-                () -> "Shooter Tolerance: " + Robot.Globals.shooterTolerance,
-                () -> Robot.Globals.shooterTolerance = Math.max(0, Robot.Globals.shooterTolerance - 1),
-                () -> Robot.Globals.shooterTolerance =  Math.min(50, Robot.Globals.shooterTolerance + 1)
+                () -> "Shooter Tolerance: " + Robot.Globals.shooterLowTolerance,
+                () -> Robot.Globals.shooterLowTolerance = Math.max(0, Robot.Globals.shooterLowTolerance - 1),
+                () -> Robot.Globals.shooterLowTolerance =  Math.min(50, Robot.Globals.shooterLowTolerance + 1)
         ));
 
         addOption(MenuLib.Option.info(() -> ""));

@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.opmodes.tele;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.opmodes.OwlsOpMode;
@@ -29,8 +28,6 @@ public class TeleOpMode extends OwlsOpMode {
         shootAction = actionManager.addAndReturn(new ShootAction(robot));
         spindexerAction = actionManager.addAndReturn(new SpindexerAction(robot));
 
-        Robot.Globals.shooterVelocity = 1100;
-
         shooter.setHood(0.05);
     }
 
@@ -41,7 +38,7 @@ public class TeleOpMode extends OwlsOpMode {
         if (p2.pressed(OwlsGamepad.Button.DPAD_DOWN)) Robot.Globals.shooterVelocity -= 50;
 
         if (p2.pressed(OwlsGamepad.Button.DPAD_RIGHT)) shooter.setHood(shooter.getHood() + 0.1);
-        if (p1.pressed(OwlsGamepad.Button.DPAD_LEFT)) shooter.setHood(shooter.getHood() - 0.1);
+        if (p2.pressed(OwlsGamepad.Button.DPAD_LEFT)) shooter.setHood(shooter.getHood() - 0.1);
 
         // manual spindexer control
         if (p2.pressed(OwlsGamepad.Button.LB)) {
@@ -112,16 +109,6 @@ public class TeleOpMode extends OwlsOpMode {
         // reset artifact count
         if (p1.pressed(OwlsGamepad.Button.LS)) robot.artifactCount = 0;
 
-        if (p2.pressed(OwlsGamepad.Button.A)) {
-            spindexer.move(true);
-            robot.stop = true;
-        }
-
-        if (p2.pressed(OwlsGamepad.Button.Y)) {
-            spindexer.move(false);
-            robot.stop = true;
-        }
-
         drivetrain.drive(p1);
 
         TelemetryPacket packet = new TelemetryPacket();
@@ -133,7 +120,7 @@ public class TeleOpMode extends OwlsOpMode {
     public void telemetry() {
         telemetry.addData("Shooter target vel", Robot.Globals.shooterVelocity);
         telemetry.addData("Shooter vel", shooter.getVelocity());
-        telemetry.addData("Shooter tol", Robot.Globals.shooterTolerance);
+        telemetry.addData("Shooter tol", Robot.Globals.shooterLowTolerance);
 
         telemetry.addData("Distance (mm)", distance.getDistanceMm());
         telemetry.addData("Detects Ball", distance.isBall());
