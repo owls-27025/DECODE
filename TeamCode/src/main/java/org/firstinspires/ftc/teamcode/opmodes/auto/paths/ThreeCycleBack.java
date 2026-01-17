@@ -57,113 +57,74 @@ public class ThreeCycleBack implements AutoPath {
                     .splineToLinearHeading(new Pose2d(50, 15, Math.toRadians(155)), Math.toRadians(155));
 
             TrajectoryActionBuilder goToIntakeOne = goToShoot.endTrajectory().fresh()
-                    .turnTo(Math.toRadians(90))
-                    .strafeTo(new Vector2d(34.6, 25));
+                    .setTangent(Math.toRadians(90))
+                    .splineToLinearHeading(new Pose2d(35.7, 25, Math.toRadians(90)), Math.toRadians(90));
 
 
             TrajectoryActionBuilder intakeOne = goToIntakeOne.endTrajectory().fresh()
-                    .strafeTo(new Vector2d(34.6, 45), new VelConstraint() {
-                        @Override
-                        public double maxRobotVel(@NotNull Pose2dDual<Arclength> pose2dDual, @NotNull PosePath posePath, double v) {
-                            return 5;
-                        }
-                    });
+                    .strafeTo(new Vector2d(35.7, 50), (pose2dDual, posePath, v) -> 9);
 
             TrajectoryActionBuilder shootTwo = intakeOne.endTrajectory().fresh()
-                    .splineToLinearHeading(new Pose2d(50, -15, Math.toRadians(155)), Math.toRadians(155));
+                    .setTangent(Math.toRadians(270))
+                    .splineToLinearHeading(new Pose2d(55, 16, Math.toRadians(155)), Math.toRadians(270));
 
             TrajectoryActionBuilder goToIntakeTwo = goToShoot.endTrajectory().fresh()
-                    .turnTo(Math.toRadians(90))
-                    .strafeTo(new Vector2d(12.5, 25));
+                    .setTangent(Math.toRadians(90))
+                    .splineToLinearHeading(new Pose2d(12.5, 25, Math.toRadians(90)), Math.toRadians(135));
 
             TrajectoryActionBuilder intakeTwo = goToIntakeTwo.endTrajectory().fresh()
-                    .strafeTo(new Vector2d(12.5, 45), new VelConstraint() {
-                        @Override
-                        public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
-                            return 5;
-                        }
-                    });
+                    .strafeTo(new Vector2d(12.5, 50), (pose2dDual, posePath, v) -> 9);
 
             TrajectoryActionBuilder leave = shootTwo.endTrajectory().fresh()
                     .strafeTo(new Vector2d(45, 20));
 
-            TrajectoryActionBuilder goToIntakeThree = goToShoot.endTrajectory().fresh()
-                    .turnTo(Math.toRadians(90))
-                    .strafeTo(new Vector2d(34.6, 25));
-
-            TrajectoryActionBuilder intakeThree = goToIntakeThree.endTrajectory().fresh()
-                    .strafeTo(new Vector2d(34.6, 40), new VelConstraint() {
-                        @Override
-                        public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
-                            return 5;
-                        }
-                    });
-
-
             return new SequentialAction(
                     rractions.stop(),
-                    new ParallelAction(
-                            goToShoot.build()
-//                            rractions.getMotif()
-                    ),
-//                    rractions.shoot(3, 1550),
+                    goToShoot.build(),
+                    rractions.shoot(3, 1550),
                     goToIntakeOne.build(),
                     new ParallelAction(
-                            intakeOne.build()
-//                            rractions.intake()
+                            intakeOne.build(),
+                            rractions.intake()
                     ),
                     shootTwo.build(),
-//                    rractions.shoot(3, 1550),
+                    rractions.shoot(3, 1550),
+                    goToIntakeTwo.build(),
+                    new ParallelAction(
+                            intakeTwo.build(),
+                            rractions.intake()
+                    ),
+                    shootTwo.build(),
+                    rractions.shoot(3, 1550),
                     leave.build()
             );
 
 
         } else {
             TrajectoryActionBuilder goToShoot = drive.actionBuilder(initialPose)
-                    .splineToLinearHeading(new Pose2d(51, -15, Math.toRadians(205)), Math.toRadians(205));
+                    .splineToLinearHeading(new Pose2d(50, -15, Math.toRadians(-155)), Math.toRadians(-155));
 
             TrajectoryActionBuilder goToIntakeOne = goToShoot.endTrajectory().fresh()
-                    .turnTo(Math.toRadians(270))
-                    .strafeTo(new Vector2d(34.6, -25));
+                    .setTangent(Math.toRadians(-90))
+                    .splineToLinearHeading(new Pose2d(35.7, -25, Math.toRadians(-90)), Math.toRadians(-90));
 
 
             TrajectoryActionBuilder intakeOne = goToIntakeOne.endTrajectory().fresh()
-                    .strafeTo(new Vector2d(34.6, -45), new VelConstraint() {
-                        @Override
-                        public double maxRobotVel(@NotNull Pose2dDual<Arclength> pose2dDual, @NotNull PosePath posePath, double v) {
-                            return 5;
-                        }
-                    });
+                    .strafeTo(new Vector2d(35.7, -50), (pose2dDual, posePath, v) -> 9);
 
             TrajectoryActionBuilder shootTwo = intakeOne.endTrajectory().fresh()
-                    .splineToLinearHeading(new Pose2d(51, -15, Math.toRadians(205)), Math.toRadians(205));
+                    .setTangent(Math.toRadians(-270))
+                    .splineToLinearHeading(new Pose2d(55, -16, Math.toRadians(-155)), Math.toRadians(-270));
+
+            TrajectoryActionBuilder goToIntakeTwo = goToShoot.endTrajectory().fresh()
+                    .setTangent(Math.toRadians(-90))
+                    .splineToLinearHeading(new Pose2d(12.5, -25, Math.toRadians(-90)), Math.toRadians(-135));
+
+            TrajectoryActionBuilder intakeTwo = goToIntakeTwo.endTrajectory().fresh()
+                    .strafeTo(new Vector2d(12.5, -50), (pose2dDual, posePath, v) -> 9);
 
             TrajectoryActionBuilder leave = shootTwo.endTrajectory().fresh()
                     .strafeTo(new Vector2d(45, -20));
-
-            TrajectoryActionBuilder goToIntakeTwo = goToShoot.endTrajectory().fresh()
-                    .turnTo(Math.toRadians(270))
-                    .strafeTo(new Vector2d(12.5, -25));
-
-            TrajectoryActionBuilder intakeTwo = goToIntakeTwo.endTrajectory().fresh()
-                    .strafeTo(new Vector2d(12.5, -45), new VelConstraint() {
-                        @Override
-                        public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
-                            return 5;
-                        }
-                    });
-
-            TrajectoryActionBuilder goToIntakeThree = goToShoot.endTrajectory().fresh()
-                    .turnTo(Math.toRadians(270))
-                    .strafeTo(new Vector2d(34.6, -25));
-
-            TrajectoryActionBuilder intakeThree = goToIntakeThree.endTrajectory().fresh()
-                    .strafeTo(new Vector2d(34.6, -40), new VelConstraint() {
-                        @Override
-                        public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
-                            return 5;
-                        }
-                    });
 
 
             return new SequentialAction(
@@ -173,6 +134,13 @@ public class ThreeCycleBack implements AutoPath {
                     goToIntakeOne.build(),
                     new ParallelAction(
                             intakeOne.build(),
+                            rractions.intake()
+                    ),
+                    shootTwo.build(),
+                    rractions.shoot(3, 1550),
+                    goToIntakeTwo.build(),
+                    new ParallelAction(
+                            intakeTwo.build(),
                             rractions.intake()
                     ),
                     shootTwo.build(),

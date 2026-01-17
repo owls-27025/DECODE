@@ -26,7 +26,7 @@ public class ThreeCycleFront implements AutoPath {
     @Override
     public Pose2d getInitialPose() {
         if (alliance == Robot.Globals.Alliances.RED) {
-            return new Pose2d(-50, 50, Math.toRadians(135));
+            return new Pose2d(-50, 50, Math.toRadians(125));
         } else {
             return new Pose2d(-50, -50, Math.toRadians(235));
         }
@@ -45,26 +45,26 @@ public class ThreeCycleFront implements AutoPath {
 
         if (alliance == Robot.Globals.Alliances.RED) {
             TrajectoryActionBuilder goToShoot = drive.actionBuilder(initialPose)
-                    .splineToLinearHeading(new Pose2d(-35, 35, Math.toRadians(-225)), Math.toRadians(-225));
+                    .setTangent(Math.toRadians(-45))
+                    .splineToLinearHeading(new Pose2d(-35, 35, Math.toRadians(-225)), Math.toRadians(-45));
 
             TrajectoryActionBuilder goToIntakeOne = goToShoot.endTrajectory().fresh()
-                    .turnTo(Math.toRadians(90))
-                    .strafeTo(new Vector2d(-10, 16));
+                    .setTangent(Math.toRadians(270))
+                    .splineToLinearHeading(new Pose2d(-11.5, 25, Math.toRadians(90)), Math.toRadians(90));
 
             TrajectoryActionBuilder intakeOne = goToIntakeOne.endTrajectory().fresh()
-                    .strafeTo(new Vector2d(-10, 24))
-                    .strafeTo(new Vector2d(-10, 40), (pose2dDual, posePath, v) -> 9);
+                    .strafeTo(new Vector2d(-11.5, 45), (pose2dDual, posePath, v) -> 9);
 
             TrajectoryActionBuilder goToIntakeTwo = goToShoot.endTrajectory().fresh()
-                    .turnTo(Math.toRadians(90))
-                    .strafeTo(new Vector2d(12.5, 16));
+                    .setTangent(Math.toRadians(270))
+                    .splineToLinearHeading(new Pose2d(11.5, 25, Math.toRadians(90)), Math.toRadians(90));
 
             TrajectoryActionBuilder intakeTwo = goToIntakeTwo.endTrajectory().fresh()
-                    .strafeTo(new Vector2d(12.5, 24))
-                    .strafeTo(new Vector2d(12.5, 40), (pose2dDual, posePath, v) -> 9);
+                    .strafeTo(new Vector2d(11.5, 45), (pose2dDual, posePath, v) -> 9);
 
             TrajectoryActionBuilder goToLeaveShoot = intakeTwo.endTrajectory().fresh()
-                    .splineToLinearHeading(new Pose2d(-57, 15, Math.toRadians(-270)), Math.toRadians(-270));
+                    .setTangent(Math.toRadians(-90))
+                    .splineToLinearHeading(new Pose2d(-57, 15, Math.toRadians(-270)), Math.toRadians(-90));
 
             return new SequentialAction(
                     rractions.stop(),
@@ -75,6 +75,7 @@ public class ThreeCycleFront implements AutoPath {
                             intakeOne.build(),
                             rractions.intake()
                     ),
+                    rractions.stop(),
                     goToShoot.build(),
                     rractions.shoot(3, 1100),
                     goToIntakeTwo.build(),
@@ -82,31 +83,32 @@ public class ThreeCycleFront implements AutoPath {
                             intakeTwo.build(),
                             rractions.intake()
                     ),
+                    rractions.stop(),
                     goToLeaveShoot.build(),
                     rractions.shoot(3, 1000)
             );
         } else {
             TrajectoryActionBuilder goToShoot = drive.actionBuilder(initialPose)
-                    .splineToLinearHeading(new Pose2d(-35, -35, Math.toRadians(225)), Math.toRadians(225));
+                    .setTangent(Math.toRadians(45))
+                    .splineToLinearHeading(new Pose2d(-35, -35, Math.toRadians(225)), Math.toRadians(45));
 
             TrajectoryActionBuilder goToIntakeOne = goToShoot.endTrajectory().fresh()
-                    .turnTo(Math.toRadians(-90))
-                    .strafeTo(new Vector2d(-10, -16));
+                    .setTangent(Math.toRadians(-270))
+                    .splineToLinearHeading(new Pose2d(-11.5, -25, Math.toRadians(-90)), Math.toRadians(-90));
 
             TrajectoryActionBuilder intakeOne = goToIntakeOne.endTrajectory().fresh()
-                    .strafeTo(new Vector2d(-10, -24))
-                    .strafeTo(new Vector2d(-10, -40), (pose2dDual, posePath, v) -> 9);
+                    .strafeTo(new Vector2d(-11.5, -45), (pose2dDual, posePath, v) -> 9);
 
             TrajectoryActionBuilder goToIntakeTwo = goToShoot.endTrajectory().fresh()
-                    .turnTo(Math.toRadians(-90))
-                    .strafeTo(new Vector2d(12.5, -16));
+                    .setTangent(Math.toRadians(-270))
+                    .splineToLinearHeading(new Pose2d(11.5, -25, Math.toRadians(-90)), Math.toRadians(-90));
 
             TrajectoryActionBuilder intakeTwo = goToIntakeTwo.endTrajectory().fresh()
-                    .strafeTo(new Vector2d(12.5, -24))
-                    .strafeTo(new Vector2d(12.5, -40), (pose2dDual, posePath, v) -> 9);
+                    .strafeTo(new Vector2d(11.5, -45), (pose2dDual, posePath, v) -> 9);
 
             TrajectoryActionBuilder goToLeaveShoot = intakeTwo.endTrajectory().fresh()
-                    .splineToLinearHeading(new Pose2d(-57, -15, Math.toRadians(270)), Math.toRadians(270));
+                    .setTangent(Math.toRadians(90))
+                    .splineToLinearHeading(new Pose2d(-57, -15, Math.toRadians(270)), Math.toRadians(90));
 
             return new SequentialAction(
                     rractions.stop(),
@@ -117,6 +119,7 @@ public class ThreeCycleFront implements AutoPath {
                             intakeOne.build(),
                             rractions.intake()
                     ),
+                    rractions.stop(),
                     goToShoot.build(),
                     rractions.shoot(3, 1100),
                     goToIntakeTwo.build(),
@@ -124,6 +127,7 @@ public class ThreeCycleFront implements AutoPath {
                             intakeTwo.build(),
                             rractions.intake()
                     ),
+                    rractions.stop(),
                     goToLeaveShoot.build(),
                     rractions.shoot(3, 1000)
             );
