@@ -38,18 +38,27 @@ public class ShootAction extends BaseAction {
             case SPIN_UP:
                 robot.shooterReady = false;
                 shooter.shoot(Robot.Globals.shooterVelocity);
-                if (Math.abs(shooter.getVelocity() - Robot.Globals.shooterVelocity) <= Robot.Globals.shooterTolerance) {
-                    enter(State.READY);
+                if (shooter.getVelocity() - Robot.Globals.shooterVelocity < 0) {
+                    if (Math.abs(shooter.getVelocity() - Robot.Globals.shooterVelocity) <= Robot.Globals.shooterLowTolerance) {
+                        enter(State.READY);
+                    }
+                } else {
+                    if (Math.abs(shooter.getVelocity() - Robot.Globals.shooterVelocity) <= Robot.Globals.shooterHighTolerance) {
+                        enter(State.READY);
+                    }
                 }
                 break;
-            case TARGETING:
-                robot.shooterReady = false;
-
             case READY:
                 robot.shooterReady = true;
                 shooter.shoot(Robot.Globals.shooterVelocity);
-                if (Math.abs(shooter.getVelocity() - Robot.Globals.shooterVelocity) > Robot.Globals.shooterTolerance) {
-                    enter(State.SPIN_UP);
+                if (shooter.getVelocity() - Robot.Globals.shooterVelocity < 0) {
+                    if (Math.abs(shooter.getVelocity() - Robot.Globals.shooterVelocity) > Robot.Globals.shooterLowTolerance) {
+                        enter(State.SPIN_UP);
+                    }
+                } else {
+                    if (Math.abs(shooter.getVelocity() - Robot.Globals.shooterVelocity) > Robot.Globals.shooterHighTolerance) {
+                        enter(State.SPIN_UP);
+                    }
                 }
                 break;
 

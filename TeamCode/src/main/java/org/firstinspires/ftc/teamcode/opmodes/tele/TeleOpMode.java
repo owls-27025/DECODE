@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.opmodes.tele;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.opmodes.OwlsOpMode;
@@ -121,7 +120,7 @@ public class TeleOpMode extends OwlsOpMode {
     public void telemetry() {
         telemetry.addData("Shooter target vel", Robot.Globals.shooterVelocity);
         telemetry.addData("Shooter vel", shooter.getVelocity());
-        telemetry.addData("Shooter tol", Robot.Globals.shooterTolerance);
+        telemetry.addData("Shooter tol", Robot.Globals.shooterLowTolerance);
 
         telemetry.addData("Distance (mm)", distance.getDistanceMm());
         telemetry.addData("Detects Ball", distance.isBall());

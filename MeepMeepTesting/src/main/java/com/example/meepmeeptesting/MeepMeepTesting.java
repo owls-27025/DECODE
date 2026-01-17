@@ -1,10 +1,13 @@
 package com.example.meepmeeptesting;
 
 import com.acmerobotics.roadrunner.Arclength;
+import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Pose2dDual;
 import com.acmerobotics.roadrunner.PosePath;
 import com.acmerobotics.roadrunner.Rotation2d;
+import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.VelConstraint;
 import com.noahbres.meepmeep.MeepMeep;
@@ -22,65 +25,50 @@ public class MeepMeepTesting {
 
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
+                .setStartPose(new Pose2d(60, 11.7, Math.toRadians(180)))
                 .build();
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(55, -10, Math.toRadians(180)))
-                .splineToLinearHeading(new Pose2d(50, -15, Math.toRadians(200)), Math.toRadians(200))
-                .waitSeconds(5)
+        TrajectoryActionBuilder goToShoot = myBot.getDrive().actionBuilder(myBot.getDrive().getPoseEstimate())
+                .splineToLinearHeading(new Pose2d(50, 15, Math.toRadians(155)), Math.toRadians(155));
+
+        TrajectoryActionBuilder goToIntakeOne = goToShoot.endTrajectory().fresh()
+//                .turnTo(Math.toRadians(90))
+//                .setTangent(Math.toRadians(275))
+//                .splineToSplineHeading(new Pose2d(-12.5, 35, Math.toRadians(90)), Math.toRadians(50));
                 .turnTo(Math.toRadians(90))
-                .strafeTo(new Vector2d(-10, -20))
-                .strafeTo(new Vector2d(-10, -40))
-                .turnTo(Math.toRadians(210))
-                .waitSeconds(5)
-                .turnTo(Math.toRadians(270))
-                .strafeTo(new Vector2d(34.6, -25))
-                .strafeTo(new Vector2d(34.6, -45), new VelConstraint() {
+                .strafeTo(new Vector2d(34.6, 25));
+
+        TrajectoryActionBuilder intakeOne = goToIntakeOne.endTrajectory().fresh()
+                .strafeTo(new Vector2d(-11.5, 35))
+                .strafeTo(new Vector2d(-11.5, 50), new VelConstraint() {
                     @Override
                     public double maxRobotVel(@NotNull Pose2dDual<Arclength> pose2dDual, @NotNull PosePath posePath, double v) {
-                        return 6;
+                        return 5;
                     }
-                })
-                .turnTo(Math.toRadians(210))
-                .strafeTo(new Vector2d(55, -10))
-                .strafeTo(new Vector2d(45, -20))
-                .waitSeconds(5)
-                // three cycle back ^^
-                // three cycle front vv
-                // shoot placeholder
-//                .waitSeconds(5)
-//                // go to intake one
-//                .turnTo(Math.toRadians(-90))
-//                .strafeTo(new Vector2d(-10, -25))
-//                .strafeTo(new Vector2d(-10, -50))
-//                // go to + hit gate
-//                .strafeTo(new Vector2d(0, -50))
-//                .strafeTo(new Vector2d(0, -55))
-//                // go to shoot
-//                .strafeTo(new Vector2d(-35, -35))
-//                .turnTo(Math.toRadians(235))
-//                // shoot placeholder
-//                .waitSeconds(5)
-//                // go to intake two
-//                .turnTo(Math.toRadians(-90))
-//                .strafeTo(new Vector2d(11.5, -25))
-//                .strafeTo(new Vector2d(11.5, -50))
-//                // go to shoot
-//                .strafeTo(new Vector2d(-35, -35))
-//                .turnTo(Math.toRadians(235))
-//                // shoot placeholder
-//                .waitSeconds(5)
-//                // go to intake three
-//                .turnTo(Math.toRadians(-90))
-//                .strafeTo(new Vector2d(34.6, -25))
-//                .strafeTo(new Vector2d(34.6, -50))
-//                // go to shoot
-//                .strafeTo(new Vector2d(-35, -35))
-//                .turnTo(Math.toRadians(235))
-//                // shoot placeholder
-//                .waitSeconds(5)
-//                // go to leave position
-//                .strafeTo(new Vector2d(-55, -14))
-                .build());
+                });
+
+        TrajectoryActionBuilder goToIntakeTwo = goToShoot.endTrajectory().fresh()
+                .turnTo(Math.toRadians(90))
+                .setTangent(Math.toRadians(275))
+                .splineToLinearHeading(new Pose2d(11.5, 35, Math.toRadians(90)), Math.toRadians(70));
+
+        TrajectoryActionBuilder intakeTwo = goToIntakeTwo.endTrajectory().fresh()
+                .strafeTo(new Vector2d(11.5, 35))
+                .strafeTo(new Vector2d(11.5, 50), new VelConstraint() {
+                    @Override
+                    public double maxRobotVel(@NotNull Pose2dDual<Arclength> pose2dDual, @NotNull PosePath posePath, double v) {
+                        return 5;
+                    }
+                });
+
+        myBot.runAction(new SequentialAction(
+                goToShoot.build(),
+                goToIntakeOne.build(),
+                intakeOne.build(),
+                goToShoot.build(),
+                goToIntakeTwo.build(),
+                intakeTwo.build()
+        ));
 
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_DECODE_OFFICIAL)

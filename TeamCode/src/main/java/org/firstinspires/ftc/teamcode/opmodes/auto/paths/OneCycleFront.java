@@ -40,6 +40,7 @@ public class OneCycleFront implements AutoPath {
 
         if (alliance == Robot.Globals.Alliances.RED) {
             TrajectoryActionBuilder goToShoot = drive.actionBuilder(initialPose)
+
                     .splineToLinearHeading(new Pose2d(-35, 35, Math.toRadians(135)), Math.toRadians(135));
 
             return new SequentialAction(

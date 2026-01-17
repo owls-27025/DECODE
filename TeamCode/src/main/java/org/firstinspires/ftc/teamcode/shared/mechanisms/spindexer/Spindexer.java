@@ -118,7 +118,7 @@ public class Spindexer {
     }
 
     public boolean isBusy() {
-        return motor != null && motor.isBusy();
+        return motor != null && Math.abs(motor.getCurrentPosition() - motor.getTargetPosition()) >= 30;
     }
 
     public void setDirection(DcMotor.Direction direction) {

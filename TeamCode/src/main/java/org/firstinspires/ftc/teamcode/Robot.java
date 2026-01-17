@@ -28,28 +28,29 @@ public class Robot {
 
         public static final ArrayList<ConfigItem> configItems = new ArrayList<>();
 
-        public static final ConfigItem distance       = item("distance", true);
-
         public static final ConfigItem FR             = item("FR", true);
         public static final ConfigItem FL             = item("FL", true);
         public static final ConfigItem BR             = item("BR", true);
         public static final ConfigItem BL             = item("BL", true);
 
         public static final ConfigItem intake         = item("intake", true);
-        public static final ConfigItem spindexerMotor = item("spindexer", true);
-        public static final ConfigItem spindexerServo = item("flap", true);
-        public static final ConfigItem shooter        = item("flywheel", true);
-
-        public static final ConfigItem odometry       = item("odometry", true);
-        public static final ConfigItem light          = item("light", true);
-        public static final ConfigItem imu            = item("imu", true);
-        public static final ConfigItem limelight      = item("limelight", false);
         public static final ConfigItem leftSweeper    = item("left sweeper", false);
         public static final ConfigItem rightSweeper   = item("right sweeper", false);
 
+        public static final ConfigItem spindexerMotor = item("spindexer", true);
+        public static final ConfigItem spindexerServo = item("flap", true);
+
+        public static final ConfigItem shooter        = item("flywheel", true);
         public static final ConfigItem hood           = item("hood", false);
+
+        public static final ConfigItem odometry       = item("odometry", true);
+        public static final ConfigItem imu            = item("imu", true);
+        public static final ConfigItem limelight      = item("limelight", false);
         public static final ConfigItem yaw            = item("yaw", false);
         public static final ConfigItem pitch          = item("pitch", false);
+        public static final ConfigItem distance       = item("distance", true);
+
+        public static final ConfigItem light          = item("light", true);
 
         @SuppressWarnings("SameParameterValue")
         private static ConfigItem item(String name, boolean active) {
@@ -142,12 +143,13 @@ public class Robot {
 
         public static double currentSpeed = 1.0;
 
-        public static double spindexerSpeed = 0.5;
+        public static double spindexerSpeed = 0.75;
         public static double driveSpeed = 1.0;
         public static double slowDriveSpeed = 0.35;
 
         public static int shooterVelocity = 1050;
-        public static int shooterTolerance = 75;
+        public static int shooterLowTolerance = 30;
+        public static int shooterHighTolerance = 200;
 
         public static int forcedArtifacts = 1;
 

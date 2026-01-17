@@ -30,7 +30,7 @@ public class ThreeCycleBack implements AutoPath {
     @Override
     public Pose2d getInitialPose() {
         if (alliance == Robot.Globals.Alliances.RED) {
-            return new Pose2d(55, 10, Math.toRadians(180));
+            return new Pose2d(60, 11.7, Math.toRadians(180));
         } else {
             return new Pose2d(55, -10, Math.toRadians(180));
         }
@@ -54,7 +54,7 @@ public class ThreeCycleBack implements AutoPath {
 
         if (alliance == Robot.Globals.Alliances.RED) {
             TrajectoryActionBuilder goToShoot = drive.actionBuilder(initialPose)
-                    .splineToLinearHeading(new Pose2d(50, -15, Math.toRadians(155)), Math.toRadians(155));
+                    .splineToLinearHeading(new Pose2d(50, 15, Math.toRadians(155)), Math.toRadians(155));
 
             TrajectoryActionBuilder goToIntakeOne = goToShoot.endTrajectory().fresh()
                     .turnTo(Math.toRadians(90))
@@ -103,17 +103,17 @@ public class ThreeCycleBack implements AutoPath {
             return new SequentialAction(
                     rractions.stop(),
                     new ParallelAction(
-                            goToShoot.build(),
-                            rractions.getMotif()
+                            goToShoot.build()
+//                            rractions.getMotif()
                     ),
-                    rractions.shoot(3, 1550),
+//                    rractions.shoot(3, 1550),
                     goToIntakeOne.build(),
                     new ParallelAction(
-                            intakeOne.build(),
-                            rractions.intake()
+                            intakeOne.build()
+//                            rractions.intake()
                     ),
                     shootTwo.build(),
-                    rractions.shoot(3, 1550),
+//                    rractions.shoot(3, 1550),
                     leave.build()
             );
 

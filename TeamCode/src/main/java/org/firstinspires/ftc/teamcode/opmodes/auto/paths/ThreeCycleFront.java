@@ -17,6 +17,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.opmodes.auto.RRActions;
 import org.firstinspires.ftc.teamcode.shared.mechanisms.drivetrain.roadrunner.MecanumDrive;
+import org.jetbrains.annotations.NotNull;
 
 public class ThreeCycleFront implements AutoPath {
     private final Robot.Globals.Alliances alliance;
@@ -55,47 +56,37 @@ public class ThreeCycleFront implements AutoPath {
                     .splineToLinearHeading(new Pose2d(-35, 35, Math.toRadians(140)), Math.toRadians(140));
 
             TrajectoryActionBuilder goToIntakeOne = goToShoot.endTrajectory().fresh()
-                    .turnTo(Math.toRadians(90))
-                    .strafeTo(new Vector2d(-10, 16));
+//                .turnTo(Math.toRadians(90))
+                    .setTangent(Math.toRadians(275))
+                    .splineToSplineHeading(new Pose2d(-12.5, 35, Math.toRadians(90)), Math.toRadians(50));
 
             TrajectoryActionBuilder intakeOne = goToIntakeOne.endTrajectory().fresh()
-                    .strafeTo(new Vector2d(-10, 24))
-                    .strafeTo(new Vector2d(-10, 40), new VelConstraint() {
+                    .strafeTo(new Vector2d(-11.5, 35))
+                    .strafeTo(new Vector2d(-11.5, 57), new VelConstraint() {
                         @Override
-                        public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                        public double maxRobotVel(@NotNull Pose2dDual<Arclength> pose2dDual, @NotNull PosePath posePath, double v) {
                             return 5;
                         }
                     });
 
             TrajectoryActionBuilder goToIntakeTwo = goToShoot.endTrajectory().fresh()
                     .turnTo(Math.toRadians(90))
-                    .strafeTo(new Vector2d(12.5, 16));
+                    .setTangent(Math.toRadians(275))
+                    .splineToLinearHeading(new Pose2d(9, 35, Math.toRadians(90)), Math.toRadians(70));
 
             TrajectoryActionBuilder intakeTwo = goToIntakeTwo.endTrajectory().fresh()
-                    .strafeTo(new Vector2d(12.5, 24))
-                    .strafeTo(new Vector2d(12.5, 40), new VelConstraint() {
+                    .strafeTo(new Vector2d(9, 35))
+                    .strafeTo(new Vector2d(9, 60), new VelConstraint() {
                         @Override
-                        public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                        public double maxRobotVel(@NotNull Pose2dDual<Arclength> pose2dDual, @NotNull PosePath posePath, double v) {
                             return 5;
                         }
                     });
 
-            TrajectoryActionBuilder goToIntakeThree = goToShoot.endTrajectory().fresh()
-                    .turnTo(Math.toRadians(90))
-                    .strafeTo(new Vector2d(34.6, 25));
-
-            TrajectoryActionBuilder intakeThree = goToIntakeThree.endTrajectory().fresh()
-                    .strafeTo(new Vector2d(34.6, 50));
-
-            TrajectoryActionBuilder leave = goToShoot.endTrajectory().fresh()
-                    .strafeTo(new Vector2d(-55, 14));
-
 
             return new SequentialAction(
                     rractions.stop(),
-                    new ParallelAction(
-                            goToShoot.build()
-                    ),
+                    goToShoot.build(),
                     rractions.shoot(3, 1100),
                     goToIntakeOne.build(),
                     new ParallelAction(
@@ -164,47 +155,23 @@ public class ThreeCycleFront implements AutoPath {
             TrajectoryActionBuilder leave = goToShoot.endTrajectory().fresh()
                     .strafeTo(new Vector2d(-55, -14));
 
-            if (!Robot.Globals.gate) {
-                return new SequentialAction(
-                        rractions.stop(),
-                        goToShoot.build(),
-                        rractions.shoot(3, 1150),
-                        goToIntakeOne.build(),
-                        new ParallelAction(
-                                intakeOne.build(),
-                                rractions.intake()
-                        ),
-                        goToShoot.build(),
-                        rractions.shoot(3, 1150),
-                        goToIntakeTwo.build(),
-                        new ParallelAction(
-                                intakeTwo.build(),
-                                rractions.intake()
-                        )
-                );
-            } else {
-                return new SequentialAction(
-                        rractions.stop(),
-                        new ParallelAction(
-                                goToShoot.build()
-//                                rractions.getMotif()
-                        ),
-                        rractions.shoot(3, 1150),
-                        goToIntakeOne.build(),
-                        new ParallelAction(
-                                intakeOne.build(),
-                                rractions.intake()
-                        ),
-                        hitGate.build(),
-                        goToShoot.build(),
-                        rractions.shoot(3, 1150),
-                        goToIntakeTwo.build(),
-                        new ParallelAction(
-                                intakeTwo.build(),
-                                rractions.intake()
-                        )
-                );
-            }
+            return new SequentialAction(
+                    rractions.stop(),
+                    goToShoot.build(),
+                    rractions.shoot(3, 1100),
+                    goToIntakeOne.build(),
+                    new ParallelAction(
+                            intakeOne.build(),
+                            rractions.intake()
+                    ),
+                    goToShoot.build(),
+                    rractions.shoot(3, 1100),
+                    goToIntakeTwo.build(),
+                    new ParallelAction(
+                            intakeTwo.build(),
+                            rractions.intake()
+                    )
+            );
         }
     }
 }

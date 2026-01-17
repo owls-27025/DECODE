@@ -22,8 +22,10 @@ public class SpindexerAction extends BaseAction {
 
     private final ElapsedTime spindexerTimer;
     private final ElapsedTime stateTimer;
+    private final ElapsedTime flapDownTimer;
 
     private boolean timerStarted;
+    private boolean flapTimerStarted;
     @SuppressWarnings("FieldCanBeLocal")
     private boolean shotRequested;
     private int shotsRemaining;
@@ -41,6 +43,7 @@ public class SpindexerAction extends BaseAction {
         super(robot);
         spindexerTimer = new ElapsedTime();
         stateTimer = new ElapsedTime();
+        flapDownTimer = new ElapsedTime();
         enter(States.START);
         positions = new int[3];
         java.util.Arrays.fill(positions, -1);
@@ -51,8 +54,10 @@ public class SpindexerAction extends BaseAction {
         this.state = state;
         spindexerTimer.reset();
         stateTimer.reset();
+        flapDownTimer.reset();
         robot.spindexerReady = false;
         timerStarted = false;
+        flapTimerStarted = false;
 
         if (state == States.SHOOT_POS) {
             robot.intakeComplete = true;
@@ -214,32 +219,40 @@ public class SpindexerAction extends BaseAction {
                                 dbgLine("Flap Up");
                             }
 
-                            if (spindexerTimer.time(TimeUnit.MILLISECONDS) >= 400) {
+                            if (spindexerTimer.time(TimeUnit.MILLISECONDS) >= 200) {
+                                if (!flapTimerStarted) {
+                                    flapTimerStarted = true;
+                                    spindexerTimer.reset();
+                                }
+
                                 dbgLine("Flap Almost Down");
                                 spindexer.flapDown();
                                 dbgLine("Flap Down");
 
-                                spindexer.moveToNextPosition();
-                                dbgLine("Move to next position");
+                                if (flapDownTimer.time(TimeUnit.MILLISECONDS) >= 100) {
+                                    spindexer.moveToNextPosition();
+                                    dbgLine("Move to next position");
 
-                                if (robot.artifactCount > 0) robot.artifactCount--;
-                                shotsRemaining--;
-                                positions[0] = positions[1];
-                                positions[1] = positions[2];
-                                positions[2] = -1;
+                                    if (robot.artifactCount > 0) robot.artifactCount--;
+                                    shotsRemaining--;
+                                    positions[0] = positions[1];
+                                    positions[1] = positions[2];
+                                    positions[2] = -1;
 
-                                robot.spindexerReady = false;
-                                timerStarted = false;
-                                spindexerTimer.reset();
+                                    robot.spindexerReady = false;
+                                    timerStarted = false;
+                                    flapTimerStarted = false;
+                                    spindexerTimer.reset();
+                                    flapDownTimer.reset();
 
-                                if (shotsRemaining == 0) {
-                                    robot.manualShoot = false;
-                                    robot.startShoot = false;
+                                    if (shotsRemaining == 0) {
+                                        robot.manualShoot = false;
+                                        robot.startShoot = false;
 
-                                    java.util.Arrays.fill(positions, -1);
+                                        java.util.Arrays.fill(positions, -1);
 
-                                    enter(States.INTAKE_POS);
-                                }
+                                        enter(States.INTAKE_POS);
+                                    }
 //                                } else {
 //                                    if (!robot.manualShoot) {
 //                                        if (positions[0] != -1) {
@@ -247,6 +260,7 @@ public class SpindexerAction extends BaseAction {
 //                                        }
 //                                    }
 //                                }
+                                }
                             }
                         }
                     } else {
