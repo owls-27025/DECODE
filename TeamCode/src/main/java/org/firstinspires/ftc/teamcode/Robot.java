@@ -148,7 +148,7 @@ public class Robot {
         public static double driveSpeed = 1.0;
         public static double slowDriveSpeed = 0.35;
 
-        public static int shooterVelocity = 1050;
+        public static int shooterVelocity = 1100;
         public static int shooterLowTolerance = 30;
         public static int shooterHighTolerance = 300;
 
@@ -170,10 +170,9 @@ public class Robot {
 
         public enum AutoStrategies {
             LEAVE("Leave"),
-            ONECYCLEFRONT("One Cycle (Front)"),
-            ONECYCLEBACK("One Cycle (Back)"),
+            THREECYCLEBACK("Three Cycle (Back)"),
             THREECYCLEFRONT("Three Cycle (Front)"),
-            THREECYCLEBACK("Three Cycle (Back)");
+            TWOCYCLEBACK("Two Cycle (Back)");
 
             public final String displayName;
 
@@ -215,22 +214,6 @@ public class Robot {
         public static void flipStick() { isRightStick = !isRightStick; }
 
         public static void flipFieldCentric() { isFieldCentric = !isFieldCentric; }
-
-        public static void flipAlliance() {
-            alliance = (alliance == Alliances.RED) ? Alliances.BLUE : Alliances.RED;
-        }
-
-        public static void flipSide() {
-            side = (side == Sides.GOAL) ? Sides.WALL : Sides.GOAL;
-        }
-
-        public static void cycleStrategy() {
-            switch (autoStrategy) {
-                case LEAVE:         autoStrategy = AutoStrategies.ONECYCLEFRONT; break;
-                case ONECYCLEFRONT:  autoStrategy = AutoStrategies.ONECYCLEBACK;  break;
-                case ONECYCLEBACK:   autoStrategy = AutoStrategies.LEAVE;         break;
-            }
-        }
 
         public static double easeInOutSine(double x) {
             x = Math.max(-1.0, Math.min(1.0, x));

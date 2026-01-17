@@ -28,7 +28,7 @@ public class TeleOpMode extends OwlsOpMode {
         shootAction = actionManager.addAndReturn(new ShootAction(robot));
         spindexerAction = actionManager.addAndReturn(new SpindexerAction(robot));
 
-        shooter.setHood(0.05);
+        Robot.Globals.shooterVelocity = 1100;
     }
 
     @Override
@@ -36,6 +36,9 @@ public class TeleOpMode extends OwlsOpMode {
         // manual shooter vel change
         if (p2.pressed(OwlsGamepad.Button.DPAD_UP)) Robot.Globals.shooterVelocity += 50;
         if (p2.pressed(OwlsGamepad.Button.DPAD_DOWN)) Robot.Globals.shooterVelocity -= 50;
+
+        if (p2.pressed(OwlsGamepad.Button.A)) Robot.Globals.shooterVelocity = 1550;
+        if (p2.released(OwlsGamepad.Button.A)) Robot.Globals.shooterVelocity = 1100;
 
         if (p2.pressed(OwlsGamepad.Button.DPAD_RIGHT)) shooter.setHood(shooter.getHood() + 0.1);
         if (p2.pressed(OwlsGamepad.Button.DPAD_LEFT)) shooter.setHood(shooter.getHood() - 0.1);
@@ -77,6 +80,10 @@ public class TeleOpMode extends OwlsOpMode {
         // auto shoot
         if (p1.pressed(OwlsGamepad.Button.X)) {
             robot.startShoot = true;
+        }
+
+        if (p1.released(OwlsGamepad.Button.X)) {
+            robot.queueStop = true;
         }
 
         // manual shoot

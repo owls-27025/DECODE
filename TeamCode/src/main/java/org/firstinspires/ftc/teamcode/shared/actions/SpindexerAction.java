@@ -89,6 +89,7 @@ public class SpindexerAction extends BaseAction {
             robot.intakeComplete = false;
         } else if (state == States.STOP) {
             spindexer.shootPosition();
+            spindexer.flapDown();
         } else if (state == States.HUMAN_PLAYER) {
             robot.intakeComplete = true;
 
@@ -132,6 +133,7 @@ public class SpindexerAction extends BaseAction {
                 humanPlayerRequested = false;
                 intakeRequested = false;
             }
+
             if (shotRequested) {
                 dbg("Shot requested", shotRequested);
                 shotRequested = false;
@@ -202,7 +204,7 @@ public class SpindexerAction extends BaseAction {
 //                    dbgLine("Entered shoot");
                     if ((shotsRemaining > 0 && robot.artifactCount > 0) || robot.manualShoot) {
 //                        dbgLine("Shots remaining:" + shotsRemaining + ", artifact count: " + robot.artifactCount);
-                        if (Math.abs(spindexer.getCurrent() - spindexer.getTarget()) <= 10) {
+                        if (!spindexer.isBusy()) {
                             robot.spindexerReady = true;
                         }
 
@@ -249,6 +251,7 @@ public class SpindexerAction extends BaseAction {
                                     if (shotsRemaining == 0) {
                                         robot.manualShoot = false;
                                         robot.startShoot = false;
+                                        robot.queueStop = false;
 
                                         java.util.Arrays.fill(positions, -1);
 

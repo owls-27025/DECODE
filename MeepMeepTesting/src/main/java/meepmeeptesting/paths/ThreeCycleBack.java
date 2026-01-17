@@ -1,16 +1,14 @@
 package meepmeeptesting.paths;
 
 import com.acmerobotics.roadrunner.*;
-import meepmeeptesting.MeepMeepTesting;
-import com.noahbres.meepmeep.core.colorscheme.ColorScheme;
-import com.noahbres.meepmeep.core.colorscheme.scheme.ColorSchemeBlueDark;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
+import meepmeeptesting.MeepMeepTesting;
 import java.lang.Math;
 
-public class Back implements MeepMeepTesting.MeepMeepPath {
+public class ThreeCycleBack implements MeepMeepTesting.MeepMeepPath {
 
     public String getName() {
-        return "Back";
+        return "Three Cycle Back";
     }
 
     public Pose2d getInitialPose(MeepMeepTesting.Alliance alliance) {
@@ -93,9 +91,5 @@ public class Back implements MeepMeepTesting.MeepMeepPath {
                 shootTwo.build(),
                 leave.build()
         );
-    }
-
-    public String toString() {
-        return getName();
     }
 }

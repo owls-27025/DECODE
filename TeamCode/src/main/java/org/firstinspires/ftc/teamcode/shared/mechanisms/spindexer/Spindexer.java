@@ -95,7 +95,7 @@ public class Spindexer {
     private void snapToAllowed(boolean[] allowed) {
         if (motor == null) return;
 
-        int currTicks = motor.getCurrentPosition();
+        int currTicks = motor.getTargetPosition();
 
         boolean onHalfSlot = (currTicks % tpr) == 0;
         int currPos = floorMod(currTicks / tpr, POSITIONS);

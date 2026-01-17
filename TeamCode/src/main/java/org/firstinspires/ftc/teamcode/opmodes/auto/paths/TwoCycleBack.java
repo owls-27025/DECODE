@@ -12,10 +12,10 @@ import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.opmodes.auto.RRActions;
 import org.firstinspires.ftc.teamcode.shared.mechanisms.drivetrain.roadrunner.MecanumDrive;
 
-public class ThreeCycleBack implements AutoPath {
+public class TwoCycleBack implements AutoPath {
     private final Robot.Globals.Alliances alliance;
 
-    public ThreeCycleBack(Robot.Globals.Alliances alliance) {
+    public TwoCycleBack(Robot.Globals.Alliances alliance) {
         this.alliance = alliance;
     }
 
@@ -81,13 +81,6 @@ public class ThreeCycleBack implements AutoPath {
                     ),
                     shootTwo.build(),
                     rractions.shoot(3, 1550),
-                    goToIntakeTwo.build(),
-                    new ParallelAction(
-                            intakeTwo.build(),
-                            rractions.intake()
-                    ),
-                    shootTwo.build(),
-                    rractions.shoot(3, 1550),
                     leave.build()
             );
 
@@ -126,13 +119,6 @@ public class ThreeCycleBack implements AutoPath {
                     goToIntakeOne.build(),
                     new ParallelAction(
                             intakeOne.build(),
-                            rractions.intake()
-                    ),
-                    shootTwo.build(),
-                    rractions.shoot(3, 1550),
-                    goToIntakeTwo.build(),
-                    new ParallelAction(
-                            intakeTwo.build(),
                             rractions.intake()
                     ),
                     shootTwo.build(),
