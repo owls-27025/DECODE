@@ -12,17 +12,16 @@ public class ThreeCycleBack implements MeepMeepTesting.MeepMeepPath {
     }
 
     public Pose2d getInitialPose(MeepMeepTesting.Alliance alliance) {
-        return alliance == MeepMeepTesting.Alliance.BLUE ? new Pose2d(55, -10, Math.toRadians(180)) : new Pose2d(55, 10, Math.toRadians(180));
+        return alliance == MeepMeepTesting.Alliance.BLUE ? new Pose2d(61.25, -11.5, Math.toRadians(180)) : new Pose2d(61.25, 11.5, Math.toRadians(180));
     }
 
     public Action buildRed(RoadRunnerBotEntity bot, Pose2d pose) {
         TrajectoryActionBuilder goToShoot = bot.getDrive().actionBuilder(pose)
-                .splineToLinearHeading(new Pose2d(50, 15, Math.toRadians(155)), Math.toRadians(155));
+                .splineToLinearHeading(new Pose2d(54, 15, Math.toRadians(157)), Math.toRadians(157));
 
         TrajectoryActionBuilder goToIntakeOne = goToShoot.endTrajectory().fresh()
                 .setTangent(Math.toRadians(90))
                 .splineToLinearHeading(new Pose2d(35.7, 25, Math.toRadians(90)), Math.toRadians(90));
-
 
         TrajectoryActionBuilder intakeOne = goToIntakeOne.endTrajectory().fresh()
                 .strafeTo(new Vector2d(35.7, 50), (pose2dDual, posePath, v) -> 9);
@@ -56,12 +55,11 @@ public class ThreeCycleBack implements MeepMeepTesting.MeepMeepPath {
 
     public Action buildBlue(RoadRunnerBotEntity bot, Pose2d pose) {
         TrajectoryActionBuilder goToShoot = bot.getDrive().actionBuilder(pose)
-                .splineToLinearHeading(new Pose2d(50, -15, Math.toRadians(-155)), Math.toRadians(-155));
+                .splineToLinearHeading(new Pose2d(54, -15, Math.toRadians(-157)), Math.toRadians(-157));
 
         TrajectoryActionBuilder goToIntakeOne = goToShoot.endTrajectory().fresh()
                 .setTangent(Math.toRadians(-90))
                 .splineToLinearHeading(new Pose2d(35.7, -25, Math.toRadians(-90)), Math.toRadians(-90));
-
 
         TrajectoryActionBuilder intakeOne = goToIntakeOne.endTrajectory().fresh()
                 .strafeTo(new Vector2d(35.7, -50), (pose2dDual, posePath, v) -> 9);

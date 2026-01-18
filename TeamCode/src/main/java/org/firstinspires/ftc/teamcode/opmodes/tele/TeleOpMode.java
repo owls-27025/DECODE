@@ -43,6 +43,14 @@ public class TeleOpMode extends OwlsOpMode {
         if (p2.pressed(OwlsGamepad.Button.DPAD_RIGHT)) shooter.setHood(shooter.getHood() + 0.1);
         if (p2.pressed(OwlsGamepad.Button.DPAD_LEFT)) shooter.setHood(shooter.getHood() - 0.1);
 
+        if (p2.pressed(OwlsGamepad.Button.Y)) {
+            if (spindexer.getFlapPosition() < 0.5) {
+                spindexer.flapUp();
+            } else {
+                spindexer.flapDown();
+            }
+        }
+
         // manual spindexer control
         if (p2.pressed(OwlsGamepad.Button.LB)) {
             robot.leftRequested = true;

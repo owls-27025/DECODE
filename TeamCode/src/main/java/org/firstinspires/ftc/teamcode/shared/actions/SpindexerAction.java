@@ -225,7 +225,7 @@ public class SpindexerAction extends BaseAction {
                             if (spindexerTimer.time(TimeUnit.MILLISECONDS) >= 200) {
                                 if (!flapTimerStarted) {
                                     flapTimerStarted = true;
-                                    spindexerTimer.reset();
+                                    flapDownTimer.reset();
                                 }
 
                                 dbgLine("Flap Almost Down");

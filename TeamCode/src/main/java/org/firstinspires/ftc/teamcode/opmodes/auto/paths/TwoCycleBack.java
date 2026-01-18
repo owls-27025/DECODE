@@ -22,9 +22,9 @@ public class TwoCycleBack implements AutoPath {
     @Override
     public Pose2d getInitialPose() {
         if (alliance == Robot.Globals.Alliances.RED) {
-            return new Pose2d(60, 11.7, Math.toRadians(180));
+            return new Pose2d(61.25, 11.5, Math.toRadians(180));
         } else {
-            return new Pose2d(55, -10, Math.toRadians(180));
+            return new Pose2d(61.25, -11.5, Math.toRadians(180));
         }
     }
 
@@ -46,12 +46,11 @@ public class TwoCycleBack implements AutoPath {
 
         if (alliance == Robot.Globals.Alliances.RED) {
             TrajectoryActionBuilder goToShoot = drive.actionBuilder(initialPose)
-                    .splineToLinearHeading(new Pose2d(50, 15, Math.toRadians(155)), Math.toRadians(155));
+                    .splineToLinearHeading(new Pose2d(54, 15, Math.toRadians(157)), Math.toRadians(157));
 
             TrajectoryActionBuilder goToIntakeOne = goToShoot.endTrajectory().fresh()
                     .setTangent(Math.toRadians(90))
                     .splineToLinearHeading(new Pose2d(35.7, 25, Math.toRadians(90)), Math.toRadians(90));
-
 
             TrajectoryActionBuilder intakeOne = goToIntakeOne.endTrajectory().fresh()
                     .strafeTo(new Vector2d(35.7, 50), (pose2dDual, posePath, v) -> 9);
@@ -59,13 +58,6 @@ public class TwoCycleBack implements AutoPath {
             TrajectoryActionBuilder shootTwo = intakeOne.endTrajectory().fresh()
                     .setTangent(Math.toRadians(270))
                     .splineToLinearHeading(new Pose2d(55, 16, Math.toRadians(155)), Math.toRadians(270));
-
-            TrajectoryActionBuilder goToIntakeTwo = goToShoot.endTrajectory().fresh()
-                    .setTangent(Math.toRadians(90))
-                    .splineToLinearHeading(new Pose2d(12.5, 25, Math.toRadians(90)), Math.toRadians(135));
-
-            TrajectoryActionBuilder intakeTwo = goToIntakeTwo.endTrajectory().fresh()
-                    .strafeTo(new Vector2d(12.5, 50), (pose2dDual, posePath, v) -> 9);
 
             TrajectoryActionBuilder leave = shootTwo.endTrajectory().fresh()
                     .strafeTo(new Vector2d(45, 20));
@@ -83,8 +75,6 @@ public class TwoCycleBack implements AutoPath {
                     rractions.shoot(3, 1550),
                     leave.build()
             );
-
-
         } else {
             TrajectoryActionBuilder goToShoot = drive.actionBuilder(initialPose)
                     .splineToLinearHeading(new Pose2d(50, -15, Math.toRadians(-155)), Math.toRadians(-155));
@@ -93,7 +83,6 @@ public class TwoCycleBack implements AutoPath {
                     .setTangent(Math.toRadians(-90))
                     .splineToLinearHeading(new Pose2d(35.7, -25, Math.toRadians(-90)), Math.toRadians(-90));
 
-
             TrajectoryActionBuilder intakeOne = goToIntakeOne.endTrajectory().fresh()
                     .strafeTo(new Vector2d(35.7, -50), (pose2dDual, posePath, v) -> 9);
 
@@ -101,16 +90,8 @@ public class TwoCycleBack implements AutoPath {
                     .setTangent(Math.toRadians(-270))
                     .splineToLinearHeading(new Pose2d(55, -16, Math.toRadians(-155)), Math.toRadians(-270));
 
-            TrajectoryActionBuilder goToIntakeTwo = goToShoot.endTrajectory().fresh()
-                    .setTangent(Math.toRadians(-90))
-                    .splineToLinearHeading(new Pose2d(12.5, -25, Math.toRadians(-90)), Math.toRadians(-135));
-
-            TrajectoryActionBuilder intakeTwo = goToIntakeTwo.endTrajectory().fresh()
-                    .strafeTo(new Vector2d(12.5, -50), (pose2dDual, posePath, v) -> 9);
-
             TrajectoryActionBuilder leave = shootTwo.endTrajectory().fresh()
                     .strafeTo(new Vector2d(45, -20));
-
 
             return new SequentialAction(
                     rractions.stop(),

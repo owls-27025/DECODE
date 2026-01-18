@@ -68,7 +68,7 @@ public class MeepMeepTesting {
     }
 
     private static Selection selectionMenu() {
-        UIManager.put("defaultFont", new Font("Inter", Font.PLAIN, 12));
+        UIManager.put("defaultFont", new Font("Inter", Font.PLAIN, 13));
 
         JComboBox<Alliance> allianceBox = new JComboBox<>(Alliance.values());
         allianceBox.setSelectedItem(Alliance.RED);
@@ -78,11 +78,7 @@ public class MeepMeepTesting {
         if (paths.isEmpty()) {
             JOptionPane.showMessageDialog(
                     null,
-                    "No paths found in package: meepmeeptesting.paths\n\n" +
-                            "Each path must:\n" +
-                            " • implement MeepMeepTesting.MeepMeepPath\n" +
-                            " • be non-abstract\n" +
-                            " • have a public no-arg constructor\n",
+                    "No paths found in package: meepmeeptesting.paths\n\n",
                     "No Paths Found",
                     JOptionPane.ERROR_MESSAGE
             );

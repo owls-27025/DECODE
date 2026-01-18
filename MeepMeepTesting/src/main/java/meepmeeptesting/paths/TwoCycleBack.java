@@ -24,7 +24,6 @@ public class TwoCycleBack implements MeepMeepTesting.MeepMeepPath {
                 .setTangent(Math.toRadians(90))
                 .splineToLinearHeading(new Pose2d(35.7, 25, Math.toRadians(90)), Math.toRadians(90));
 
-
         TrajectoryActionBuilder intakeOne = goToIntakeOne.endTrajectory().fresh()
                 .strafeTo(new Vector2d(35.7, 50), (pose2dDual, posePath, v) -> 9);
 
@@ -59,7 +58,6 @@ public class TwoCycleBack implements MeepMeepTesting.MeepMeepPath {
         TrajectoryActionBuilder goToIntakeOne = goToShoot.endTrajectory().fresh()
                 .setTangent(Math.toRadians(-90))
                 .splineToLinearHeading(new Pose2d(35.7, -25, Math.toRadians(-90)), Math.toRadians(-90));
-
 
         TrajectoryActionBuilder intakeOne = goToIntakeOne.endTrajectory().fresh()
                 .strafeTo(new Vector2d(35.7, -50), (pose2dDual, posePath, v) -> 9);
