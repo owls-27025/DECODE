@@ -3,6 +3,9 @@ package org.firstinspires.ftc.teamcode.opmodes.tele;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 
+import com.acmerobotics.roadrunner.Pose2d;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.opmodes.OwlsOpMode;
 import org.firstinspires.ftc.teamcode.shared.actions.*;
@@ -153,5 +156,14 @@ public class TeleOpMode extends OwlsOpMode {
         telemetry.addData("Slow Speed", Robot.Globals.slowDriveSpeed);
 
         telemetry.addData("Robot Stopped", robot.forceStop);
+
+        TelemetryPacket packet = new TelemetryPacket();
+
+        packet.put("Pose x", drivetrain.getPose().getX(DistanceUnit.INCH));
+        packet.put("Pose y", drivetrain.getPose().getY(DistanceUnit.INCH));
+
+        packet.put("Pose heading (deg)", drivetrain.getPose().getHeading(AngleUnit.DEGREES));
+
+        dash.sendTelemetryPacket(packet);
     }
 }
