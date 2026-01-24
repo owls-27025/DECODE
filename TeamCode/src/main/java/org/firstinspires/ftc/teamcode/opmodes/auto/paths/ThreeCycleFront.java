@@ -64,12 +64,12 @@ public class ThreeCycleFront implements AutoPath {
 
             TrajectoryActionBuilder goToLeaveShoot = intakeTwo.endTrajectory().fresh()
                     .setTangent(Math.toRadians(-90))
-                    .splineToLinearHeading(new Pose2d(-57, 15, Math.toRadians(-270)), Math.toRadians(-90));
+                    .splineToLinearHeading(new Pose2d(-57, 20, Math.toRadians(-270)), Math.toRadians(-90));
 
             return new SequentialAction(
                     rractions.stop(),
                     goToShoot.build(),
-                    rractions.shoot(3, 1100),
+                    rractions.shoot(3, 1100, Robot.Globals.Colors.GPP),
                     goToIntakeOne.build(),
                     new ParallelAction(
                             intakeOne.build(),
@@ -77,7 +77,7 @@ public class ThreeCycleFront implements AutoPath {
                     ),
                     rractions.stop(),
                     goToShoot.build(),
-                    rractions.shoot(3, 1100),
+                    rractions.shoot(3, 1100, Robot.Globals.Colors.PPG),
                     goToIntakeTwo.build(),
                     new ParallelAction(
                             intakeTwo.build(),
@@ -85,7 +85,7 @@ public class ThreeCycleFront implements AutoPath {
                     ),
                     rractions.stop(),
                     goToLeaveShoot.build(),
-                    rractions.shoot(3, 1000)
+                    rractions.shoot(3, 1000, Robot.Globals.Colors.PGP)
             );
         } else {
             TrajectoryActionBuilder goToShoot = drive.actionBuilder(initialPose)
@@ -113,7 +113,7 @@ public class ThreeCycleFront implements AutoPath {
             return new SequentialAction(
                     rractions.stop(),
                     goToShoot.build(),
-                    rractions.shoot(3, 1100),
+                    rractions.shoot(3, 1100, Robot.Globals.Colors.GPP),
                     goToIntakeOne.build(),
                     new ParallelAction(
                             intakeOne.build(),
@@ -121,7 +121,7 @@ public class ThreeCycleFront implements AutoPath {
                     ),
                     rractions.stop(),
                     goToShoot.build(),
-                    rractions.shoot(3, 1100),
+                    rractions.shoot(3, 1100, Robot.Globals.Colors.PPG),
                     goToIntakeTwo.build(),
                     new ParallelAction(
                             intakeTwo.build(),
@@ -129,7 +129,7 @@ public class ThreeCycleFront implements AutoPath {
                     ),
                     rractions.stop(),
                     goToLeaveShoot.build(),
-                    rractions.shoot(3, 1000)
+                    rractions.shoot(3, 1000, Robot.Globals.Colors.PGP)
             );
         }
     }

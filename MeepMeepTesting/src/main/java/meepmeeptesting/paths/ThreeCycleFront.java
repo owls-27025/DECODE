@@ -36,7 +36,7 @@ public class ThreeCycleFront implements MeepMeepTesting.MeepMeepPath {
 
         TrajectoryActionBuilder goToLeaveShoot = intakeTwo.endTrajectory().fresh()
                 .setTangent(Math.toRadians(-90))
-                .splineToLinearHeading(new Pose2d(-57, 15, Math.toRadians(-270)), Math.toRadians(-90));
+                .splineToLinearHeading(new Pose2d(-57, 20, Math.toRadians(-270)), Math.toRadians(-90));
 
         return new SequentialAction(
                 goToShoot.build(),

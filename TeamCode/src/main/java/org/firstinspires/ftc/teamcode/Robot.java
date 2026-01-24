@@ -46,9 +46,9 @@ public class Robot {
 
         public static final ConfigItem odometry       = item("odometry", true);
         public static final ConfigItem imu            = item("imu", true);
-        public static final ConfigItem limelight      = item("limelight", false);
-        public static final ConfigItem yaw            = item("yaw", false);
-        public static final ConfigItem pitch          = item("pitch", false);
+        public static final ConfigItem limelight      = item("limelight", true);
+        public static final ConfigItem yaw            = item("yaw", true);
+        public static final ConfigItem pitch          = item("pitch", true);
         public static final ConfigItem distance       = item("distance", true);
 
         public static final ConfigItem light          = item("light", true);

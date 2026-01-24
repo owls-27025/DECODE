@@ -94,7 +94,7 @@ public class ThreeCycleBack implements AutoPath {
 
         } else {
             TrajectoryActionBuilder goToShoot = drive.actionBuilder(initialPose)
-                    .splineToLinearHeading(new Pose2d(54, -15, Math.toRadians(-157)), Math.toRadians(-157));
+                    .splineToLinearHeading(new Pose2d(58, -15, Math.toRadians(-157)), Math.toRadians(-157));
 
             TrajectoryActionBuilder goToIntakeOne = goToShoot.endTrajectory().fresh()
                     .setTangent(Math.toRadians(-90))

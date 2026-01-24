@@ -35,7 +35,7 @@ public class TwoCycleBack implements AutoPath {
 
     @Override
     public String getName() {
-        return "Three Cycle (Back)";
+        return "Two Cycle (Back)";
     }
 
     @Override
@@ -46,7 +46,7 @@ public class TwoCycleBack implements AutoPath {
 
         if (alliance == Robot.Globals.Alliances.RED) {
             TrajectoryActionBuilder goToShoot = drive.actionBuilder(initialPose)
-                    .splineToLinearHeading(new Pose2d(54, 15, Math.toRadians(157)), Math.toRadians(157));
+                    .splineToLinearHeading(new Pose2d(58, 15, Math.toRadians(157)), Math.toRadians(157));
 
             TrajectoryActionBuilder goToIntakeOne = goToShoot.endTrajectory().fresh()
                     .setTangent(Math.toRadians(90))
@@ -77,18 +77,18 @@ public class TwoCycleBack implements AutoPath {
             );
         } else {
             TrajectoryActionBuilder goToShoot = drive.actionBuilder(initialPose)
-                    .splineToLinearHeading(new Pose2d(50, -15, Math.toRadians(-155)), Math.toRadians(-155));
+                    .splineToLinearHeading(new Pose2d(58, -15, Math.toRadians(-150)), Math.toRadians(-150));
 
             TrajectoryActionBuilder goToIntakeOne = goToShoot.endTrajectory().fresh()
                     .setTangent(Math.toRadians(-90))
-                    .splineToLinearHeading(new Pose2d(35.7, -25, Math.toRadians(-90)), Math.toRadians(-90));
+                    .splineToLinearHeading(new Pose2d(40, -25, Math.toRadians(-90)), Math.toRadians(-90));
 
             TrajectoryActionBuilder intakeOne = goToIntakeOne.endTrajectory().fresh()
-                    .strafeTo(new Vector2d(35.7, -50), (pose2dDual, posePath, v) -> 9);
+                    .strafeTo(new Vector2d(40, -50), (pose2dDual, posePath, v) -> 9);
 
             TrajectoryActionBuilder shootTwo = intakeOne.endTrajectory().fresh()
                     .setTangent(Math.toRadians(-270))
-                    .splineToLinearHeading(new Pose2d(55, -16, Math.toRadians(-155)), Math.toRadians(-270));
+                    .splineToLinearHeading(new Pose2d(5, -16, Math.toRadians(-150)), Math.toRadians(-270));
 
             TrajectoryActionBuilder leave = shootTwo.endTrajectory().fresh()
                     .strafeTo(new Vector2d(45, -20));
