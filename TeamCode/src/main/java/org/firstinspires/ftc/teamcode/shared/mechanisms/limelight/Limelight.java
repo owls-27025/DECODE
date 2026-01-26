@@ -5,9 +5,18 @@ import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.teamcode.Robot;
 
+import java.util.Formatter;
 import java.util.List;
+import java.util.Objects;
 
 public class Limelight {
     private final Limelight3A limelight;
@@ -26,22 +35,29 @@ public class Limelight {
     }
 
     public boolean getMotif() {
+        if (Robot.Globals.alliance == Robot.Globals.Alliances.RED) {
+            if (limelight.getStatus().getPipelineIndex() != 1) {
+                limelight.pipelineSwitch(1);
+                return false;
+            }
+        } else {
+            if (limelight.getStatus().getPipelineIndex() != 2) {
+                limelight.pipelineSwitch(2);
+                return false;
+            }
+        }
+
         if (!Robot.Globals.back) {
             if (Robot.Globals.alliance == Robot.Globals.Alliances.RED) {
                 setPitchPos(0.5);
-                setYawPos(0.17);
+                setYawPos(0.2);
             } else if (Robot.Globals.alliance == Robot.Globals.Alliances.BLUE) {
                 setPitchPos(0.5);
-                setYawPos(0.83);
+                setYawPos(0.8);
             }
         } else {
             setPitchPos(0.5);
             setYawPos(0.5);
-        }
-
-        if (limelight == null) {
-            Robot.Globals.motif = Robot.Globals.Colors.PGP;
-            return false;
         }
 
         LLResult result = limelight.getLatestResult();
@@ -58,11 +74,19 @@ public class Limelight {
 
         for (LLResultTypes.FiducialResult fiducial : fiducials) {
             int id = fiducial.getFiducialId();
-            if (id == 21) { Robot.Globals.motif = Robot.Globals.Colors.GPP; return true; }
-            if (id == 22) { Robot.Globals.motif = Robot.Globals.Colors.PGP; return true; }
-            if (id == 23) { Robot.Globals.motif = Robot.Globals.Colors.PPG; return true; }
+            if (id == 21) {
+                Robot.Globals.motif = Robot.Globals.Colors.GPP;
+                return true;
+            }
+            if (id == 22) {
+                Robot.Globals.motif = Robot.Globals.Colors.PGP;
+                return true;
+            }
+            if (id == 23) {
+                Robot.Globals.motif = Robot.Globals.Colors.PPG;
+                return true;
+            }
         }
-
         return false;
     }
 
@@ -88,5 +112,41 @@ public class Limelight {
 
     public boolean getBack() {
         return limelight.getLatestResult().getBotpose().getPosition().x > 35;
+    }
+
+    public double getDistanceToGoal() {
+        LLResult result = limelight.getLatestResult();
+
+        return Math.sqrt(Math.pow(-58.9 - result.getBotpose_MT2().getPosition().y, 2) + Math.pow(53.9 - result.getBotpose_MT2().getPosition().x, 2));
+    }
+
+    public double getTy() {
+        List<LLResultTypes.FiducialResult> fiducials = limelight.getLatestResult().getFiducialResults();
+
+        for (LLResultTypes.FiducialResult fiducial : fiducials) {
+            int id = fiducial.getFiducialId();
+            return fiducial.getTargetYDegrees();
+        }
+
+        return 0;
+    }
+
+    public boolean doesExist() {
+        return limelight.isRunning();
+    }
+
+    public int getID() {
+        List<LLResultTypes.FiducialResult> fiducials = limelight.getLatestResult().getFiducialResults();
+
+        for (LLResultTypes.FiducialResult fiducial : fiducials) {
+            int id = fiducial.getFiducialId();
+            return id;
+        }
+
+        return 0;
+    }
+
+    public int getPipeline() {
+        return limelight.getStatus().getPipelineIndex();
     }
 }

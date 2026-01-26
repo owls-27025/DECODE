@@ -51,12 +51,13 @@ public class AutoOpMode extends OwlsOpMode {
             built = true;
         }
 
-        telemetry.addLine("Auto ready");
+        limelight.getMotif();
+
+        telemetry.addLine("Auto Ready");
         telemetry.addData("Path", path.getName());
         telemetry.addData("Alliance", Robot.Globals.alliance);
-        telemetry.addData("Delay Auto", Robot.Globals.delayAuto);
+        telemetry.addData("Delay", Robot.Globals.delayAuto);
         telemetry.addData("Motif", Robot.Globals.motif);
-        telemetry.addData("Hit Gate", Robot.Globals.gate);
         telemetry.update();
     }
 

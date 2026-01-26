@@ -59,12 +59,12 @@ public class MeepMeepTesting {
                 : path.buildRed(myBot, startPose);
 
         myBot.runAction(action);
-
-        meepMeep.setBackground(MeepMeep.Background.FIELD_DECODE_JUICE_DARK)
+        meepMeep.setBackground(MeepMeep.Background.FIELD_DECODE_OFFICIAL)
                 .setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
                 .addEntity(myBot)
                 .start();
+
     }
 
     private static Selection selectionMenu() {

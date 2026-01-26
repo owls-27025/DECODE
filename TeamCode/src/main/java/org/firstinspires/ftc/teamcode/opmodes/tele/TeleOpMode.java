@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.opmodes.OwlsOpMode;
 import org.firstinspires.ftc.teamcode.shared.actions.*;
@@ -157,12 +158,21 @@ public class TeleOpMode extends OwlsOpMode {
 
         telemetry.addData("Robot Stopped", robot.forceStop);
 
+        telemetry.addData("Distance to Goal", limelight.getDistanceToGoal());
+
+        telemetry.addData("tY", limelight.getTy());
+        telemetry.addData("Is limelight running", limelight.doesExist());
+        telemetry.addData("Is result valid", limelight.getLatestResult().isValid());
+        telemetry.addData("ID", limelight.getID());
+
         TelemetryPacket packet = new TelemetryPacket();
+        packet.put("Drive x", drivetrain.getPose().getX(DistanceUnit.INCH));
+        packet.put("Drive y", drivetrain.getPose().getY(DistanceUnit.INCH));
+        packet.put("Drive heading (deg)", drivetrain.getPose().getHeading(AngleUnit.DEGREES));
 
-        packet.put("Pose x", drivetrain.getPose().getX(DistanceUnit.INCH));
-        packet.put("Pose y", drivetrain.getPose().getY(DistanceUnit.INCH));
-
-        packet.put("Pose heading (deg)", drivetrain.getPose().getHeading(AngleUnit.DEGREES));
+        packet.put("Limelight x", limelight.getLatestResult().getBotpose_MT2().getPosition().toUnit(DistanceUnit.INCH).x);
+        packet.put("Limelight y", limelight.getLatestResult().getBotpose_MT2().getPosition().toUnit(DistanceUnit.INCH).y);
+        packet.put("Limelight heading (deg)", limelight.getLatestResult().getBotpose_MT2().getOrientation().getYaw(AngleUnit.DEGREES));
 
         dash.sendTelemetryPacket(packet);
     }

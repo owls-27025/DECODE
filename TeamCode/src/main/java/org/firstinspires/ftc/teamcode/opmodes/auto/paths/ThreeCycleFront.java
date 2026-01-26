@@ -68,7 +68,10 @@ public class ThreeCycleFront implements AutoPath {
 
             return new SequentialAction(
                     rractions.stop(),
-                    goToShoot.build(),
+                    new ParallelAction(
+                            goToShoot.build(),
+                            rractions.getMotif()
+                    ),
                     rractions.shoot(3, 1100, Robot.Globals.Colors.GPP),
                     goToIntakeOne.build(),
                     new ParallelAction(
@@ -112,7 +115,10 @@ public class ThreeCycleFront implements AutoPath {
 
             return new SequentialAction(
                     rractions.stop(),
-                    goToShoot.build(),
+                    new ParallelAction(
+                            goToShoot.build(),
+                            rractions.getMotif()
+                    ),
                     rractions.shoot(3, 1100, Robot.Globals.Colors.GPP),
                     goToIntakeOne.build(),
                     new ParallelAction(
