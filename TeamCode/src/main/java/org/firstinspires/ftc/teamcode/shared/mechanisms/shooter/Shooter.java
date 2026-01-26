@@ -16,7 +16,7 @@ public class Shooter {
         shooter = Robot.Configuration.registerItem(DcMotorEx.class, Robot.Configuration.shooter);
         if (shooter != null) {
             shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            shooter.setDirection(DcMotor.Direction.FORWARD);
+            shooter.setDirection(DcMotor.Direction.REVERSE);
         }
 
         hood = configuration.registerItem(Servo.class, Robot.Configuration.hood);

@@ -3,6 +3,10 @@ package org.firstinspires.ftc.teamcode.opmodes.tele;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 
+import com.acmerobotics.roadrunner.Pose2d;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.opmodes.OwlsOpMode;
 import org.firstinspires.ftc.teamcode.shared.actions.*;
@@ -29,6 +33,7 @@ public class TeleOpMode extends OwlsOpMode {
         spindexerAction = actionManager.addAndReturn(new SpindexerAction(robot));
 
         shooter.setHood(0.05);
+        Robot.Globals.shooterVelocity = 1100;
     }
 
     @Override
@@ -37,8 +42,19 @@ public class TeleOpMode extends OwlsOpMode {
         if (p2.pressed(OwlsGamepad.Button.DPAD_UP)) Robot.Globals.shooterVelocity += 50;
         if (p2.pressed(OwlsGamepad.Button.DPAD_DOWN)) Robot.Globals.shooterVelocity -= 50;
 
+        if (p2.pressed(OwlsGamepad.Button.A)) Robot.Globals.shooterVelocity = 1550;
+        if (p2.released(OwlsGamepad.Button.A)) Robot.Globals.shooterVelocity = 1100;
+
         if (p2.pressed(OwlsGamepad.Button.DPAD_RIGHT)) shooter.setHood(shooter.getHood() + 0.1);
         if (p2.pressed(OwlsGamepad.Button.DPAD_LEFT)) shooter.setHood(shooter.getHood() - 0.1);
+
+        if (p2.pressed(OwlsGamepad.Button.Y)) {
+            if (spindexer.getFlapPosition() < 0.5) {
+                spindexer.flapUp();
+            } else {
+                spindexer.flapDown();
+            }
+        }
 
         // manual spindexer control
         if (p2.pressed(OwlsGamepad.Button.LB)) {
@@ -79,6 +95,10 @@ public class TeleOpMode extends OwlsOpMode {
             robot.startShoot = true;
         }
 
+        if (p1.released(OwlsGamepad.Button.X)) {
+            robot.queueStop = true;
+        }
+
         // manual shoot
         if (p1.pressed(OwlsGamepad.Button.Y)) {
             robot.manualShoot = true;
@@ -86,7 +106,7 @@ public class TeleOpMode extends OwlsOpMode {
 
         // cancel
         if (p1.pressed(OwlsGamepad.Button.B) || p2.pressed(OwlsGamepad.Button.B)) {
-            robot.stop = true;
+            robot.forceStop = true;
         }
 
         // reverse intake
@@ -137,6 +157,24 @@ public class TeleOpMode extends OwlsOpMode {
         telemetry.addData("Drive Speed", Robot.Globals.driveSpeed);
         telemetry.addData("Slow Speed", Robot.Globals.slowDriveSpeed);
 
-        telemetry.addData("Robot Stopped", robot.stop);
+        telemetry.addData("Robot Stopped", robot.forceStop);
+
+        telemetry.addData("Distance to Goal", limelight.getDistanceToGoal());
+
+        telemetry.addData("tY", limelight.getTy());
+        telemetry.addData("Is limelight running", limelight.doesExist());
+        telemetry.addData("Is result valid", limelight.getLatestResult().isValid());
+        telemetry.addData("ID", limelight.getID());
+
+        TelemetryPacket packet = new TelemetryPacket();
+        packet.put("Drive x", drivetrain.getPose().getX(DistanceUnit.INCH));
+        packet.put("Drive y", drivetrain.getPose().getY(DistanceUnit.INCH));
+        packet.put("Drive heading (deg)", drivetrain.getPose().getHeading(AngleUnit.DEGREES));
+
+        packet.put("Limelight x", limelight.getLatestResult().getBotpose_MT2().getPosition().toUnit(DistanceUnit.INCH).x);
+        packet.put("Limelight y", limelight.getLatestResult().getBotpose_MT2().getPosition().toUnit(DistanceUnit.INCH).y);
+        packet.put("Limelight heading (deg)", limelight.getLatestResult().getBotpose_MT2().getOrientation().getYaw(AngleUnit.DEGREES));
+
+        dash.sendTelemetryPacket(packet);
     }
 }

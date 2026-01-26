@@ -89,6 +89,7 @@ public class SpindexerAction extends BaseAction {
             robot.intakeComplete = false;
         } else if (state == States.STOP) {
             spindexer.shootPosition();
+            spindexer.flapDown();
         } else if (state == States.HUMAN_PLAYER) {
             robot.intakeComplete = true;
 
@@ -126,12 +127,13 @@ public class SpindexerAction extends BaseAction {
         humanPlayerRequested = robot.isHumanIntake && state != States.HUMAN_PLAYER;
         intakeRequested = robot.startIntake && state != States.INTAKE_POS;
 
-            if (robot.stop) {
+            if (robot.forceStop) {
                 enter(States.STOP);
                 shotRequested = false;
                 humanPlayerRequested = false;
                 intakeRequested = false;
             }
+
             if (shotRequested) {
                 dbg("Shot requested", shotRequested);
                 shotRequested = false;
@@ -191,7 +193,7 @@ public class SpindexerAction extends BaseAction {
                     break;
 
                 case STOP:
-                    robot.stop = false;
+                    robot.forceStop = false;
                     break;
 
                 case SHOOT_POS:
@@ -202,7 +204,7 @@ public class SpindexerAction extends BaseAction {
 //                    dbgLine("Entered shoot");
                     if ((shotsRemaining > 0 && robot.artifactCount > 0) || robot.manualShoot) {
 //                        dbgLine("Shots remaining:" + shotsRemaining + ", artifact count: " + robot.artifactCount);
-                        if (Math.abs(spindexer.getCurrent() - spindexer.getTarget()) <= 10) {
+                        if (!spindexer.isBusy()) {
                             robot.spindexerReady = true;
                         }
 
@@ -223,7 +225,7 @@ public class SpindexerAction extends BaseAction {
                             if (spindexerTimer.time(TimeUnit.MILLISECONDS) >= 200) {
                                 if (!flapTimerStarted) {
                                     flapTimerStarted = true;
-                                    spindexerTimer.reset();
+                                    flapDownTimer.reset();
                                 }
 
                                 dbgLine("Flap Almost Down");
@@ -249,6 +251,7 @@ public class SpindexerAction extends BaseAction {
                                     if (shotsRemaining == 0) {
                                         robot.manualShoot = false;
                                         robot.startShoot = false;
+                                        robot.queueStop = false;
 
                                         java.util.Arrays.fill(positions, -1);
 

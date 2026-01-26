@@ -12,10 +12,10 @@ import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.opmodes.auto.RRActions;
 import org.firstinspires.ftc.teamcode.shared.mechanisms.drivetrain.roadrunner.MecanumDrive;
 
-public class ThreeCycleBack implements AutoPath {
+public class TwoCycleBack implements AutoPath {
     private final Robot.Globals.Alliances alliance;
 
-    public ThreeCycleBack(Robot.Globals.Alliances alliance) {
+    public TwoCycleBack(Robot.Globals.Alliances alliance) {
         this.alliance = alliance;
     }
 
@@ -35,7 +35,7 @@ public class ThreeCycleBack implements AutoPath {
 
     @Override
     public String getName() {
-        return "Three Cycle (Back)";
+        return "Two Cycle (Back)";
     }
 
     @Override
@@ -46,12 +46,11 @@ public class ThreeCycleBack implements AutoPath {
 
         if (alliance == Robot.Globals.Alliances.RED) {
             TrajectoryActionBuilder goToShoot = drive.actionBuilder(initialPose)
-                    .splineToLinearHeading(new Pose2d(54, 15, Math.toRadians(157)), Math.toRadians(157));
+                    .splineToLinearHeading(new Pose2d(58, 15, Math.toRadians(157)), Math.toRadians(157));
 
             TrajectoryActionBuilder goToIntakeOne = goToShoot.endTrajectory().fresh()
                     .setTangent(Math.toRadians(90))
                     .splineToLinearHeading(new Pose2d(35.7, 25, Math.toRadians(90)), Math.toRadians(90));
-
 
             TrajectoryActionBuilder intakeOne = goToIntakeOne.endTrajectory().fresh()
                     .strafeTo(new Vector2d(35.7, 50), (pose2dDual, posePath, v) -> 9);
@@ -59,13 +58,6 @@ public class ThreeCycleBack implements AutoPath {
             TrajectoryActionBuilder shootTwo = intakeOne.endTrajectory().fresh()
                     .setTangent(Math.toRadians(270))
                     .splineToLinearHeading(new Pose2d(55, 16, Math.toRadians(155)), Math.toRadians(270));
-
-            TrajectoryActionBuilder goToIntakeTwo = goToShoot.endTrajectory().fresh()
-                    .setTangent(Math.toRadians(90))
-                    .splineToLinearHeading(new Pose2d(12.5, 25, Math.toRadians(90)), Math.toRadians(135));
-
-            TrajectoryActionBuilder intakeTwo = goToIntakeTwo.endTrajectory().fresh()
-                    .strafeTo(new Vector2d(12.5, 50), (pose2dDual, posePath, v) -> 9);
 
             TrajectoryActionBuilder leave = shootTwo.endTrajectory().fresh()
                     .strafeTo(new Vector2d(45, 20));
@@ -81,39 +73,22 @@ public class ThreeCycleBack implements AutoPath {
                     ),
                     shootTwo.build(),
                     rractions.shoot(3, 1550),
-                    goToIntakeTwo.build(),
-                    new ParallelAction(
-                            intakeTwo.build(),
-                            rractions.intake()
-                    ),
-                    shootTwo.build(),
-                    rractions.shoot(3, 1550),
                     leave.build()
             );
-
-
         } else {
             TrajectoryActionBuilder goToShoot = drive.actionBuilder(initialPose)
-                    .splineToLinearHeading(new Pose2d(58, -15, Math.toRadians(-157)), Math.toRadians(-157));
+                    .splineToLinearHeading(new Pose2d(58, -15, Math.toRadians(-150)), Math.toRadians(-150));
 
             TrajectoryActionBuilder goToIntakeOne = goToShoot.endTrajectory().fresh()
                     .setTangent(Math.toRadians(-90))
-                    .splineToLinearHeading(new Pose2d(35.7, -25, Math.toRadians(-90)), Math.toRadians(-90));
-
+                    .splineToLinearHeading(new Pose2d(40, -25, Math.toRadians(-90)), Math.toRadians(-90));
 
             TrajectoryActionBuilder intakeOne = goToIntakeOne.endTrajectory().fresh()
-                    .strafeTo(new Vector2d(35.7, -50), (pose2dDual, posePath, v) -> 9);
+                    .strafeTo(new Vector2d(40, -50), (pose2dDual, posePath, v) -> 9);
 
             TrajectoryActionBuilder shootTwo = intakeOne.endTrajectory().fresh()
                     .setTangent(Math.toRadians(-270))
-                    .splineToLinearHeading(new Pose2d(55, -16, Math.toRadians(-155)), Math.toRadians(-270));
-
-            TrajectoryActionBuilder goToIntakeTwo = goToShoot.endTrajectory().fresh()
-                    .setTangent(Math.toRadians(-90))
-                    .splineToLinearHeading(new Pose2d(12.5, -25, Math.toRadians(-90)), Math.toRadians(-135));
-
-            TrajectoryActionBuilder intakeTwo = goToIntakeTwo.endTrajectory().fresh()
-                    .strafeTo(new Vector2d(12.5, -50), (pose2dDual, posePath, v) -> 9);
+                    .splineToLinearHeading(new Pose2d(5, -16, Math.toRadians(-150)), Math.toRadians(-270));
 
             TrajectoryActionBuilder leave = shootTwo.endTrajectory().fresh()
                     .strafeTo(new Vector2d(45, -20));
@@ -125,13 +100,6 @@ public class ThreeCycleBack implements AutoPath {
                     goToIntakeOne.build(),
                     new ParallelAction(
                             intakeOne.build(),
-                            rractions.intake()
-                    ),
-                    shootTwo.build(),
-                    rractions.shoot(3, 1550),
-                    goToIntakeTwo.build(),
-                    new ParallelAction(
-                            intakeTwo.build(),
                             rractions.intake()
                     ),
                     shootTwo.build(),

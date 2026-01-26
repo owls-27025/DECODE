@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.shared.mechanisms.drivetrain;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.shared.helpers.OwlsGamepad;
 import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -23,7 +24,7 @@ public class Drivetrain {
         BR = configuration.registerItem(DcMotor.class, Robot.Configuration.BR);
         BL = configuration.registerItem(DcMotor.class, Robot.Configuration.BL);
 
-        if (FL != null) FL.setDirection(DcMotor.Direction.REVERSE);
+        if (FR != null) FR.setDirection(DcMotor.Direction.REVERSE);
         if (BL != null) BL.setDirection(DcMotor.Direction.REVERSE);
 
         if (FR != null) FR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -123,6 +124,10 @@ public class Drivetrain {
     public int getFRPos() { return FR == null ? 0 : FR.getCurrentPosition(); }
     public int getBLPos() { return BL == null ? 0 : BL.getCurrentPosition(); }
     public int getBRPos() { return BR == null ? 0 : BR.getCurrentPosition(); }
+
+    public Pose2D getPose() {
+        return odo.getPosition();
+    }
 
     public void update() {
         odo.update();

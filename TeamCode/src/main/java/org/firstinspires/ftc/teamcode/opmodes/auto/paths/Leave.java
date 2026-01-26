@@ -13,6 +13,11 @@ public class Leave implements AutoPath {
 
     private final Robot.Globals.Alliances alliance;
 
+    @Override
+    public double defaultVelocity() {
+        return 0;
+    }
+
     public Leave(Robot.Globals.Alliances alliance) {
         this.alliance = alliance;
     }

@@ -64,7 +64,7 @@ public class ShootAction extends BaseAction {
 
             case HUMAN_INTAKE:
                 robot.shooterReady = false;
-                shooter.shoot(-600);
+                shooter.shoot(-1000);
                 if (!robot.isHumanIntake) {
                     enter(State.SPIN_UP);
                 }

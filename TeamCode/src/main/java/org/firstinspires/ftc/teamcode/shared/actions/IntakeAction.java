@@ -36,7 +36,7 @@ public class IntakeAction extends BaseAction {
             enter(State.REVERSE);
         }
 
-        if (robot.stop) {
+        if (robot.forceStop) {
             enter(State.STOP);
         }
 

@@ -6,12 +6,7 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.opmodes.OwlsOpMode;
-import org.firstinspires.ftc.teamcode.opmodes.auto.paths.AutoPath;
-import org.firstinspires.ftc.teamcode.opmodes.auto.paths.Leave;
-import org.firstinspires.ftc.teamcode.opmodes.auto.paths.OneCycleBack;
-import org.firstinspires.ftc.teamcode.opmodes.auto.paths.OneCycleFront;
-import org.firstinspires.ftc.teamcode.opmodes.auto.paths.ThreeCycleBack;
-import org.firstinspires.ftc.teamcode.opmodes.auto.paths.ThreeCycleFront;
+import org.firstinspires.ftc.teamcode.opmodes.auto.paths.*;
 import org.firstinspires.ftc.teamcode.shared.mechanisms.drivetrain.roadrunner.MecanumDrive;
 import org.firstinspires.ftc.teamcode.shared.helpers.options.libraries.MenuHostImpl;
 import org.firstinspires.ftc.teamcode.shared.helpers.options.menus.opmodes.AutoConfig;
@@ -56,12 +51,13 @@ public class AutoOpMode extends OwlsOpMode {
             built = true;
         }
 
-        telemetry.addLine("Auto ready");
+        limelight.getMotif();
+
+        telemetry.addLine("Auto Ready");
         telemetry.addData("Path", path.getName());
         telemetry.addData("Alliance", Robot.Globals.alliance);
-        telemetry.addData("Delay Auto", Robot.Globals.delayAuto);
+        telemetry.addData("Delay", Robot.Globals.delayAuto);
         telemetry.addData("Motif", Robot.Globals.motif);
-        telemetry.addData("Hit Gate", Robot.Globals.gate);
         telemetry.update();
     }
 
@@ -82,18 +78,17 @@ public class AutoOpMode extends OwlsOpMode {
 
     private void buildAutoFromRobotConfig() {
         switch (Robot.Globals.autoStrategy) {
-            case ONECYCLEFRONT: path = new OneCycleFront(Robot.Globals.alliance); break;
-            case ONECYCLEBACK:  path = new OneCycleBack(Robot.Globals.alliance);  break;
+            case TWOCYCLEBACK:    path = new TwoCycleBack(Robot.Globals.alliance);    break;
             case THREECYCLEFRONT: path = new ThreeCycleFront(Robot.Globals.alliance); break;
-            case THREECYCLEBACK: path = new ThreeCycleBack(Robot.Globals.alliance); break;
+            case THREECYCLEBACK:  path = new ThreeCycleBack(Robot.Globals.alliance);  break;
             case LEAVE:
-            default:            path = new Leave(Robot.Globals.alliance);         break;
+            default:              path = new Leave(Robot.Globals.alliance);           break;
         }
 
         Pose2d initialPose = path.getInitialPose();
         drive = new MecanumDrive(robot, hardwareMap, initialPose);
         rr = new RRActions(robot);
-        robot.stop = true;
+        robot.forceStop = true;
     }
 
     private boolean menuHostIsUninitialized() {
