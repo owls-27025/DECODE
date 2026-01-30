@@ -1,6 +1,7 @@
 package meepmeeptesting.paths;
 
 import com.acmerobotics.roadrunner.*;
+import com.noahbres.meepmeep.roadrunner.DriveShim;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 import meepmeeptesting.MeepMeepTesting;
 import java.lang.Math;
@@ -16,7 +17,10 @@ public class ThreeCycleBack implements MeepMeepTesting.MeepMeepPath {
     }
 
     public Action buildRed(RoadRunnerBotEntity bot, Pose2d pose) {
-        TrajectoryActionBuilder goToShoot = bot.getDrive().actionBuilder(pose)
+        DriveShim drive = bot.getDrive();
+        Pose2d initialPose = getInitialPose(MeepMeepTesting.Alliance.RED);
+
+        TrajectoryActionBuilder goToShoot = drive.actionBuilder(initialPose)
                 .splineToLinearHeading(new Pose2d(54, 15, Math.toRadians(157)), Math.toRadians(157));
 
         TrajectoryActionBuilder goToIntakeOne = goToShoot.endTrajectory().fresh()
@@ -26,7 +30,7 @@ public class ThreeCycleBack implements MeepMeepTesting.MeepMeepPath {
         TrajectoryActionBuilder intakeOne = goToIntakeOne.endTrajectory().fresh()
                 .strafeTo(new Vector2d(35.7, 50), (pose2dDual, posePath, v) -> 9);
 
-        TrajectoryActionBuilder shootTwo = intakeOne.endTrajectory().fresh()
+        TrajectoryActionBuilder goToShootTwo = intakeOne.endTrajectory().fresh()
                 .setTangent(Math.toRadians(270))
                 .splineToLinearHeading(new Pose2d(55, 16, Math.toRadians(155)), Math.toRadians(270));
 
@@ -37,7 +41,11 @@ public class ThreeCycleBack implements MeepMeepTesting.MeepMeepPath {
         TrajectoryActionBuilder intakeTwo = goToIntakeTwo.endTrajectory().fresh()
                 .strafeTo(new Vector2d(12.5, 50), (pose2dDual, posePath, v) -> 9);
 
-        TrajectoryActionBuilder leave = shootTwo.endTrajectory().fresh()
+        TrajectoryActionBuilder goToShootThree = intakeTwo.endTrajectory().fresh()
+                .setTangent(Math.toRadians(270))
+                .splineToLinearHeading(new Pose2d(55, 16, Math.toRadians(155)), Math.toRadians(270));
+
+        TrajectoryActionBuilder leave = goToShootThree.endTrajectory().fresh()
                 .strafeTo(new Vector2d(45, 20));
 
 
@@ -45,10 +53,10 @@ public class ThreeCycleBack implements MeepMeepTesting.MeepMeepPath {
                 goToShoot.build(),
                 goToIntakeOne.build(),
                 intakeOne.build(),
-                shootTwo.build(),
+                goToShootTwo.build(),
                 goToIntakeTwo.build(),
                 intakeTwo.build(),
-                shootTwo.build(),
+                goToShootThree.build(),
                 leave.build()
         );
     }

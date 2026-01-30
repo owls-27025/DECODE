@@ -35,7 +35,12 @@ public class Limelight {
     }
 
     public boolean getMotif() {
-        if (Robot.Globals.alliance == Robot.Globals.Alliances.RED) {
+        if (Robot.Globals.back) {
+            if (limelight.getStatus().getPipelineIndex() != 3) {
+                limelight.pipelineSwitch(3);
+                return false;
+            }
+        } else if (Robot.Globals.alliance == Robot.Globals.Alliances.RED) {
             if (limelight.getStatus().getPipelineIndex() != 1) {
                 limelight.pipelineSwitch(1);
                 return false;
@@ -50,19 +55,14 @@ public class Limelight {
         if (!Robot.Globals.back) {
             if (Robot.Globals.alliance == Robot.Globals.Alliances.RED) {
                 setPitchPos(0.5);
-                setYawPos(0.2);
+                setYawPos(0.28);
             } else if (Robot.Globals.alliance == Robot.Globals.Alliances.BLUE) {
                 setPitchPos(0.5);
-                setYawPos(0.8);
+                setYawPos(0.72);
             }
         } else {
-            if (Robot.Globals.alliance == Robot.Globals.Alliances.RED) {
-                setPitchPos(0.5);
-                setYawPos(0.35);
-            } else if (Robot.Globals.alliance == Robot.Globals.Alliances.BLUE) {
-                setPitchPos(0.5);
-                setYawPos(0.65);
-            }
+            setPitchPos(0.5);
+            setYawPos(0.67);
         }
 
         LLResult result = limelight.getLatestResult();

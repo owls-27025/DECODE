@@ -78,11 +78,11 @@ public class AutoOpMode extends OwlsOpMode {
 
     private void buildAutoFromRobotConfig() {
         switch (Robot.Globals.autoStrategy) {
-            case TWOCYCLEBACK:    path = new TwoCycleBack(Robot.Globals.alliance);    break;
-            case THREECYCLEFRONT: path = new ThreeCycleFront(Robot.Globals.alliance); break;
-            case THREECYCLEBACK:  path = new ThreeCycleBack(Robot.Globals.alliance);  break;
+            case THREECYCLEFRONT: path = new ThreeCycleFront(Robot.Globals.alliance);                            break;
+            case TWOCYCLEBACK:    path = new TwoCycleBack(Robot.Globals.alliance); Robot.Globals.back = true;    break;
+            case THREECYCLEBACK:  path = new ThreeCycleBack(Robot.Globals.alliance); Robot.Globals.back = true;  break;
             case LEAVE:
-            default:              path = new Leave(Robot.Globals.alliance);           break;
+            default:              path = new Leave(Robot.Globals.alliance);                                      break;
         }
 
         Pose2d initialPose = path.getInitialPose();

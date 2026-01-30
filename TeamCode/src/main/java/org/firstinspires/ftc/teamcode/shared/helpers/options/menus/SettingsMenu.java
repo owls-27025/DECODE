@@ -33,9 +33,9 @@ public class SettingsMenu extends MenuLib.Menu {
 
         addOption(MenuLib.Option.info(() -> "")); // spacer
 
-        addOption(MenuLib.Option.value(() -> "Debug: " + Robot.Globals.debugActions,
-                () -> Robot.Globals.debugActions = !Robot.Globals.debugActions,
-                () -> Robot.Globals.debugActions = !Robot.Globals.debugActions));
+        addOption(MenuLib.Option.value(() -> "Debug: " + Robot.Globals.debug,
+                () -> Robot.Globals.debug = !Robot.Globals.debug,
+                () -> Robot.Globals.debug = !Robot.Globals.debug));
 
         addOption(MenuLib.Option.info(() -> "")); // spacer
 

@@ -4,7 +4,6 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.shared.helpers.OwlsGamepad;
@@ -81,7 +80,9 @@ public class OwlsOpMode extends LinearOpMode {
                 robot.update();
                 runLoop();
                 if (!overrideTelemetry) {
-                    telemetry();
+                    if (!Robot.Globals.debug) {
+                        telemetry();
+                    }
                     telemetry.update();
                 }
                 idle();

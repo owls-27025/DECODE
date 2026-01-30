@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -149,7 +148,7 @@ public class Robot {
 
         public static double spindexerSpeed = 0.75;
         public static double driveSpeed = 1.0;
-        public static double slowDriveSpeed = 0.20;
+        public static double slowDriveSpeed = 0.30;
 
         public static int shooterVelocity = 1100;
         public static int shooterLowTolerance = 30;
@@ -205,7 +204,7 @@ public class Robot {
         public static double flapDownPos = 0.35;
         public static double intakeSpeed = 1.0;
 
-        public static boolean debugActions = true;
+        public static boolean debug = false;
 
         public static boolean back = false;
         public static boolean gate = false;

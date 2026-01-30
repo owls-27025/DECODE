@@ -52,11 +52,10 @@ public class ThreeCycleBack implements AutoPath {
                     .setTangent(Math.toRadians(90))
                     .splineToLinearHeading(new Pose2d(35.7, 25, Math.toRadians(90)), Math.toRadians(90));
 
-
             TrajectoryActionBuilder intakeOne = goToIntakeOne.endTrajectory().fresh()
                     .strafeTo(new Vector2d(35.7, 50), (pose2dDual, posePath, v) -> 9);
 
-            TrajectoryActionBuilder shootTwo = intakeOne.endTrajectory().fresh()
+            TrajectoryActionBuilder goToShootTwo = intakeOne.endTrajectory().fresh()
                     .setTangent(Math.toRadians(270))
                     .splineToLinearHeading(new Pose2d(55, 16, Math.toRadians(155)), Math.toRadians(270));
 
@@ -67,27 +66,34 @@ public class ThreeCycleBack implements AutoPath {
             TrajectoryActionBuilder intakeTwo = goToIntakeTwo.endTrajectory().fresh()
                     .strafeTo(new Vector2d(12.5, 50), (pose2dDual, posePath, v) -> 9);
 
-            TrajectoryActionBuilder leave = shootTwo.endTrajectory().fresh()
+            TrajectoryActionBuilder goToShootThree = intakeTwo.endTrajectory().fresh()
+                    .setTangent(Math.toRadians(270))
+                    .splineToLinearHeading(new Pose2d(55, 16, Math.toRadians(155)), Math.toRadians(270));
+
+            TrajectoryActionBuilder leave = goToShootThree.endTrajectory().fresh()
                     .strafeTo(new Vector2d(45, 20));
 
             return new SequentialAction(
                     rractions.stop(),
-                    goToShoot.build(),
-                    rractions.shoot(3, 1550),
+                    new ParallelAction(
+                            goToShoot.build(),
+                            rractions.getMotif()
+                    ),
+                    rractions.shoot(3, 1550, Robot.Globals.Colors.GPP, 1),
                     goToIntakeOne.build(),
                     new ParallelAction(
                             intakeOne.build(),
                             rractions.intake()
                     ),
-                    shootTwo.build(),
-                    rractions.shoot(3, 1550),
+                    goToShootTwo.build(),
+                    rractions.shoot(3, 1550, Robot.Globals.Colors.GPP, 1),
                     goToIntakeTwo.build(),
                     new ParallelAction(
                             intakeTwo.build(),
                             rractions.intake()
                     ),
-                    shootTwo.build(),
-                    rractions.shoot(3, 1550),
+                    goToShootThree.build(),
+                    rractions.shoot(3, 1550, Robot.Globals.Colors.PGP, 1),
                     leave.build()
             );
 
@@ -121,21 +127,21 @@ public class ThreeCycleBack implements AutoPath {
             return new SequentialAction(
                     rractions.stop(),
                     goToShoot.build(),
-                    rractions.shoot(3, 1550),
+                    rractions.shoot(3, 1550, Robot.Globals.Colors.GPP, 1),
                     goToIntakeOne.build(),
                     new ParallelAction(
                             intakeOne.build(),
                             rractions.intake()
                     ),
                     shootTwo.build(),
-                    rractions.shoot(3, 1550),
+                    rractions.shoot(3, 1550, Robot.Globals.Colors.GPP, 1),
                     goToIntakeTwo.build(),
                     new ParallelAction(
                             intakeTwo.build(),
                             rractions.intake()
                     ),
                     shootTwo.build(),
-                    rractions.shoot(3, 1550),
+                    rractions.shoot(3, 1550, Robot.Globals.Colors.PGP, 1),
                     leave.build()
             );
         }
