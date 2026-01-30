@@ -26,6 +26,7 @@ public class SpindexerAction extends BaseAction {
 
     private boolean timerStarted;
     private boolean flapTimerStarted;
+
     @SuppressWarnings("FieldCanBeLocal")
     private boolean shotRequested;
     private int shotsRemaining;

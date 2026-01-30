@@ -31,10 +31,10 @@ public class Leave implements AutoPath {
         }
     }
 
-    @Override
-    public double defaultVelocity() {
-        return 0;
-    }
+//    @Override
+//    public double defaultVelocity() {
+//        return 0;
+//    }
 
     @Override
     public String getName() {

@@ -149,7 +149,7 @@ public class Robot {
 
         public static double spindexerSpeed = 0.75;
         public static double driveSpeed = 1.0;
-        public static double slowDriveSpeed = 0.35;
+        public static double slowDriveSpeed = 0.20;
 
         public static int shooterVelocity = 1100;
         public static int shooterLowTolerance = 30;
@@ -163,7 +163,7 @@ public class Robot {
         public static int humanWaitMs = 750;
         public static int spindexerShootTimeTicks = 15;
 
-        public static int tpr = 104;
+        public static int tpr = 145;
 
         public enum Alliances { RED, BLUE }
         public static Alliances alliance = Alliances.BLUE;
@@ -202,7 +202,7 @@ public class Robot {
         }
         public static Colors motif;
 
-        public static double flapDownPos = 0.23;
+        public static double flapDownPos = 0.35;
         public static double intakeSpeed = 1.0;
 
         public static boolean debugActions = true;

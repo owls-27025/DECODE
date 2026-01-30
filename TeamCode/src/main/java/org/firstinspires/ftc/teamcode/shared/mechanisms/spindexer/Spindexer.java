@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.shared.mechanisms.spindexer;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
@@ -77,7 +78,7 @@ public class Spindexer {
 
     public void flapUp() {
         // for old robot: 1.0, for new robot: 0.4
-        if (flap != null) flap.setPosition(0.4);
+        if (flap != null) flap.setPosition(0);
     }
 
     public void flapDown() {
@@ -165,6 +166,22 @@ public class Spindexer {
             motor.setTargetPosition(motor.getTargetPosition() + 5);
         } else {
             motor.setTargetPosition(motor.getTargetPosition() - 5);
+        }
+    }
+
+    public PIDFCoefficients getPIDFCoefficients() {
+        return motor.getPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+
+    public void setPIDFCoefficients(PIDFCoefficients pidf) {
+        motor.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION, pidf);
+    }
+
+    public void toggleStop() {
+        if (motor.getPower() > 0) {
+            motor.setPower(0);
+        } else {
+            motor.setPower(Robot.Globals.spindexerSpeed);
         }
     }
 }

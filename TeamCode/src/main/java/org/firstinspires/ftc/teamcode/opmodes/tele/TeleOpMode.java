@@ -42,8 +42,14 @@ public class TeleOpMode extends OwlsOpMode {
         if (p2.pressed(OwlsGamepad.Button.DPAD_UP)) Robot.Globals.shooterVelocity += 50;
         if (p2.pressed(OwlsGamepad.Button.DPAD_DOWN)) Robot.Globals.shooterVelocity -= 50;
 
-        if (p2.pressed(OwlsGamepad.Button.A)) Robot.Globals.shooterVelocity = 1550;
-        if (p2.released(OwlsGamepad.Button.A)) Robot.Globals.shooterVelocity = 1100;
+        if (p2.pressed(OwlsGamepad.Button.A)) {
+            Robot.Globals.shooterVelocity = 1400;
+            shooter.setHood(1.0);
+        }
+        if (p2.released(OwlsGamepad.Button.A)) {
+            Robot.Globals.shooterVelocity = 1100;
+            shooter.setHood(0);
+        }
 
         if (p2.pressed(OwlsGamepad.Button.DPAD_RIGHT)) shooter.setHood(shooter.getHood() + 0.1);
         if (p2.pressed(OwlsGamepad.Button.DPAD_LEFT)) shooter.setHood(shooter.getHood() - 0.1);
@@ -54,6 +60,10 @@ public class TeleOpMode extends OwlsOpMode {
             } else {
                 spindexer.flapDown();
             }
+        }
+
+        if (p2.pressed(OwlsGamepad.Button.X)) {
+            spindexer.toggleStop();
         }
 
         // manual spindexer control

@@ -7,6 +7,7 @@ import org.firstinspires.ftc.robotcore.internal.opmode.OpModeMeta;
 import org.firstinspires.ftc.teamcode.opmodes.auto.AutoOpMode;
 import org.firstinspires.ftc.teamcode.opmodes.tele.TeleOpMode;
 import org.firstinspires.ftc.teamcode.opmodes.testing.PIDTuning;
+import org.firstinspires.ftc.teamcode.opmodes.testing.PIDTuningSpindexer;
 import org.firstinspires.ftc.teamcode.opmodes.testing.ServoTest;
 import org.firstinspires.ftc.teamcode.opmodes.testing.Settings;
 
@@ -48,6 +49,15 @@ public class OwlsOpModeRegistrar {
                         .setFlavor(OpModeMeta.Flavor.TELEOP)
                         .build(),
                 PIDTuning.class
+        );
+
+        manager.register(
+                new OpModeMeta.Builder()
+                        .setName("Spindexer PID Tuning")
+                        .setGroup("Tests")
+                        .setFlavor(OpModeMeta.Flavor.TELEOP)
+                        .build(),
+                PIDTuningSpindexer.class
         );
 
         manager.register(
