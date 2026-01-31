@@ -42,7 +42,7 @@ public class Robot {
         public static final ConfigItem shooter        = item("flywheel", true);
 
         public static final ConfigItem odometry       = item("odometry", true);
-        public static final ConfigItem light          = item("light", false);
+        public static final ConfigItem light          = item("light", true);
         public static final ConfigItem imu            = item("imu", true);
         public static final ConfigItem limelight      = item("limelight", true);
         public static final ConfigItem leftSweeper    = item("left sweeper", true);
@@ -204,7 +204,7 @@ public class Robot {
         public static double flapDownPos = 0.35;
         public static double intakeSpeed = 1.0;
 
-        public static boolean debug = false;
+        public static boolean debug = true;
 
         public static boolean back = false;
         public static boolean gate = false;

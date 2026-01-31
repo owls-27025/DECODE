@@ -80,7 +80,7 @@ public class OwlsOpMode extends LinearOpMode {
                 robot.update();
                 runLoop();
                 if (!overrideTelemetry) {
-                    if (!Robot.Globals.debug) {
+                    if (Robot.Globals.debug) {
                         telemetry();
                     }
                     telemetry.update();

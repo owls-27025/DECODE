@@ -42,11 +42,20 @@ public class TeleOpMode extends OwlsOpMode {
         if (p2.pressed(OwlsGamepad.Button.DPAD_UP)) Robot.Globals.shooterVelocity += 50;
         if (p2.pressed(OwlsGamepad.Button.DPAD_DOWN)) Robot.Globals.shooterVelocity -= 50;
 
-        if (p2.pressed(OwlsGamepad.Button.A)) {
+        if (p1.pressed(OwlsGamepad.Button.RT)) {
             Robot.Globals.shooterVelocity = 1400;
             shooter.setHood(1.0);
         }
-        if (p2.released(OwlsGamepad.Button.A)) {
+        if (p1.released(OwlsGamepad.Button.RT)) {
+            Robot.Globals.shooterVelocity = 1100;
+            shooter.setHood(0);
+        }
+
+        if (p1.pressed(OwlsGamepad.Button.LT)) {
+            Robot.Globals.shooterVelocity = 1200;
+            shooter.setHood(0.5);
+        }
+        if (p1.released(OwlsGamepad.Button.LT)) {
             Robot.Globals.shooterVelocity = 1100;
             shooter.setHood(0);
         }
@@ -175,6 +184,8 @@ public class TeleOpMode extends OwlsOpMode {
         telemetry.addData("Is limelight running", limelight.doesExist());
         telemetry.addData("Is result valid", limelight.getLatestResult().isValid());
         telemetry.addData("ID", limelight.getID());
+
+        telemetry.addData("IMU Heading", drivetrain.getOdometryHeading());
 
         TelemetryPacket packet = new TelemetryPacket();
         packet.put("Drive x", drivetrain.getPose().getX(DistanceUnit.INCH));

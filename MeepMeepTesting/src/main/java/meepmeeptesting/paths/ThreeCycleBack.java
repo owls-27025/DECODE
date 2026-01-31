@@ -24,22 +24,22 @@ public class ThreeCycleBack implements MeepMeepTesting.MeepMeepPath {
                 .splineToLinearHeading(new Pose2d(54, 15, Math.toRadians(157)), Math.toRadians(157));
 
         TrajectoryActionBuilder goToIntakeOne = goToShoot.endTrajectory().fresh()
-                .setTangent(Math.toRadians(90))
-                .splineToLinearHeading(new Pose2d(35.7, 25, Math.toRadians(90)), Math.toRadians(90));
+                .strafeTo(new Vector2d(35, 25))
+                .turnTo(Math.toRadians(90));
 
         TrajectoryActionBuilder intakeOne = goToIntakeOne.endTrajectory().fresh()
-                .strafeTo(new Vector2d(35.7, 50), (pose2dDual, posePath, v) -> 9);
+                .strafeTo(new Vector2d(35, 50), (pose2dDual, posePath, v) -> 9);
 
         TrajectoryActionBuilder goToShootTwo = intakeOne.endTrajectory().fresh()
                 .setTangent(Math.toRadians(270))
                 .splineToLinearHeading(new Pose2d(55, 16, Math.toRadians(155)), Math.toRadians(270));
 
-        TrajectoryActionBuilder goToIntakeTwo = goToShoot.endTrajectory().fresh()
-                .setTangent(Math.toRadians(90))
-                .splineToLinearHeading(new Pose2d(12.5, 25, Math.toRadians(90)), Math.toRadians(135));
+        TrajectoryActionBuilder goToIntakeTwo = goToShootTwo.endTrajectory().fresh()
+                .strafeTo(new Vector2d(11.7, 25))
+                .turnTo(Math.toRadians(90));
 
         TrajectoryActionBuilder intakeTwo = goToIntakeTwo.endTrajectory().fresh()
-                .strafeTo(new Vector2d(12.5, 50), (pose2dDual, posePath, v) -> 9);
+                .strafeTo(new Vector2d(11.7, 50), (pose2dDual, posePath, v) -> 9);
 
         TrajectoryActionBuilder goToShootThree = intakeTwo.endTrajectory().fresh()
                 .setTangent(Math.toRadians(270))
