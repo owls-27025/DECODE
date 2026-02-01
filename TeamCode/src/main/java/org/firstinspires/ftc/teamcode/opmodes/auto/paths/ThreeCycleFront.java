@@ -40,106 +40,106 @@ public class ThreeCycleFront implements AutoPath {
     @Override
     public Action build(MecanumDrive drive, RRActions rractions, Telemetry telemetry) {
         Pose2d initialPose = getInitialPose();
+        drive.localizer.setPose(initialPose);
 
         Robot.Globals.back = false;
 
         if (alliance == Robot.Globals.Alliances.RED) {
-            TrajectoryActionBuilder goToShoot = drive.actionBuilder(initialPose)
+            TrajectoryActionBuilder goToShoot = drive.actionBuilder(drive.localizer.getPose())
                     .setTangent(Math.toRadians(-45))
                     .splineToLinearHeading(new Pose2d(-35, 35, Math.toRadians(-225)), Math.toRadians(-45));
 
-            TrajectoryActionBuilder goToIntakeOne = goToShoot.endTrajectory().fresh()
+            TrajectoryActionBuilder goToIntakeOne = drive.actionBuilder(drive.localizer.getPose())
                     .setTangent(Math.toRadians(270))
                     .splineToLinearHeading(new Pose2d(-11.5, 25, Math.toRadians(90)), Math.toRadians(90));
 
-            TrajectoryActionBuilder intakeOne = goToIntakeOne.endTrajectory().fresh()
+            TrajectoryActionBuilder intakeOne = drive.actionBuilder(drive.localizer.getPose())
                     .strafeTo(new Vector2d(-11.5, 45), (pose2dDual, posePath, v) -> 9);
 
-            TrajectoryActionBuilder goToShootTwo = intakeOne.endTrajectory().fresh()
+            TrajectoryActionBuilder goToShootTwo = drive.actionBuilder(drive.localizer.getPose())
                     .setTangent(Math.toRadians(-45))
                     .splineToLinearHeading(new Pose2d(-35, 35, Math.toRadians(-225)), Math.toRadians(-45));
 
-            TrajectoryActionBuilder goToIntakeTwo = goToShoot.endTrajectory().fresh()
+            TrajectoryActionBuilder goToIntakeTwo = drive.actionBuilder(drive.localizer.getPose())
                     .setTangent(Math.toRadians(270))
                     .splineToLinearHeading(new Pose2d(11.5, 25, Math.toRadians(90)), Math.toRadians(90));
 
-            TrajectoryActionBuilder intakeTwo = goToIntakeTwo.endTrajectory().fresh()
+            TrajectoryActionBuilder intakeTwo = drive.actionBuilder(drive.localizer.getPose())
                     .strafeTo(new Vector2d(11.5, 45), (pose2dDual, posePath, v) -> 9);
 
-            TrajectoryActionBuilder goToLeaveShoot = intakeTwo.endTrajectory().fresh()
+            TrajectoryActionBuilder goToLeaveShoot = drive.actionBuilder(drive.localizer.getPose())
                     .setTangent(Math.toRadians(-90))
                     .splineToLinearHeading(new Pose2d(-57, 20, Math.toRadians(-270)), Math.toRadians(-90));
 
             return new SequentialAction(
-                    rractions.stop(),
-                    new ParallelAction(
-                            goToShoot.build(),
-                            rractions.getMotif()
-                    ),
-                    rractions.shoot(3, 1050, Robot.Globals.Colors.GPP),
-                    goToIntakeOne.build(),
-                    new ParallelAction(
-                            intakeOne.build(),
-                            rractions.intake()
-                    ),
-                    rractions.stop(),
-                    goToShootTwo.build(),
-                    rractions.shoot(3, 1050, Robot.Globals.Colors.PPG),
-                    goToIntakeTwo.build(),
-                    new ParallelAction(
-                            intakeTwo.build(),
-                            rractions.intake()
-                    ),
-                    rractions.stop(),
+//                    rractions.stop()
+//                    new ParallelAction(
+//                            goToShoot.build(),
+//                        ),
+//                    rractions.shoot(3, 1050, Robot.Globals.Colors.GPP),
+//                    goToIntakeOne.build(),
+//                    new ParallelAction(
+//                            intakeOne.build(),
+//                            rractions.intake()
+//                    ),
+//                    rractions.stop(),
+//                    goToShootTwo.build(),
+//                    rractions.shoot(3, 1050, Robot.Globals.Colors.PPG),
+//                    goToIntakeTwo.build(),
+//                    new ParallelAction(
+//                            intakeTwo.build(),
+//                            rractions.intake()
+//                    ),
+//                    rractions.stop(),
                     goToLeaveShoot.build(),
-                    rractions.shoot(3, 1000, Robot.Globals.Colors.PGP)
+                    rractions.shoot(3, 1000, Robot.Globals.Colors.GPP)
             );
         } else {
-            TrajectoryActionBuilder goToShoot = drive.actionBuilder(initialPose)
+            TrajectoryActionBuilder goToShoot = drive.actionBuilder(drive.localizer.getPose())
                     .setTangent(Math.toRadians(45))
                     .splineToLinearHeading(new Pose2d(-35, -35, Math.toRadians(225)), Math.toRadians(45));
 
-            TrajectoryActionBuilder goToIntakeOne = goToShoot.endTrajectory().fresh()
+            TrajectoryActionBuilder goToIntakeOne = drive.actionBuilder(drive.localizer.getPose())
                     .setTangent(Math.toRadians(-270))
                     .splineToLinearHeading(new Pose2d(-11.5, -25, Math.toRadians(-90)), Math.toRadians(-90));
 
-            TrajectoryActionBuilder intakeOne = goToIntakeOne.endTrajectory().fresh()
+            TrajectoryActionBuilder intakeOne = drive.actionBuilder(drive.localizer.getPose())
                     .strafeTo(new Vector2d(-11.5, -45), (pose2dDual, posePath, v) -> 9);
 
-            TrajectoryActionBuilder goToIntakeTwo = goToShoot.endTrajectory().fresh()
+            TrajectoryActionBuilder goToIntakeTwo = drive.actionBuilder(drive.localizer.getPose())
                     .setTangent(Math.toRadians(-270))
                     .splineToLinearHeading(new Pose2d(11.5, -25, Math.toRadians(-90)), Math.toRadians(-90));
 
-            TrajectoryActionBuilder intakeTwo = goToIntakeTwo.endTrajectory().fresh()
+            TrajectoryActionBuilder intakeTwo = drive.actionBuilder(drive.localizer.getPose())
                     .strafeTo(new Vector2d(11.5, -45), (pose2dDual, posePath, v) -> 9);
 
-            TrajectoryActionBuilder goToLeaveShoot = intakeTwo.endTrajectory().fresh()
+            TrajectoryActionBuilder goToLeaveShoot = drive.actionBuilder(drive.localizer.getPose())
                     .setTangent(Math.toRadians(90))
                     .splineToLinearHeading(new Pose2d(-57, -15, Math.toRadians(270)), Math.toRadians(90));
 
             return new SequentialAction(
                     rractions.stop(),
                     new ParallelAction(
-                            goToShoot.build(),
-                            rractions.getMotif()
+//                            goToShoot.build(),
+//                            rractions.getMotif()
                     ),
-                    rractions.shoot(3, 1050, Robot.Globals.Colors.GPP),
-                    goToIntakeOne.build(),
-                    new ParallelAction(
-                            intakeOne.build(),
-                            rractions.intake()
-                    ),
-                    rractions.stop(),
-                    goToShoot.build(),
-                    rractions.shoot(3, 1050, Robot.Globals.Colors.PPG),
-                    goToIntakeTwo.build(),
-                    new ParallelAction(
-                            intakeTwo.build(),
-                            rractions.intake()
-                    ),
-                    rractions.stop(),
+//                    rractions.shoot(3, 1050, Robot.Globals.Colors.GPP),
+//                    goToIntakeOne.build(),
+//                    new ParallelAction(
+//                            intakeOne.build(),
+//                            rractions.intake()
+//                    ),
+//                    rractions.stop(),
+//                    goToShoot.build(),
+//                    rractions.shoot(3, 1050, Robot.Globals.Colors.PPG),
+//                    goToIntakeTwo.build(),
+//                    new ParallelAction(
+//                            intakeTwo.build(),
+//                            rractions.intake()
+//                    ),
+//                    rractions.stop(),
                     goToLeaveShoot.build(),
-                    rractions.shoot(3, 1000, Robot.Globals.Colors.PGP)
+                    rractions.shoot(3, 1000, Robot.Globals.Colors.GPP)
             );
         }
     }

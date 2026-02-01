@@ -16,7 +16,7 @@ public class ServoTest extends OwlsOpMode {
     @Override
     public void runLoop() {
         if (p1.pressed(OwlsGamepad.Button.A) || readRequested) {
-            readRequested = !limelight.getMotif();
+//            readRequested = !limelight.getMotif();
         }
         if (p1.pressed(OwlsGamepad.Button.DPAD_UP)) limelight.setPitchPos(limelight.getPitchPos() + 0.01);
         if (p1.pressed(OwlsGamepad.Button.DPAD_DOWN)) limelight.setPitchPos(limelight.getPitchPos() - 0.01);

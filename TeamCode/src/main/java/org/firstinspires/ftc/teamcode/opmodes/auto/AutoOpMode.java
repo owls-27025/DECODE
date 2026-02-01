@@ -21,7 +21,6 @@ public class AutoOpMode extends OwlsOpMode {
 
     private MenuHostImpl menuHost;
 
-    private AutoPath path;
     private MecanumDrive drive;
     private RRActions rr;
 
@@ -29,11 +28,23 @@ public class AutoOpMode extends OwlsOpMode {
 
     private final ElapsedTime delayTimer = new ElapsedTime();
 
+    public AutoParams autoParams;
+    public AutoConfig autoConfig;
+    public AutoPath path;
+
     @Override
     public void initLoop() {
         if (initState == InitState.MENU && menuHostIsUninitialized()) {
             menuHost = new MenuHostImpl();
-            menuHost.setRoot(new AutoConfig(menuHost, robot, p1, p2, telemetry));
+
+            autoParams = new AutoParams();
+            autoParams.alliance = AutoParams.Alliances.RED; // defaults
+            autoParams.strategy = AutoParams.Strategies.FRONT;
+            autoParams.gate = false;
+            autoParams.spikes = 0;
+
+            autoConfig = new AutoConfig(menuHost, autoParams, p1, p2, telemetry);
+            menuHost.setRoot(autoConfig);
         }
 
         if (initState == InitState.MENU) {
@@ -46,49 +57,29 @@ public class AutoOpMode extends OwlsOpMode {
             return;
         }
 
-        if (!built) {
-            buildAutoFromRobotConfig();
-            built = true;
-        }
+        limelight.getMotif(autoParams);
 
-        limelight.getMotif();
-
-        telemetry.addLine("Auto Ready");
-        telemetry.addData("Path", path.getName());
-        telemetry.addData("Alliance", Robot.Globals.alliance);
-        telemetry.addData("Delay", Robot.Globals.delayAuto);
+        telemetry.addData("Alliance", autoParams.alliance);
+        telemetry.addData("Strategy", autoParams.strategy);
+        telemetry.addData("Gate", autoParams.gate);
+        telemetry.addData("Spikes", autoParams.spikes);
+        telemetry.addData("Delay (Seconds)", autoParams.delay);
         telemetry.addData("Motif", Robot.Globals.motif);
         telemetry.update();
     }
 
     @Override
     public void onStart() {
-        if (!built) buildAutoFromRobotConfig();
-
         delayTimer.reset();
-        shooter.shoot(path.defaultVelocity());
 
-        if (Robot.Globals.delayAuto != 0) {
+        if (autoParams.delay != 0) {
             delayTimer.reset();
-            while (delayTimer.time(TimeUnit.SECONDS) < Robot.Globals.delayAuto);
+            while (delayTimer.time(TimeUnit.SECONDS) < autoParams.delay);
         }
 
-        Actions.runBlocking(rr.withSubsystems(path.build(drive, rr, telemetry)));
-    }
-
-    private void buildAutoFromRobotConfig() {
-        switch (Robot.Globals.autoStrategy) {
-            case THREECYCLEFRONT: path = new ThreeCycleFront(Robot.Globals.alliance);                            break;
-            case TWOCYCLEBACK:    path = new TwoCycleBack(Robot.Globals.alliance); Robot.Globals.back = true;    break;
-            case THREECYCLEBACK:  path = new ThreeCycleBack(Robot.Globals.alliance); Robot.Globals.back = true;  break;
-            case LEAVE:
-            default:              path = new Leave(Robot.Globals.alliance);                                      break;
-        }
-
-        Pose2d initialPose = path.getInitialPose();
-        drive = new MecanumDrive(robot, hardwareMap, initialPose);
         rr = new RRActions(robot);
-        robot.forceStop = true;
+        path = new AutoPath(rr);
+        Actions.runBlocking(rr.withSubsystems(path.build(autoParams, robot, hardwareMap)));
     }
 
     private boolean menuHostIsUninitialized() {

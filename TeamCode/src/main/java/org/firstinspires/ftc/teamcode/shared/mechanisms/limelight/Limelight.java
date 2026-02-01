@@ -13,6 +13,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.opmodes.auto.AutoParams;
 
 import java.util.Formatter;
 import java.util.List;
@@ -34,13 +35,13 @@ public class Limelight {
         pitch = Robot.Configuration.registerItem(Servo.class, Robot.Configuration.pitch);
     }
 
-    public boolean getMotif() {
-        if (Robot.Globals.back) {
+    public boolean getMotif(AutoParams params) {
+        if (params.strategy == AutoParams.Strategies.BACK) {
             if (limelight.getStatus().getPipelineIndex() != 3) {
                 limelight.pipelineSwitch(3);
                 return false;
             }
-        } else if (Robot.Globals.alliance == Robot.Globals.Alliances.RED) {
+        } else if (params.alliance == AutoParams.Alliances.RED) {
             if (limelight.getStatus().getPipelineIndex() != 1) {
                 limelight.pipelineSwitch(1);
                 return false;
@@ -52,7 +53,7 @@ public class Limelight {
             }
         }
 
-        if (!Robot.Globals.back) {
+        if (params.strategy != AutoParams.Strategies.BACK) {
             if (Robot.Globals.alliance == Robot.Globals.Alliances.RED) {
                 setPitchPos(0.5);
                 setYawPos(0.28);
@@ -92,6 +93,8 @@ public class Limelight {
                 return true;
             }
         }
+
+        Robot.Globals.motif = Robot.Globals.Colors.PGP;
         return false;
     }
 

@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.shared.actions.ActionManager;
 import org.firstinspires.ftc.teamcode.shared.actions.IntakeAction;
 import org.firstinspires.ftc.teamcode.shared.actions.ShootAction;
 import org.firstinspires.ftc.teamcode.shared.actions.SpindexerAction;
+import org.firstinspires.ftc.teamcode.shared.mechanisms.drivetrain.roadrunner.MecanumDrive;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.TimeUnit;
@@ -20,6 +21,12 @@ public class RRActions {
 
     private final ActionManager manager = new ActionManager();
     private boolean subsystemsAdded = false;
+
+    private MecanumDrive drive = null;
+
+    public void setDrive(MecanumDrive drive) {
+        this.drive = drive;
+    }
 
     public RRActions(Robot robot) {
         this.robot = robot;
@@ -38,6 +45,10 @@ public class RRActions {
         return new Action() {
             @Override
             public boolean run(@NotNull TelemetryPacket packet) {
+                if (drive != null) {
+                    drive.localizer.update();
+                    packet.put("Drive updated", true);
+                }
                 ensureSubsystems();
                 manager.run(packet);
                 return inner.run(packet);
@@ -173,28 +184,6 @@ public class RRActions {
                 robot.forceStop = true;
 
                 return false;
-            }
-        };
-    }
-
-    public Action getMotif() {
-        return new Action() {
-            final ElapsedTime timer = new ElapsedTime();
-            boolean started = false;
-            boolean detectedMotif = false;
-
-            @Override
-            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                if (!started) {
-                    timer.reset();
-                    started = true;
-                }
-
-                if (robot.limelight.getMotif() || timer.time(TimeUnit.MILLISECONDS) > 3000) {
-                    detectedMotif = true;
-                }
-
-                return !detectedMotif;
             }
         };
     }

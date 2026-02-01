@@ -1,39 +1,55 @@
 package org.firstinspires.ftc.teamcode.shared.helpers.options.menus.opmodes;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.opmodes.auto.AutoParams;
 import org.firstinspires.ftc.teamcode.shared.helpers.OwlsGamepad;
 import org.firstinspires.ftc.teamcode.shared.helpers.options.libraries.MenuLib;
 
 public class AutoConfig extends MenuLib.Menu {
 
-    public AutoConfig(MenuLib.MenuHost host, Robot robot, OwlsGamepad gamepad1, OwlsGamepad gamepad2, Telemetry telemetry) {
+    private final AutoParams params;
+
+    public AutoConfig(
+            MenuLib.MenuHost host,
+            AutoParams params,
+            OwlsGamepad gamepad1,
+            OwlsGamepad gamepad2,
+            Telemetry telemetry
+    ) {
         super(host, gamepad1, gamepad2, telemetry, "AUTO");
+
+        this.params = params;
 
         addOption(MenuLib.Option.enumCycle(
                 "Alliance: ",
-                Robot.Globals.Alliances.class,
-                () -> Robot.Globals.alliance,
-                v -> Robot.Globals.alliance = v
+                AutoParams.Alliances.class,
+                () -> params.alliance,
+                v -> params.alliance = v
         ));
 
         addOption(MenuLib.Option.enumCycle(
-                "Path: ",
-                Robot.Globals.AutoStrategies.class,
-                () -> Robot.Globals.autoStrategy,
-                v -> Robot.Globals.autoStrategy = v
+                "Strategy: ",
+                AutoParams.Strategies.class,
+                () -> params.strategy,
+                v -> params.strategy = v
         ));
 
         addOption(MenuLib.Option.value(
-                () -> "Delay: " + Robot.Globals.delayAuto,
-                () -> Robot.Globals.delayAuto = Robot.Globals.delayAuto - 1,
-                () -> Robot.Globals.delayAuto = Robot.Globals.delayAuto + 1
+                () -> "Spikes: " + params.spikes,
+                () -> params.spikes = Math.max(params.spikes - 1, 0),
+                () -> params.spikes= Math.min(params.spikes + 1, 2)
         ));
 
         addOption(MenuLib.Option.value(
-                () -> "Gate: " + Robot.Globals.gate,
-                () -> Robot.Globals.gate = !Robot.Globals.gate,
-                () -> Robot.Globals.gate = !Robot.Globals.gate
+                () -> "Gate: " + params.gate,
+                () -> params.gate = !params.gate,
+                () -> params.gate = !params.gate
+        ));
+
+        addOption(MenuLib.Option.value(
+                () -> "Delay (Seconds): " + params.delay,
+                () -> params.delay++,
+                () -> params.delay--
         ));
 
         addOption(MenuLib.Option.info(() -> ""));
@@ -42,5 +58,9 @@ public class AutoConfig extends MenuLib.Menu {
                 () -> "Ready",
                 host::goBack
         ));
+    }
+
+    public AutoParams getParams() {
+        return params;
     }
 }

@@ -17,8 +17,8 @@ public class ThreeCycleFront implements MeepMeepTesting.MeepMeepPath {
 
     public Action buildRed(RoadRunnerBotEntity bot, Pose2d pose) {
         TrajectoryActionBuilder goToShoot = bot.getDrive().actionBuilder(pose)
-                .setTangent(Math.toRadians(-45))
-                .splineToLinearHeading(new Pose2d(-35, 35, Math.toRadians(-225)), Math.toRadians(-45));
+                .setTangent(Math.toRadians(270))
+                .splineToLinearHeading(new Pose2d(-57, 20, Math.toRadians(-270)), Math.toRadians(270));
 
         TrajectoryActionBuilder goToIntakeOne = goToShoot.endTrajectory().fresh()
                 .setTangent(Math.toRadians(270))
