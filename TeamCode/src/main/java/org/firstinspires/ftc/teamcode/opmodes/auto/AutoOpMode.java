@@ -80,6 +80,12 @@ public class AutoOpMode extends OwlsOpMode {
         rr = new RRActions(robot, telemetry);
         path = new AutoPath(rr);
         Actions.runBlocking(rr.withSubsystems(path.build(autoParams, robot, hardwareMap)));
+
+        // we should change this :(
+        shooter.shoot(0);
+        spindexer.shootPosition();
+        intake.stop();
+
     }
 
     private boolean menuHostIsUninitialized() {

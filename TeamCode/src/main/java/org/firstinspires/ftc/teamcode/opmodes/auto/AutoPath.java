@@ -45,10 +45,18 @@ public class AutoPath {
 
     private TrajectoryActionBuilder makeBuilder(Pose2d start, AutoParams params) {
         if (params.alliance == AutoParams.Alliances.BLUE) {
-            return drive.actionBuilder(start, pose -> new Pose2dDual<>(
-                    pose.position.x, pose.position.y.unaryMinus(), pose.heading.inverse()));
+            return drive.actionBuilder(start,
+                    pose -> new Pose2dDual<>(pose.position.x, pose.position.y.unaryMinus(), pose.heading.inverse()));
         } else {
             return drive.actionBuilder(start);
+        }
+    }
+
+    private static Pose2d blueMirror(AutoParams params, Pose2d pose) {
+        if (params.alliance == AutoParams.Alliances.BLUE) {
+            return new Pose2d(new Vector2d(pose.position.x, -pose.position.y), pose.heading.inverse());
+        } else {
+            return pose;
         }
     }
 
@@ -85,10 +93,10 @@ public class AutoPath {
         Pose2d initialPose;
         switch (params.strategy) {
             case FRONT:
-                initialPose = new Pose2d(-50, 50, Math.toRadians(125));
+                initialPose = blueMirror(params, new Pose2d(-50, 50, Math.toRadians(125)));
                 break;
             case BACK:
-                initialPose = new Pose2d(61.25, 11.5, Math.toRadians(180));
+                initialPose = blueMirror(params, new Pose2d(61.25, 11.5, Math.toRadians(180)));
                 break;
             default:
                 throw new IllegalArgumentException("Unknown strategy: " + params.strategy);
@@ -138,7 +146,7 @@ public class AutoPath {
                                 ),
                 "LEAVE", (TrajectoryActionBuilder trajectory) ->
                         trajectory
-                                .strafeTo(new Vector2d(54, 20))
+                                .strafeTo(new Vector2d(54, 30))
                                 .turnTo(Math.toRadians(270)),
                 "HUMAN_PLAYER_AREA", (TrajectoryActionBuilder trajectory) ->
                         trajectory
@@ -161,11 +169,11 @@ public class AutoPath {
         Action ft1 = action(frontActions, "SHOOT_LEAVE", makeBuilder(drive.localizer.getPose(), params)).build();
 
          frontThree = new Path(
-                new Pose2d(-50, 50, Math.toRadians(125)),
+                blueMirror(params, new Pose2d(-50, 50, Math.toRadians(125))),
                 new SequentialAction(
                         actions.softStop(),
                         ft1,
-                        actions.shoot(3, 1050, Robot.Globals.Colors.GPP, 0),
+                        actions.shoot(3, 1050, Robot.Globals.Colors.GPP, 0, true),
                         actions.stop()
                 )
         );
@@ -176,7 +184,7 @@ public class AutoPath {
          TrajectoryActionBuilder fs4 = action(frontActions, "SHOOT_LEAVE", fs3.endTrajectory().fresh());
 
          frontSix = new Path(
-                 new Pose2d(-50, 50, Math.toRadians(125)),
+                 blueMirror(params, new Pose2d(-50, 50, Math.toRadians(125))),
                  new SequentialAction(
                          actions.softStop(),
                          fs1.build(),
@@ -187,7 +195,7 @@ public class AutoPath {
                                  actions.intake()
                          ),
                          fs4.build(),
-                         actions.shoot(3, 1050, Robot.Globals.Colors.PPG, 0),
+                         actions.shoot(3, 1050, Robot.Globals.Colors.PPG, 0, true),
                          actions.stop()
                  )
          );
@@ -199,7 +207,7 @@ public class AutoPath {
          TrajectoryActionBuilder fsg5 = action(frontActions, "SHOOT_LEAVE", fsg4.endTrajectory().fresh());
 
         frontSixGate = new Path(
-                new Pose2d(-50, 50, Math.toRadians(125)),
+                blueMirror(params, new Pose2d(-50, 50, Math.toRadians(125))),
                 new SequentialAction(
                         actions.softStop(),
                         fsg1.build(),
@@ -211,7 +219,7 @@ public class AutoPath {
                         ),
                         fsg4.build(),
                         fsg5.build(),
-                        actions.shoot(3, 1100, Robot.Globals.Colors.PPG, 0),
+                        actions.shoot(3, 1100, Robot.Globals.Colors.PPG, 0, true),
                         actions.stop()
                 )
         );
@@ -225,7 +233,7 @@ public class AutoPath {
         TrajectoryActionBuilder fn7 = action(frontActions, "SHOOT_LEAVE", fn6.endTrajectory().fresh());
 
         frontNine = new Path(
-                new Pose2d(-50, 50, Math.toRadians(125)),
+                blueMirror(params, new Pose2d(-50, 50, Math.toRadians(125))),
                 new SequentialAction(
                         actions.softStop(),
                         fn1.build(),
@@ -243,7 +251,7 @@ public class AutoPath {
                                 actions.intake()
                         ),
                         fn7.build(),
-                        actions.shoot(3, 1100, Robot.Globals.Colors.PPG, 0),
+                        actions.shoot(3, 1100, Robot.Globals.Colors.PPG, 0, true),
                         actions.stop()
                 )
         );
@@ -258,7 +266,7 @@ public class AutoPath {
         TrajectoryActionBuilder fng8 = action(frontActions, "SHOOT_LEAVE", fng7.endTrajectory().fresh());
 
         frontNineGate = new Path(
-                new Pose2d(-50, 50, Math.toRadians(125)),
+                blueMirror(params, new Pose2d(-50, 50, Math.toRadians(125))),
                 new SequentialAction(
                         actions.softStop(),
                         fng1.build(),
@@ -277,7 +285,7 @@ public class AutoPath {
                                 actions.intake()
                         ),
                         fng8.build(),
-                        actions.shoot(3, 1100, Robot.Globals.Colors.PPG, 0),
+                        actions.shoot(3, 1100, Robot.Globals.Colors.PPG, 0, true),
                         actions.stop()
                 )
         );
@@ -286,11 +294,11 @@ public class AutoPath {
         TrajectoryActionBuilder bt2 = action(backActions, "LEAVE", bt1.endTrajectory().fresh());
 
          backThree = new Path(
-                new Pose2d(61.25, 11.5, Math.toRadians(180)),
+                blueMirror(params, new Pose2d(61.25, 11.5, Math.toRadians(180))),
                 new SequentialAction(
                         actions.softStop(),
                         bt1.build(),
-                        actions.shoot(3, 1450, Robot.Globals.Colors.GPP, 1),
+                        actions.shoot(3, 1450, Robot.Globals.Colors.GPP, 1, true),
                         bt2.build(),
                         actions.stop()
                 )
@@ -303,7 +311,7 @@ public class AutoPath {
 
 
          backThreeHP = new Path(
-                 new Pose2d(61.25, 11.5, Math.toRadians(180)),
+                 blueMirror(params, new Pose2d(61.25, 11.5, Math.toRadians(180))),
                  new SequentialAction(
                          actions.softStop(),
                          bthp1.build(),
@@ -313,7 +321,7 @@ public class AutoPath {
                                  actions.intake(5)
                          ),
                          bthp3.build(),
-                         actions.shoot(3, 1450, Robot.Globals.Colors.GPP, 1),
+                         actions.shoot(3, 1450, Robot.Globals.Colors.GPP, 1, true),
                          bthp4.build(),
                          actions.stop()
                  )
@@ -323,10 +331,10 @@ public class AutoPath {
         TrajectoryActionBuilder bs2 = action(backActions, "SPIKE_THREE", bs1.endTrajectory().fresh());
         TrajectoryActionBuilder bs3 = action(backActions, "INTAKE", bs2.endTrajectory().fresh());
         TrajectoryActionBuilder bs4 = action(backActions, "SHOOT", bs3.endTrajectory().fresh());
-       TrajectoryActionBuilder bs5 = action(backActions, "LEAVE", bs4.endTrajectory().fresh());
+        TrajectoryActionBuilder bs5 = action(backActions, "LEAVE", bs4.endTrajectory().fresh());
 
         backSix = new Path(
-                new Pose2d(61.25, 11.5, Math.toRadians(180)),
+                blueMirror(params, new Pose2d(61.25, 11.5, Math.toRadians(180))),
                 new SequentialAction(
                         actions.softStop(),
                         bs1.build(),
@@ -337,7 +345,7 @@ public class AutoPath {
                                 actions.intake()
                         ),
                         bs4.build(),
-                        actions.shoot(3, 1450, Robot.Globals.Colors.GPP, 1),
+                        actions.shoot(3, 1450, Robot.Globals.Colors.GPP, 1, true),
                         bs5.build(),
                         actions.stop()
                 )

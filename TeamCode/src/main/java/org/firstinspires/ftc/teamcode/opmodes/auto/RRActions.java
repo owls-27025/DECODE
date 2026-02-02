@@ -155,6 +155,97 @@ public class RRActions {
         };
     }
 
+    public Action shoot(final int shots, final int velocity, boolean halt) {
+        return new Action() {
+            private boolean started = false;
+
+            @Override
+            public boolean run(@NotNull TelemetryPacket packet) {
+                if (!started) {
+                    robot.artifactCount = shots;
+                    started = true;
+                    Robot.Globals.shooterVelocity = velocity;
+                    robot.startShoot = true;
+                    if (halt) {
+                        robot.haltAfterShoot = true;
+                    }
+                }
+
+                return robot.artifactCount > 0;
+            }
+        };
+    }
+
+    public Action shoot(final int shots, final int velocity, Robot.Globals.Colors colors, boolean halt) {
+        return new Action() {
+            private boolean started = false;
+
+            @Override
+            public boolean run(@NotNull TelemetryPacket packet) {
+                if (!started) {
+                    robot.artifactCount = shots;
+                    started = true;
+                    Robot.Globals.shooterVelocity = velocity;
+                    robot.startShoot = true;
+                    robot.colors = colors;
+                    robot.sort = true;
+                    if (halt) {
+                        robot.haltAfterShoot = true;
+                    }
+                }
+
+                return robot.artifactCount > 0;
+            }
+        };
+    }
+
+    public Action shoot(final int shots, final int velocity, Robot.Globals.Colors colors, double angle, boolean halt) {
+        return new Action() {
+            private boolean started = false;
+
+            @Override
+            public boolean run(@NotNull TelemetryPacket packet) {
+                if (!started) {
+                    robot.artifactCount = shots;
+                    started = true;
+                    Robot.Globals.shooterVelocity = velocity;
+                    robot.startShoot = true;
+                    robot.sort = true;
+                    robot.colors = colors;
+                    robot.shooter.setHood(angle);
+                    if (halt) {
+                        robot.haltAfterShoot = true;
+                    }
+                }
+
+                return robot.artifactCount > 0;
+            }
+        };
+    }
+
+    public Action shoot(final int shots, final int velocity, double angle, boolean halt) {
+        return new Action() {
+            private boolean started = false;
+
+            @Override
+            public boolean run(@NotNull TelemetryPacket packet) {
+                if (!started) {
+                    robot.artifactCount = shots;
+                    started = true;
+                    Robot.Globals.shooterVelocity = velocity;
+                    robot.startShoot = true;
+                    robot.sort = true;
+                    robot.shooter.setHood(angle);
+                    if (halt) {
+                        robot.haltAfterShoot = true;
+                    }
+                }
+
+                return robot.artifactCount > 0;
+            }
+        };
+    }
+
     public Action intake() {
         return new Action() {
             ElapsedTime timer = new ElapsedTime();
@@ -216,8 +307,7 @@ public class RRActions {
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
                 robot.forceStop = true;
-
-                telemetry.addLine("Stopping");
+                robot.haltAfterShoot = true;
 
                 return false;
             }

@@ -138,6 +138,7 @@ public class Robot {
     public boolean queueStop;
     public Globals.Colors colors;
     public boolean sort;
+    public boolean haltAfterShoot;
 
     public static class Globals {
         // ----------------------------
@@ -247,6 +248,7 @@ public class Robot {
         leftRequested = false;
         rightRequested = false;
         forceStop = false;
+        haltAfterShoot = false;
 
         // mechanism instances
         spindexer = new Spindexer(configuration);

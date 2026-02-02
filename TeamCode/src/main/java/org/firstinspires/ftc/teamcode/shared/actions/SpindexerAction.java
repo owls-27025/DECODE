@@ -267,7 +267,11 @@ public class SpindexerAction extends BaseAction {
 
                                         java.util.Arrays.fill(positions, -1);
 
-                                        enter(States.INTAKE_POS);
+                                        if (!robot.haltAfterShoot) {
+                                            enter(States.INTAKE_POS);
+                                        } else {
+                                            robot.haltAfterShoot = false;
+                                        }
                                     }
                                 }
                             }
@@ -281,7 +285,11 @@ public class SpindexerAction extends BaseAction {
                         positions[1] = -1;
                         positions[2] = -1;
 
-                        enter(States.INTAKE_POS);
+                        if (!robot.haltAfterShoot) {
+                            enter(States.INTAKE_POS);
+                        } else {
+                            robot.haltAfterShoot = false;
+                        }
                     }
                     break;
                 case HUMAN_PLAYER:
