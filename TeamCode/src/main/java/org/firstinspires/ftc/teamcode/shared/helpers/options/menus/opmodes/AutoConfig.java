@@ -40,16 +40,34 @@ public class AutoConfig extends MenuLib.Menu {
                 () -> params.spikes= Math.min(params.spikes + 1, 2)
         ));
 
-        addOption(MenuLib.Option.value(
-                () -> "Gate: " + params.gate,
-                () -> params.gate = !params.gate,
-                () -> params.gate = !params.gate
-        ));
+        if (params.spikes > 0) {
+            addOption(MenuLib.Option.value(
+                    () -> "Gate: " + params.gate,
+                    () -> params.gate = !params.gate,
+                    () -> params.gate = !params.gate
+            ));
+        } else {
+            addOption(MenuLib.Option.info(() -> "Gate: [unavailable with 0 spikes]"));
+        }
+
+        if (params.strategy == AutoParams.Strategies.BACK) {
+            if (params.spikes == 0) {
+                addOption(MenuLib.Option.value(
+                        () -> "Human Player: " + params.humanPlayer,
+                        () -> params.humanPlayer = !params.humanPlayer,
+                        () -> params.humanPlayer = !params.humanPlayer
+                ));
+            } else {
+                addOption(MenuLib.Option.info(() -> "Human Player: [unavailable with spike marks]"));
+            }
+        } else {
+            addOption(MenuLib.Option.info(() -> "Human Player: [unavailable with front]"));
+        }
 
         addOption(MenuLib.Option.value(
-                () -> "Delay (Seconds): " + params.delay,
-                () -> params.delay++,
-                () -> params.delay--
+                () -> "Delay: " + params.delay + " second(s)",
+                () -> params.delay--,
+                () -> params.delay++
         ));
 
         addOption(MenuLib.Option.info(() -> ""));

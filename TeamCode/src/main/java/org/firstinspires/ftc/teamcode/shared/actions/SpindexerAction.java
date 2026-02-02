@@ -12,6 +12,7 @@ public class SpindexerAction extends BaseAction {
         START,
         INTAKE_POS,
         STOP,
+        SOFT_STOP,
         INDEXING,
         SHOOT_POS,
         HUMAN_PLAYER,
@@ -89,6 +90,7 @@ public class SpindexerAction extends BaseAction {
             robot.startIntake = true;
             robot.intakeComplete = false;
         } else if (state == States.STOP) {
+            dbgLine("Entered stop");
             spindexer.shootPosition();
             spindexer.flapDown();
         } else if (state == States.HUMAN_PLAYER) {
@@ -129,10 +131,15 @@ public class SpindexerAction extends BaseAction {
         intakeRequested = robot.startIntake && state != States.INTAKE_POS;
 
             if (robot.forceStop) {
+                dbgLine("force stop is true in spindexer action");
                 enter(States.STOP);
                 shotRequested = false;
                 humanPlayerRequested = false;
                 intakeRequested = false;
+            }
+
+            if (robot.softStop) {
+                enter(States.SOFT_STOP);
             }
 
             if (shotRequested) {
@@ -195,6 +202,10 @@ public class SpindexerAction extends BaseAction {
 
                 case STOP:
                     robot.forceStop = false;
+                    break;
+
+                case SOFT_STOP:
+                    robot.softStop = false;
                     break;
 
                 case SHOOT_POS:
@@ -297,6 +308,7 @@ public class SpindexerAction extends BaseAction {
 
                                 if (robot.artifactCount >= 3) {
                                     robot.isHumanIntake = false;
+
                                     enter(States.STOP);
                                 }
                             }

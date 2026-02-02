@@ -54,16 +54,16 @@ public class Limelight {
         }
 
         if (params.strategy != AutoParams.Strategies.BACK) {
-            if (Robot.Globals.alliance == Robot.Globals.Alliances.RED) {
+            if (params.alliance == AutoParams.Alliances.RED) {
                 setPitchPos(0.5);
-                setYawPos(0.28);
-            } else if (Robot.Globals.alliance == Robot.Globals.Alliances.BLUE) {
+                setYawPos(0.13);
+            } else if (params.alliance == AutoParams.Alliances.BLUE) {
                 setPitchPos(0.5);
-                setYawPos(0.72);
+                setYawPos(0.86);
             }
         } else {
             setPitchPos(0.5);
-            setYawPos(0.67);
+            setYawPos(0.5);
         }
 
         LLResult result = limelight.getLatestResult();

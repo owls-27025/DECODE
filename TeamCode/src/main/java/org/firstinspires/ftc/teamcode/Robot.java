@@ -133,6 +133,7 @@ public class Robot {
     public boolean intakeComplete;
     public boolean leftRequested;
     public boolean rightRequested;
+    public boolean softStop;
     public boolean forceStop;
     public boolean queueStop;
     public Globals.Colors colors;

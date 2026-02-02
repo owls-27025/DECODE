@@ -15,5 +15,6 @@ public class AutoParams {
     public Strategies strategy;
     public boolean gate;
     public int spikes;
+    public boolean humanPlayer;
     public int delay;
 }

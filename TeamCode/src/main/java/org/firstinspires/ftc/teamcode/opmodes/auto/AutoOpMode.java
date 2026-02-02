@@ -63,7 +63,7 @@ public class AutoOpMode extends OwlsOpMode {
         telemetry.addData("Strategy", autoParams.strategy);
         telemetry.addData("Gate", autoParams.gate);
         telemetry.addData("Spikes", autoParams.spikes);
-        telemetry.addData("Delay (Seconds)", autoParams.delay);
+        telemetry.addData("Delay", autoParams.delay + " seconds");
         telemetry.addData("Motif", Robot.Globals.motif);
         telemetry.update();
     }
@@ -77,7 +77,7 @@ public class AutoOpMode extends OwlsOpMode {
             while (delayTimer.time(TimeUnit.SECONDS) < autoParams.delay);
         }
 
-        rr = new RRActions(robot);
+        rr = new RRActions(robot, telemetry);
         path = new AutoPath(rr);
         Actions.runBlocking(rr.withSubsystems(path.build(autoParams, robot, hardwareMap)));
     }

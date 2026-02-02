@@ -2,10 +2,12 @@ package org.firstinspires.ftc.teamcode.opmodes.auto;
 
 import androidx.annotation.NonNull;
 
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.shared.actions.ActionManager;
 import org.firstinspires.ftc.teamcode.shared.actions.IntakeAction;
@@ -22,15 +24,19 @@ public class RRActions {
     private final ActionManager manager = new ActionManager();
     private boolean subsystemsAdded = false;
 
+    private Telemetry telemetry;
+
     private MecanumDrive drive = null;
 
     public void setDrive(MecanumDrive drive) {
         this.drive = drive;
     }
 
-    public RRActions(Robot robot) {
+    public RRActions(Robot robot, Telemetry telemetry) {
         this.robot = robot;
+        this.telemetry = telemetry;
     }
+
     private void ensureSubsystems() {
         if (subsystemsAdded) return;
 
@@ -167,7 +173,35 @@ public class RRActions {
                 }
                 lastArtifactCount = robot.artifactCount;
 
-                if (timer.time(TimeUnit.MILLISECONDS) > 4000) {
+                if (timer.time(TimeUnit.MILLISECONDS) > 3000) {
+                    robot.softStop = true;
+                    return false;
+                }
+
+                return robot.artifactCount < 3;
+            }
+        };
+    }
+
+    public Action intake(int fallback) {
+        return new Action() {
+            ElapsedTime timer = new ElapsedTime();
+            boolean started = false;
+            int lastArtifactCount = robot.artifactCount;
+
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                if (!started) {
+                    timer.reset();
+                    started = true;
+                }
+                robot.startIntake = true;
+                if (lastArtifactCount != robot.artifactCount) {
+                    timer.reset();
+                }
+                lastArtifactCount = robot.artifactCount;
+
+                if (timer.time(TimeUnit.MILLISECONDS) > (fallback * 1000)) {
                     robot.forceStop = true;
                     return false;
                 }
@@ -182,6 +216,19 @@ public class RRActions {
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
                 robot.forceStop = true;
+
+                telemetry.addLine("Stopping");
+
+                return false;
+            }
+        };
+    }
+
+    public Action softStop() {
+        return new Action() {
+            @Override
+            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                robot.softStop = true;
 
                 return false;
             }
