@@ -13,8 +13,7 @@ public class ShootAction extends BaseAction {
         SPIN_UP,
         STOP,
         READY,
-        HUMAN_INTAKE,
-        SOFT_STOP
+        HUMAN_INTAKE
     }
 
     public ShootAction(Robot robot) {
@@ -52,9 +51,6 @@ public class ShootAction extends BaseAction {
                 }
                 break;
             case STOP:
-                shooter.shoot(0);
-                break;
-            case SOFT_STOP:
                 break;
             case READY:
                 robot.shooterReady = true;

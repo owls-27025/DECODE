@@ -12,7 +12,6 @@ public class SpindexerAction extends BaseAction {
         START,
         INTAKE_POS,
         STOP,
-        SOFT_STOP,
         INDEXING,
         SHOOT_POS,
         HUMAN_PLAYER,
@@ -138,10 +137,6 @@ public class SpindexerAction extends BaseAction {
                 intakeRequested = false;
             }
 
-            if (robot.softStop) {
-                enter(States.SOFT_STOP);
-            }
-
             if (shotRequested) {
                 dbg("Shot requested", shotRequested);
                 shotRequested = false;
@@ -204,10 +199,6 @@ public class SpindexerAction extends BaseAction {
                     robot.forceStop = false;
                     break;
 
-                case SOFT_STOP:
-                    robot.softStop = false;
-                    break;
-
                 case SHOOT_POS:
                     if (robot.sort) {
                         robot.sort = false;
@@ -267,11 +258,7 @@ public class SpindexerAction extends BaseAction {
 
                                         java.util.Arrays.fill(positions, -1);
 
-                                        if (!robot.haltAfterShoot) {
-                                            enter(States.INTAKE_POS);
-                                        } else {
-                                            robot.haltAfterShoot = false;
-                                        }
+                                        enter(States.INTAKE_POS);
                                     }
                                 }
                             }
@@ -285,11 +272,7 @@ public class SpindexerAction extends BaseAction {
                         positions[1] = -1;
                         positions[2] = -1;
 
-                        if (!robot.haltAfterShoot) {
-                            enter(States.INTAKE_POS);
-                        } else {
-                            robot.haltAfterShoot = false;
-                        }
+                        enter(States.INTAKE_POS);
                     }
                     break;
                 case HUMAN_PLAYER:

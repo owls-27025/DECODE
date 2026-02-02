@@ -1,12 +1,10 @@
 package org.firstinspires.ftc.teamcode.opmodes.auto;
 
-import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.opmodes.OwlsOpMode;
-import org.firstinspires.ftc.teamcode.opmodes.auto.paths.*;
 import org.firstinspires.ftc.teamcode.shared.mechanisms.drivetrain.roadrunner.MecanumDrive;
 import org.firstinspires.ftc.teamcode.shared.helpers.options.libraries.MenuHostImpl;
 import org.firstinspires.ftc.teamcode.shared.helpers.options.menus.opmodes.AutoConfig;

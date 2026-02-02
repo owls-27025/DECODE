@@ -509,4 +509,21 @@ public final class MecanumDrive {
                 poseMap
         );
     }
+
+    public TrajectoryActionBuilder actionBuilder(Pose2d beginPose, PoseMap poseMap, boolean blue) {
+        return new TrajectoryActionBuilder(
+                TurnAction::new,
+                FollowTrajectoryAction::new,
+                new TrajectoryBuilderParams(
+                        1e-6,
+                        new ProfileParams(
+                                0.25, 0.1, 1e-2
+                        )
+                ),
+                blue ? new Pose2d(new Vector2d(beginPose.position.x, -beginPose.position.y), beginPose.heading.inverse()) : beginPose, 0.0,
+                defaultTurnConstraints,
+                defaultVelConstraint, defaultAccelConstraint,
+                poseMap
+        );
+    }
 }

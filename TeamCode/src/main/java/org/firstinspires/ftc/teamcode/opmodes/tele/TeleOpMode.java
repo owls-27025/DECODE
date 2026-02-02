@@ -42,22 +42,18 @@ public class TeleOpMode extends OwlsOpMode {
         if (p2.pressed(OwlsGamepad.Button.DPAD_UP)) Robot.Globals.shooterVelocity += 50;
         if (p2.pressed(OwlsGamepad.Button.DPAD_DOWN)) Robot.Globals.shooterVelocity -= 50;
 
-        if (p1.pressed(OwlsGamepad.Button.RT)) {
+        if (p2.pressed(OwlsGamepad.Button.RT)) {
             Robot.Globals.shooterVelocity = 1400;
             shooter.setHood(1.0);
         }
-        if (p1.released(OwlsGamepad.Button.RT)) {
+        if (p2.pressed(OwlsGamepad.Button.LT)) {
             Robot.Globals.shooterVelocity = 1100;
             shooter.setHood(0);
         }
 
-        if (p1.pressed(OwlsGamepad.Button.LT)) {
+        if (p2.pressed(OwlsGamepad.Button.A)) {
             Robot.Globals.shooterVelocity = 1200;
             shooter.setHood(0.5);
-        }
-        if (p1.released(OwlsGamepad.Button.LT)) {
-            Robot.Globals.shooterVelocity = 1100;
-            shooter.setHood(0);
         }
 
         if (p2.pressed(OwlsGamepad.Button.DPAD_RIGHT)) shooter.setHood(shooter.getHood() + 0.1);

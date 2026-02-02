@@ -133,7 +133,6 @@ public class Robot {
     public boolean intakeComplete;
     public boolean leftRequested;
     public boolean rightRequested;
-    public boolean softStop;
     public boolean forceStop;
     public boolean queueStop;
     public Globals.Colors colors;
@@ -248,7 +247,6 @@ public class Robot {
         leftRequested = false;
         rightRequested = false;
         forceStop = false;
-        haltAfterShoot = false;
 
         // mechanism instances
         spindexer = new Spindexer(configuration);
