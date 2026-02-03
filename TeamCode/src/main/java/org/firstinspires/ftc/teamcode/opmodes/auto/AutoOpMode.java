@@ -79,7 +79,6 @@ public class AutoOpMode extends OwlsOpMode {
         path = new AutoPath(rr);
         Actions.runBlocking(rr.withSubsystems(path.build(autoParams, robot, hardwareMap)));
 
-        // we should change this :(
         shooter.shoot(0);
         spindexer.shootPosition();
         intake.stop();
