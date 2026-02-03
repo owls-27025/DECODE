@@ -51,6 +51,9 @@ public class ShootAction extends BaseAction {
                 }
                 break;
             case STOP:
+                if (!robot.forceStop) {
+                    enter(State.SPIN_UP);
+                }
                 break;
             case READY:
                 robot.shooterReady = true;
