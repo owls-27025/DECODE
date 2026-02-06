@@ -166,10 +166,10 @@ public class AutoPath {
                                 .lineToY(58),
                 "SPIKE_THREE", (TrajectoryActionBuilder  trajectory) ->
                         trajectory
-                                .splineToLinearHeading(new Pose2d(30, 25, Math.toRadians(90)), Math.toRadians(90), (pose2dDual, posePath, v) -> 20),
+                                .splineToLinearHeading(new Pose2d(32, 25, Math.toRadians(90)), Math.toRadians(90), (pose2dDual, posePath, v) -> 20),
                 "INTAKE", (TrajectoryActionBuilder trajectory) ->
                         trajectory
-                                .lineToY(50, (pose2dDual, posePath, v) -> 9)
+                                .lineToY(58, (pose2dDual, posePath, v) -> 9)
 
         );
 
@@ -258,7 +258,7 @@ public class AutoPath {
                                 actions.intake()
                         ),
                         fn7.build(),
-                        actions.shoot(3, 1100, Robot.Globals.Colors.PPG, 0),
+//                        actions.shoot(3, 1100, Robot.Globals.Colors.PPG, 0),
                         actions.stop()
                 )
         );
@@ -292,7 +292,7 @@ public class AutoPath {
                                 actions.intake()
                         ),
                         fng8.build(),
-                        actions.shoot(3, 1100, Robot.Globals.Colors.PPG, 0),
+//                        actions.shoot(3, 1100, Robot.Globals.Colors.PPG, 0),
                         actions.stop()
                 )
         );
@@ -307,7 +307,7 @@ public class AutoPath {
                 new SequentialAction(
                         actions.stop(),
                         bt1.build(),
-                        actions.shoot(3, 1425, Robot.Globals.Colors.GPP, 1),
+                        actions.shoot(3, 1375, Robot.Globals.Colors.GPP, 1),
                         bt2.build(),
                         actions.stop()
                 )
@@ -324,13 +324,13 @@ public class AutoPath {
                  new SequentialAction(
                          actions.stop(),
                          bthp1.build(),
-                         actions.shoot(3, 1425, Robot.Globals.Colors.GPP, 1),
+                         actions.shoot(3, 1375, Robot.Globals.Colors.GPP, 1),
                          new ParallelAction(
                             bthp2.build(),
                                  actions.intake(5)
                          ),
                          bthp3.build(),
-                         actions.shoot(3, 1425, Robot.Globals.Colors.PGP, 1),
+                         actions.shoot(3, 1375, Robot.Globals.Colors.PGP, 1),
                          bthp4.build(),
                          actions.stop()
                  )
@@ -347,14 +347,14 @@ public class AutoPath {
                 new SequentialAction(
                         actions.stop(),
                         bs1.build(),
-                        actions.shoot(3, 1425, Robot.Globals.Colors.GPP, 1),
+                        actions.shoot(3, 1375, Robot.Globals.Colors.GPP, 1),
                         bs2.build(),
                         new ParallelAction(
                                 bs3.build(),
                                 actions.intake()
                         ),
                         bs4.build(),
-                        actions.shoot(3, 1425, Robot.Globals.Colors.GPP, 1),
+                        actions.shoot(3, 1375, Robot.Globals.Colors.GPP, 1),
                         bs5.build(),
                         actions.stop()
                 )
