@@ -43,7 +43,7 @@ public class TeleOpMode extends OwlsOpMode {
         if (p2.pressed(OwlsGamepad.Button.DPAD_DOWN)) Robot.Globals.shooterVelocity -= 50;
 
         if (p2.pressed(OwlsGamepad.Button.RT)) {
-            Robot.Globals.shooterVelocity = 1400;
+            Robot.Globals.shooterVelocity = 1450;
             shooter.setHood(1.0);
         }
         if (p2.pressed(OwlsGamepad.Button.LT)) {

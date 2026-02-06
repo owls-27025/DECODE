@@ -113,28 +113,34 @@ public class AutoPath {
                                 .setTangent(Math.toRadians(-45))
                                 .splineToLinearHeading(
                                         new Pose2d(-35, 35, Math.toRadians(-225)),
-                                        Math.toRadians(-45)
+                                        Math.toRadians(-45),
+                                        (pose2dDual, posePath, v) -> 90
                                 ),
                 "SHOOT_LEAVE", (TrajectoryActionBuilder trajectory) ->
                         trajectory
                                 .setTangent(Math.toRadians(270))
-                                .splineToLinearHeading(new Pose2d(-57, 20, Math.toRadians(99)), Math.toRadians(270)),
+                                .splineToLinearHeading(new Pose2d(-57, 20, Math.toRadians(99)), Math.toRadians(270),
+                                        (pose2dDual, posePath, v) -> 90),
                 "SPIKE_ONE", (TrajectoryActionBuilder trajectory) ->
                         trajectory
                                 .setTangent(Math.toRadians(270))
-                                .splineToLinearHeading(new Pose2d(-11.5, 25, Math.toRadians(90)), Math.toRadians(90)),
+                                .splineToLinearHeading(new Pose2d(-11.5, 25, Math.toRadians(90)), Math.toRadians(90),
+                                        (pose2dDual, posePath, v) -> 90),
                 "INTAKE", (TrajectoryActionBuilder trajectory) ->
                         trajectory
-                                .lineToY(50, (pose2dDual, posePath, v) -> 9),
+                                .lineToY(50, (pose2dDual, posePath, v) -> 12),
                 "SPIKE_TWO", (TrajectoryActionBuilder trajectory) ->
                         trajectory
                                 .setTangent(Math.toRadians(270))
-                                .splineToLinearHeading(new Pose2d(11.5, 25, Math.toRadians(90)), Math.toRadians(90)),
+                                .splineToLinearHeading(new Pose2d(11.5, 25, Math.toRadians(90)), Math.toRadians(90),
+                                        (pose2dDual, posePath, v) -> 90),
                 "GATE", (TrajectoryActionBuilder trajectory) ->
                         trajectory
                                 .turnTo(Math.toRadians(180))
-                                .strafeTo(new Vector2d(-2, 50))
-                                .strafeTo(new Vector2d(-2, 58))
+                                .strafeTo(new Vector2d(-3, 50),
+                                        (pose2dDual, posePath, v) -> 90)
+                                .strafeTo(new Vector2d(-3, 58),
+                                        (pose2dDual, posePath, v) -> 90)
         );
 
         backActions = Map.of(
@@ -142,7 +148,8 @@ public class AutoPath {
                         trajectory
                                 .splineToLinearHeading(
                                         new Pose2d(54, 15, Math.toRadians(157)),
-                                        Math.toRadians(157)
+                                        Math.toRadians(157),
+                                        (pose2dDual, posePath, v) -> 20
                                 ),
                 "LEAVE", (TrajectoryActionBuilder trajectory) ->
                         trajectory
@@ -159,7 +166,7 @@ public class AutoPath {
                                 .lineToY(58),
                 "SPIKE_THREE", (TrajectoryActionBuilder  trajectory) ->
                         trajectory
-                                .splineToLinearHeading(new Pose2d(30, 25, Math.toRadians(90)), Math.toRadians(90)),
+                                .splineToLinearHeading(new Pose2d(30, 25, Math.toRadians(90)), Math.toRadians(90), (pose2dDual, posePath, v) -> 20),
                 "INTAKE", (TrajectoryActionBuilder trajectory) ->
                         trajectory
                                 .lineToY(50, (pose2dDual, posePath, v) -> 9)
@@ -290,6 +297,8 @@ public class AutoPath {
                 )
         );
 
+
+
         TrajectoryActionBuilder bt1 = action(backActions, "SHOOT", makeBuilder(drive.localizer.getPose(), params));
         TrajectoryActionBuilder bt2 = action(backActions, "LEAVE", bt1.endTrajectory().fresh());
 
@@ -298,7 +307,7 @@ public class AutoPath {
                 new SequentialAction(
                         actions.stop(),
                         bt1.build(),
-                        actions.shoot(3, 1450, Robot.Globals.Colors.GPP, 1),
+                        actions.shoot(3, 1425, Robot.Globals.Colors.GPP, 1),
                         bt2.build(),
                         actions.stop()
                 )
@@ -315,13 +324,13 @@ public class AutoPath {
                  new SequentialAction(
                          actions.stop(),
                          bthp1.build(),
-                         actions.shoot(3, 1450, Robot.Globals.Colors.GPP, 1),
+                         actions.shoot(3, 1425, Robot.Globals.Colors.GPP, 1),
                          new ParallelAction(
                             bthp2.build(),
                                  actions.intake(5)
                          ),
                          bthp3.build(),
-                         actions.shoot(3, 1450, Robot.Globals.Colors.PGP, 1),
+                         actions.shoot(3, 1425, Robot.Globals.Colors.PGP, 1),
                          bthp4.build(),
                          actions.stop()
                  )
@@ -338,14 +347,14 @@ public class AutoPath {
                 new SequentialAction(
                         actions.stop(),
                         bs1.build(),
-                        actions.shoot(3, 1450, Robot.Globals.Colors.GPP, 1),
+                        actions.shoot(3, 1425, Robot.Globals.Colors.GPP, 1),
                         bs2.build(),
                         new ParallelAction(
                                 bs3.build(),
                                 actions.intake()
                         ),
                         bs4.build(),
-                        actions.shoot(3, 1450, Robot.Globals.Colors.GPP, 1),
+                        actions.shoot(3, 1425, Robot.Globals.Colors.GPP, 1),
                         bs5.build(),
                         actions.stop()
                 )

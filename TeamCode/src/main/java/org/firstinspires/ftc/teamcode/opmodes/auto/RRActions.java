@@ -173,7 +173,7 @@ public class RRActions {
                 }
                 lastArtifactCount = robot.artifactCount;
 
-                if (timer.time(TimeUnit.MILLISECONDS) > 3000) {
+                if (timer.time(TimeUnit.MILLISECONDS) > 2000) {
                     robot.forceStop = true;
                     return false;
                 }

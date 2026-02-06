@@ -174,7 +174,7 @@ public class SpindexerAction extends BaseAction {
 
             switch (state) {
                 case START:
-                    enter(States.INTAKE_POS);
+//                    enter(States.INTAKE_POS);
                     break;
 
                 case INTAKE_POS:

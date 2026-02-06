@@ -59,7 +59,7 @@ public class Limelight {
                 setYawPos(0.13);
             } else if (params.alliance == AutoParams.Alliances.BLUE) {
                 setPitchPos(0.5);
-                setYawPos(0.86);
+                setYawPos(0.94);
             }
         } else {
             setPitchPos(0.5);
