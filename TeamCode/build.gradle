@@ -27,6 +27,7 @@ repositories {
     maven {
         url = 'https://maven.brott.dev/'
     }
+    mavenCentral()
 }
 
 dependencies {
@@ -37,4 +38,5 @@ dependencies {
     implementation "com.acmerobotics.roadrunner:actions:1.0.1"
     implementation "com.acmerobotics.dashboard:dashboard:0.5.0"
     implementation 'androidx.xr.runtime:runtime:1.0.0-alpha09'
+    implementation 'org.ftclib.ftclib:core:2.1.1'
 }
