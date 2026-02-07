@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.shared.mechanisms.shooter;
 
+import com.arcrobotics.ftclib.controller.PController;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -11,6 +12,7 @@ import org.firstinspires.ftc.teamcode.Robot;
 public class Shooter {
     private final DcMotorEx shooter;
     private final Servo hood;
+    private PController pController = new PController(1);
 
     public Shooter(Robot.Configuration configuration) {
         shooter = Robot.Configuration.registerItem(DcMotorEx.class, Robot.Configuration.shooter);
@@ -22,8 +24,8 @@ public class Shooter {
         hood = configuration.registerItem(Servo.class, Robot.Configuration.hood);
     }
 
-    public void shoot(double velocity) {
-        if (shooter != null) shooter.setVelocity(velocity);
+    public void shoot(double power) {
+        shooter.setPower(power);
     }
 
     public int calculateMotifOffset(Robot.Globals.Colors target) {
@@ -50,11 +52,15 @@ public class Shooter {
     }
 
     public void update() {
-        if (getPIDFCoefficients() != null) {
-            PIDFCoefficients pidf = getPIDFCoefficients();
-            pidf.p = 25; // default P
-            pidf.i = 0.65; // default I
-            setPIDFCoefficients(pidf);
-        }
+//        if (getPIDFCoefficients() != null) {
+//            PIDFCoefficients pidf = getPIDFCoefficients();
+//            pidf.p = 25; // default P
+//            pidf.i = 0.65; // default I
+//            setPIDFCoefficients(pidf);
+//        }
+    }
+
+    public double getPower() {
+        return shooter.getPower();
     }
 }

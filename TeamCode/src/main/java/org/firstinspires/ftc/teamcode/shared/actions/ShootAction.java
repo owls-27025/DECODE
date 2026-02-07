@@ -2,12 +2,16 @@ package org.firstinspires.ftc.teamcode.shared.actions;
 
 import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.arcrobotics.ftclib.controller.PController;
+import com.arcrobotics.ftclib.controller.PIDFController;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Robot;
 
 public class ShootAction extends BaseAction {
     private State state;
     private final ElapsedTime timer = new ElapsedTime();
+    private PIDFController pidf = new PIDFController(0.001, 0, 0, 0.0004);
+    private double output;
 
     private enum State {
         SPIN_UP,
@@ -39,7 +43,10 @@ public class ShootAction extends BaseAction {
         switch (state) {
             case SPIN_UP:
                 robot.shooterReady = false;
-                shooter.shoot(Robot.Globals.shooterVelocity);
+
+                output = pidf.calculate(shooter.getVelocity(), Robot.Globals.shooterVelocity);
+                shooter.shoot(output);
+
                 if (shooter.getVelocity() - Robot.Globals.shooterVelocity < 0) {
                     if (Math.abs(shooter.getVelocity() - Robot.Globals.shooterVelocity) <= Robot.Globals.shooterLowTolerance) {
                         enter(State.READY);
@@ -57,7 +64,10 @@ public class ShootAction extends BaseAction {
                 break;
             case READY:
                 robot.shooterReady = true;
-                shooter.shoot(Robot.Globals.shooterVelocity);
+
+                output = pidf.calculate(shooter.getVelocity(), Robot.Globals.shooterVelocity);
+                shooter.shoot(output);
+
                 if (shooter.getVelocity() - Robot.Globals.shooterVelocity < 0) {
                     if (Math.abs(shooter.getVelocity() - Robot.Globals.shooterVelocity) > Robot.Globals.shooterLowTolerance) {
                         enter(State.SPIN_UP);

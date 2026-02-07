@@ -183,6 +183,8 @@ public class TeleOpMode extends OwlsOpMode {
 
         telemetry.addData("IMU Heading", drivetrain.getOdometryHeading());
 
+        telemetry.addData("Shooter Power", shooter.getPower());
+
         TelemetryPacket packet = new TelemetryPacket();
         packet.put("Drive x", drivetrain.getPose().getX(DistanceUnit.INCH));
         packet.put("Drive y", drivetrain.getPose().getY(DistanceUnit.INCH));
