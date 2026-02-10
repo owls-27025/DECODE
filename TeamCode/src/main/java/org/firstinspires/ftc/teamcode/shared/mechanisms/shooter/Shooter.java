@@ -11,21 +11,24 @@ import org.firstinspires.ftc.teamcode.Robot;
 
 public class Shooter {
     private final DcMotorEx shooter;
+    private final DcMotorEx shooter1;
     private final Servo hood;
-    private PController pController = new PController(1);
 
     public Shooter(Robot.Configuration configuration) {
         shooter = Robot.Configuration.registerItem(DcMotorEx.class, Robot.Configuration.shooter);
-        if (shooter != null) {
-            shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            shooter.setDirection(DcMotor.Direction.REVERSE);
-        }
+        shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        shooter.setDirection(DcMotor.Direction.REVERSE);
 
-        hood = configuration.registerItem(Servo.class, Robot.Configuration.hood);
+        shooter1 = Robot.Configuration.registerItem(DcMotorEx.class, Robot.Configuration.shooter1);
+        shooter1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        shooter1.setDirection(DcMotor.Direction.FORWARD);
+
+        hood = Robot.Configuration.registerItem(Servo.class, Robot.Configuration.hood);
     }
 
     public void shoot(double power) {
         shooter.setPower(power);
+        shooter1.setPower(power);
     }
 
     public int calculateMotifOffset(Robot.Globals.Colors target) {
@@ -36,31 +39,14 @@ public class Shooter {
     }
 
     public double getVelocity() {
-        return shooter == null ? 0.0 : shooter.getVelocity();
+        return shooter.getVelocity() + shooter1.getVelocity() / 2;
     }
 
     public void setHood(double pos) { hood.setPosition(pos); }
 
     public double getHood() { return hood.getPosition(); }
 
-    public PIDFCoefficients getPIDFCoefficients() {
-        return shooter.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
-    }
-
-    public void setPIDFCoefficients(PIDFCoefficients pidf) {
-        shooter.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidf);
-    }
-
-    public void update() {
-//        if (getPIDFCoefficients() != null) {
-//            PIDFCoefficients pidf = getPIDFCoefficients();
-//            pidf.p = 25; // default P
-//            pidf.i = 0.65; // default I
-//            setPIDFCoefficients(pidf);
-//        }
-    }
-
     public double getPower() {
-        return shooter.getPower();
+        return shooter.getPower() + shooter1.getPower() / 2;
     }
 }

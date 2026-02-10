@@ -40,6 +40,7 @@ public class Robot {
         public static final ConfigItem spindexerServo = item("flap", true);
 
         public static final ConfigItem shooter        = item("flywheel", true);
+        public static final ConfigItem shooter1        = item("shooter1", true);
 
         public static final ConfigItem odometry       = item("odometry", true);
         public static final ConfigItem light          = item("light", true);
