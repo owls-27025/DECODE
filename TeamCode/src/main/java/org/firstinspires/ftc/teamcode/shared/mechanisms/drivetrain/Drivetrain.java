@@ -56,17 +56,27 @@ public class Drivetrain {
     public double[] fieldCentricDrive(double x, double y) {
         double[] out = new double[2];
 
-        double theta = Math.atan2(y, x);
-        double r = Math.hypot(x, y);
-
-        if (imu != null) {
-            theta = AngleUnit.normalizeRadians(theta - imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
+        if (imu == null) {
+            out[0] = y;
+            out[1] = x;
+            return out;
         }
 
-        out[0] = r * Math.sin(theta); // y
-        out[1] = r * Math.cos(theta); // x
+        double heading = imu.getRobotYawPitchRollAngles()
+                .getYaw(AngleUnit.RADIANS);
+
+        double cos = Math.cos(heading);
+        double sin = Math.sin(heading);
+
+
+        double fieldX = x * cos - y * sin;
+        double fieldY = x * sin + y * cos;
+
+        out[0] = fieldY;
+        out[1] = fieldX;
         return out;
     }
+
 
     public void resetIMU() {
         if (imu != null) imu.resetYaw();
