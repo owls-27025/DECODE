@@ -33,7 +33,7 @@ public class TeleOpMode extends OwlsOpMode {
         spindexerAction = actionManager.addAndReturn(new SpindexerAction(robot));
 
         shooter.setHood(0.05);
-        Robot.Globals.shooterVelocity = 1100;
+        Robot.Globals.shooterVelocity = 1050;
     }
 
     @Override
@@ -47,7 +47,7 @@ public class TeleOpMode extends OwlsOpMode {
             shooter.setHood(1.0);
         }
         if (p2.pressed(OwlsGamepad.Button.LT)) {
-            Robot.Globals.shooterVelocity = 1100;
+            Robot.Globals.shooterVelocity = 1050;
             shooter.setHood(0);
         }
 

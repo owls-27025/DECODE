@@ -109,7 +109,7 @@ public class Drivetrain {
             x = Robot.Globals.easeInOutSine(gp.leftStickX());
             rx = Robot.Globals.easeInOutSine(gp.rightStickX());
         } else {
-            y = Robot.Globals.easeInOutSine(-gp.rightStickY());
+            y = Robot.Globals.easeInOutSine(-gp.leftStickY());
             x = Robot.Globals.easeInOutSine(gp.rightStickX());
             rx = Robot.Globals.easeInOutSine(gp.leftStickX());
         }
