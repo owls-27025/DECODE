@@ -23,6 +23,14 @@ public class TeleOpMenu extends MenuLib.Menu {
                 () -> Robot.Globals.slowDriveSpeed = Math.min(1.0, Robot.Globals.slowDriveSpeed + 0.05)
         ));
 
+        addOption(MenuLib.Option.value(
+                () -> String.format("Spindexer Speed: %.2f", Robot.Globals.spindexerSpeed),
+                () -> Robot.Globals.spindexerSpeed = Math.max(0.0, Robot.Globals.spindexerSpeed - 0.05),
+                () -> Robot.Globals.spindexerSpeed = Math.min(1.0, Robot.Globals.spindexerSpeed + 0.05)
+        ));
+
+
+
         addOption(MenuLib.Option.action(
                 () -> "Right Stick Driving: " + Robot.Globals.isRightStick,
                 Robot.Globals::flipStick));
