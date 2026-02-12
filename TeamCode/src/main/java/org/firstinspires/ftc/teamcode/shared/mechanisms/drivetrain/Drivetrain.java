@@ -62,7 +62,7 @@ public class Drivetrain {
             return out;
         }
 
-        double heading = imu.getRobotYawPitchRollAngles()
+        double heading = -imu.getRobotYawPitchRollAngles()
                 .getYaw(AngleUnit.RADIANS);
 
         double cos = Math.cos(heading);
