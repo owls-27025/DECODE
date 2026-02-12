@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.opmodes.testing.PIDTuning;
 import org.firstinspires.ftc.teamcode.opmodes.testing.PIDTuningSpindexer;
 import org.firstinspires.ftc.teamcode.opmodes.testing.ServoTest;
 import org.firstinspires.ftc.teamcode.opmodes.testing.Settings;
+import org.firstinspires.ftc.teamcode.opmodes.testing.ShooterSpinupStopwatch;
 
 @SuppressWarnings("unused")
 public class OwlsOpModeRegistrar {
@@ -67,6 +68,15 @@ public class OwlsOpModeRegistrar {
                         .setFlavor(OpModeMeta.Flavor.TELEOP)
                         .build(),
                 ServoTest.class
+        );
+
+        manager.register(
+                new OpModeMeta.Builder()
+                        .setName("Shooter Spinup Stopwatch")
+                        .setGroup("Tests")
+                        .setFlavor(OpModeMeta.Flavor.TELEOP)
+                        .build(),
+                ShooterSpinupStopwatch.class
         );
     }
 }
