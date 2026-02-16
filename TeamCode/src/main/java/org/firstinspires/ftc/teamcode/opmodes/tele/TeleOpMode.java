@@ -244,6 +244,7 @@ public class TeleOpMode extends OwlsOpMode {
         telemetry.addData("Robot Stopped", robot.forceStop);
 
         telemetry.addData("AprilTag Follow", aprilTagFollowEnabled);
+        telemetry.addData("Pipeline", limelight.getPipeline());
         telemetry.addData("Configured Pipeline", APRILTAG_PIPELINE_INDEX);
         telemetry.addData("Active Pipeline", limelight.getPipeline());
         telemetry.addData("Yaw Servo Target", targetYawPos);
