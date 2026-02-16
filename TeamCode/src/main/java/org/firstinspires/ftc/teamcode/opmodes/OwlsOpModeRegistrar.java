@@ -68,7 +68,6 @@ public class OwlsOpModeRegistrar {
                         .build(),
                 ServoTest.class
         );
-
         manager.register(
                 new OpModeMeta.Builder()
                         .setName("Shooter Spinup Stopwatch")
