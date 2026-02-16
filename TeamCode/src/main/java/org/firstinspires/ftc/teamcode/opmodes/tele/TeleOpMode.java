@@ -1,23 +1,41 @@
 package org.firstinspires.ftc.teamcode.opmodes.tele;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
+import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.LLResultTypes;
+import com.qualcomm.robotcore.util.Range;
 
-import com.acmerobotics.roadrunner.Pose2d;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.opmodes.OwlsOpMode;
-import org.firstinspires.ftc.teamcode.shared.actions.*;
+import org.firstinspires.ftc.teamcode.shared.actions.ActionManager;
+import org.firstinspires.ftc.teamcode.shared.actions.IntakeAction;
+import org.firstinspires.ftc.teamcode.shared.actions.ShootAction;
+import org.firstinspires.ftc.teamcode.shared.actions.SpindexerAction;
 import org.firstinspires.ftc.teamcode.shared.helpers.OwlsGamepad;
 
+import java.util.List;
+
 @SuppressWarnings("unused")
+@Config
 public class TeleOpMode extends OwlsOpMode {
     private ActionManager actionManager;
     private Action intakeAction;
     private Action shootAction;
     private Action spindexerAction;
+
+    public static int APRILTAG_PIPELINE_INDEX = 0;
+    public static double TAG_YAW_P_GAIN = 0.0035;
+    public static double TAG_PITCH_P_GAIN = 0.0035;
+    public static double TAG_MAX_STEP = 0.02;
+    public static double TAG_DEADBAND_DEG = 0.50;
+
+    private boolean aprilTagFollowEnabled;
+    private double targetYawPos;
+    private double targetPitchPos;
 
     public enum PreviousIntakeState { STOPPED, FORWARD, NA }
 
@@ -34,10 +52,18 @@ public class TeleOpMode extends OwlsOpMode {
 
         shooter.setHood(0.05);
         Robot.Globals.shooterVelocity = 1050;
+
+        targetYawPos = limelight.getYawPos();
+        targetPitchPos = limelight.getPitchPos();
+        aprilTagFollowEnabled = false;
     }
 
     @Override
     public void runLoop() {
+        if (p1.pressed(OwlsGamepad.Button.RB)) {
+            aprilTagFollowEnabled = !aprilTagFollowEnabled;
+        }
+
         // manual shooter vel change
         if (p2.pressed(OwlsGamepad.Button.DPAD_UP)) Robot.Globals.shooterVelocity += 50;
         if (p2.pressed(OwlsGamepad.Button.DPAD_DOWN)) Robot.Globals.shooterVelocity -= 50;
@@ -144,11 +170,54 @@ public class TeleOpMode extends OwlsOpMode {
         // reset artifact count
         if (p1.pressed(OwlsGamepad.Button.LS)) robot.artifactCount = 0;
 
+        if (aprilTagFollowEnabled) {
+            followAprilTag();
+        }
+
         drivetrain.drive(p1);
 
         TelemetryPacket packet = new TelemetryPacket();
         actionManager.run(packet);
         dash.sendTelemetryPacket(packet);
+    }
+
+    private void followAprilTag() {
+        if (!limelight.doesExist()) {
+            return;
+        }
+
+        if (limelight.getPipeline() != APRILTAG_PIPELINE_INDEX) {
+            limelight.setPipeline(APRILTAG_PIPELINE_INDEX);
+            return;
+        }
+
+        LLResult result = limelight.getLatestResult();
+        if (result == null) {
+            return;
+        }
+
+        List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
+        if (fiducials == null || fiducials.isEmpty()) {
+            return;
+        }
+
+        LLResultTypes.FiducialResult target = fiducials.get(0);
+        double yawErrorDeg = target.getTargetXDegrees();
+        double pitchErrorDeg = target.getTargetYDegrees();
+
+        if (Math.abs(yawErrorDeg) > TAG_DEADBAND_DEG) {
+            targetYawPos -= Range.clip(yawErrorDeg * TAG_YAW_P_GAIN, -TAG_MAX_STEP, TAG_MAX_STEP);
+        }
+
+        if (Math.abs(pitchErrorDeg) > TAG_DEADBAND_DEG) {
+            targetPitchPos -= Range.clip(pitchErrorDeg * TAG_PITCH_P_GAIN, -TAG_MAX_STEP, TAG_MAX_STEP);
+        }
+
+        targetYawPos = Range.clip(targetYawPos, 0.0, 1.0);
+        targetPitchPos = Range.clip(targetPitchPos, 0.0, 1.0);
+
+        limelight.setYawPos(targetYawPos);
+        limelight.setPitchPos(targetPitchPos);
     }
 
     @Override
@@ -174,26 +243,46 @@ public class TeleOpMode extends OwlsOpMode {
 
         telemetry.addData("Robot Stopped", robot.forceStop);
 
-        telemetry.addData("Distance to Goal", limelight.getDistanceToGoal());
+        telemetry.addData("AprilTag Follow", aprilTagFollowEnabled);
+        telemetry.addData("Configured Pipeline", APRILTAG_PIPELINE_INDEX);
+        telemetry.addData("Active Pipeline", limelight.getPipeline());
+        telemetry.addData("Yaw Servo Target", targetYawPos);
+        telemetry.addData("Pitch Servo Target", targetPitchPos);
 
-        telemetry.addData("tY", limelight.getTy());
-        telemetry.addData("Is limelight running", limelight.doesExist());
-        telemetry.addData("Is result valid", limelight.getLatestResult().isValid());
-        telemetry.addData("ID", limelight.getID());
+        if (limelight.doesExist()) {
+            LLResult result = limelight.getLatestResult();
+            telemetry.addData("Is result valid", result != null && result.isValid());
+
+            int trackedId = 0;
+            double trackedTy = 0;
+            if (result != null) {
+                List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
+                if (fiducials != null && !fiducials.isEmpty()) {
+                    trackedId = fiducials.get(0).getFiducialId();
+                    trackedTy = fiducials.get(0).getTargetYDegrees();
+                }
+            }
+            telemetry.addData("ID", trackedId);
+            telemetry.addData("tY", trackedTy);
+
+            if (result != null && result.getBotpose_MT2() != null) {
+                TelemetryPacket packet = new TelemetryPacket();
+                packet.put("Drive x", drivetrain.getPose().getX(DistanceUnit.INCH));
+                packet.put("Drive y", drivetrain.getPose().getY(DistanceUnit.INCH));
+                packet.put("Drive heading (deg)", drivetrain.getPose().getHeading(AngleUnit.DEGREES));
+                packet.put("Limelight x", result.getBotpose_MT2().getPosition().toUnit(DistanceUnit.INCH).x);
+                packet.put("Limelight y", result.getBotpose_MT2().getPosition().toUnit(DistanceUnit.INCH).y);
+                packet.put("Limelight heading (deg)", result.getBotpose_MT2().getOrientation().getYaw(AngleUnit.DEGREES));
+                dash.sendTelemetryPacket(packet);
+            }
+        } else {
+            telemetry.addData("Is result valid", false);
+            telemetry.addData("ID", 0);
+            telemetry.addData("tY", 0);
+            telemetry.addLine("Limelight is not running");
+        }
 
         telemetry.addData("IMU Heading", drivetrain.getOdometryHeading());
-
         telemetry.addData("Shooter Power", shooter.getPower());
-
-        TelemetryPacket packet = new TelemetryPacket();
-        packet.put("Drive x", drivetrain.getPose().getX(DistanceUnit.INCH));
-        packet.put("Drive y", drivetrain.getPose().getY(DistanceUnit.INCH));
-        packet.put("Drive heading (deg)", drivetrain.getPose().getHeading(AngleUnit.DEGREES));
-
-        packet.put("Limelight x", limelight.getLatestResult().getBotpose_MT2().getPosition().toUnit(DistanceUnit.INCH).x);
-        packet.put("Limelight y", limelight.getLatestResult().getBotpose_MT2().getPosition().toUnit(DistanceUnit.INCH).y);
-        packet.put("Limelight heading (deg)", limelight.getLatestResult().getBotpose_MT2().getOrientation().getYaw(AngleUnit.DEGREES));
-
-        dash.sendTelemetryPacket(packet);
     }
 }
