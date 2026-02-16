@@ -140,7 +140,7 @@ public class Limelight {
     }
 
     public boolean doesExist() {
-        return limelight.isRunning();
+        return limelight != null && limelight.isRunning();
     }
 
     public int getID() {
@@ -154,7 +154,14 @@ public class Limelight {
         return 0;
     }
 
+
+    public void setPipeline(int pipeline) {
+        if (limelight != null) {
+            limelight.pipelineSwitch(pipeline);
+        }
+    }
+
     public int getPipeline() {
-        return limelight.getStatus().getPipelineIndex();
+        return limelight == null ? -1 : limelight.getStatus().getPipelineIndex();
     }
 }
