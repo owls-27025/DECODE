@@ -27,6 +27,7 @@ public class TeleOpMode extends OwlsOpMode {
     private Action shootAction;
     private Action spindexerAction;
 
+    public static int APRILTAG_PIPELINE_INDEX = 0;
     public static double TAG_YAW_P_GAIN = 0.0035;
     public static double TAG_PITCH_P_GAIN = 0.0035;
     public static double TAG_MAX_STEP = 0.02;
@@ -185,6 +186,10 @@ public class TeleOpMode extends OwlsOpMode {
             return;
         }
 
+        if (limelight.getPipeline() != APRILTAG_PIPELINE_INDEX) {
+            limelight.setPipeline(APRILTAG_PIPELINE_INDEX);
+            return;
+        }
 
         LLResult result = limelight.getLatestResult();
         if (result == null) {
@@ -240,6 +245,8 @@ public class TeleOpMode extends OwlsOpMode {
 
         telemetry.addData("AprilTag Follow", aprilTagFollowEnabled);
         telemetry.addData("Pipeline", limelight.getPipeline());
+        telemetry.addData("Configured Pipeline", APRILTAG_PIPELINE_INDEX);
+        telemetry.addData("Active Pipeline", limelight.getPipeline());
         telemetry.addData("Yaw Servo Target", targetYawPos);
         telemetry.addData("Pitch Servo Target", targetPitchPos);
 
