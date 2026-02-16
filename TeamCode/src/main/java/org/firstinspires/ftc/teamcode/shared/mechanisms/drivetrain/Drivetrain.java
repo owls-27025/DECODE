@@ -126,6 +126,14 @@ public class Drivetrain {
         setPower(BR, (y + x - rx) * Robot.Globals.currentSpeed);
     }
 
+
+    public void turnInPlace(double turnPower) {
+        setPower(FL, turnPower * Robot.Globals.currentSpeed);
+        setPower(BL, turnPower * Robot.Globals.currentSpeed);
+        setPower(FR, -turnPower * Robot.Globals.currentSpeed);
+        setPower(BR, -turnPower * Robot.Globals.currentSpeed);
+    }
+
     private static void setPower(DcMotor m, double p) {
         if (m != null) m.setPower(p);
     }

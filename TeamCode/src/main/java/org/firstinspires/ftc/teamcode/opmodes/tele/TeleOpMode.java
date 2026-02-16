@@ -1,23 +1,40 @@
 package org.firstinspires.ftc.teamcode.opmodes.tele;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
+import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.LLResultTypes;
+import com.qualcomm.robotcore.util.Range;
 
-import com.acmerobotics.roadrunner.Pose2d;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.opmodes.OwlsOpMode;
-import org.firstinspires.ftc.teamcode.shared.actions.*;
+import org.firstinspires.ftc.teamcode.shared.actions.ActionManager;
+import org.firstinspires.ftc.teamcode.shared.actions.IntakeAction;
+import org.firstinspires.ftc.teamcode.shared.actions.ShootAction;
+import org.firstinspires.ftc.teamcode.shared.actions.SpindexerAction;
 import org.firstinspires.ftc.teamcode.shared.helpers.OwlsGamepad;
 
+import java.util.List;
+
 @SuppressWarnings("unused")
+@Config
 public class TeleOpMode extends OwlsOpMode {
     private ActionManager actionManager;
     private Action intakeAction;
     private Action shootAction;
     private Action spindexerAction;
+
+    public static double TAG_TURN_P_GAIN = 0.02;
+    public static double TAG_MAX_TURN_POWER = 0.45;
+    public static double TAG_DEADBAND_DEG = 0.75;
+    public static boolean TAG_INVERT_TURN = true;
+
+    private boolean aprilTagFollowEnabled;
+    private double tagYawErrorDeg;
+    private double tagTurnCommand;
 
     public enum PreviousIntakeState { STOPPED, FORWARD, NA }
 
@@ -34,10 +51,18 @@ public class TeleOpMode extends OwlsOpMode {
 
         shooter.setHood(0.05);
         Robot.Globals.shooterVelocity = 1050;
+
+        aprilTagFollowEnabled = false;
+        tagYawErrorDeg = 0.0;
+        tagTurnCommand = 0.0;
     }
 
     @Override
     public void runLoop() {
+        if (p1.pressed(OwlsGamepad.Button.RB)) {
+            aprilTagFollowEnabled = !aprilTagFollowEnabled;
+        }
+
         // manual shooter vel change
         if (p2.pressed(OwlsGamepad.Button.DPAD_UP)) Robot.Globals.shooterVelocity += 50;
         if (p2.pressed(OwlsGamepad.Button.DPAD_DOWN)) Robot.Globals.shooterVelocity -= 50;
@@ -144,11 +169,47 @@ public class TeleOpMode extends OwlsOpMode {
         // reset artifact count
         if (p1.pressed(OwlsGamepad.Button.LS)) robot.artifactCount = 0;
 
-        drivetrain.drive(p1);
+        if (aprilTagFollowEnabled) {
+            turnRobotToTag();
+        } else {
+            drivetrain.drive(p1);
+        }
 
         TelemetryPacket packet = new TelemetryPacket();
         actionManager.run(packet);
         dash.sendTelemetryPacket(packet);
+    }
+
+    private void turnRobotToTag() {
+        tagTurnCommand = 0.0;
+        tagYawErrorDeg = 0.0;
+
+        if (!limelight.doesExist()) {
+            drivetrain.turnInPlace(0.0);
+            return;
+        }
+
+        LLResult result = limelight.getLatestResult();
+        if (result == null) {
+            drivetrain.turnInPlace(0.0);
+            return;
+        }
+
+        List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
+        if (fiducials == null || fiducials.isEmpty()) {
+            drivetrain.turnInPlace(0.0);
+            return;
+        }
+
+        LLResultTypes.FiducialResult target = fiducials.get(0);
+        tagYawErrorDeg = target.getTargetXDegrees();
+
+        if (Math.abs(tagYawErrorDeg) > TAG_DEADBAND_DEG) {
+            double turnStep = Range.clip(tagYawErrorDeg * TAG_TURN_P_GAIN, -TAG_MAX_TURN_POWER, TAG_MAX_TURN_POWER);
+            tagTurnCommand = TAG_INVERT_TURN ? -turnStep : turnStep;
+        }
+
+        drivetrain.turnInPlace(tagTurnCommand);
     }
 
     @Override
@@ -174,26 +235,46 @@ public class TeleOpMode extends OwlsOpMode {
 
         telemetry.addData("Robot Stopped", robot.forceStop);
 
-        telemetry.addData("Distance to Goal", limelight.getDistanceToGoal());
+        telemetry.addData("AprilTag Follow", aprilTagFollowEnabled);
+        telemetry.addData("Pipeline", limelight.getPipeline());
+        telemetry.addData("Tag Yaw Error", tagYawErrorDeg);
+        telemetry.addData("Turn Command", tagTurnCommand);
 
-        telemetry.addData("tY", limelight.getTy());
-        telemetry.addData("Is limelight running", limelight.doesExist());
-        telemetry.addData("Is result valid", limelight.getLatestResult().isValid());
-        telemetry.addData("ID", limelight.getID());
+        if (limelight.doesExist()) {
+            LLResult result = limelight.getLatestResult();
+            telemetry.addData("Is result valid", result != null && result.isValid());
+
+            int trackedId = 0;
+            double trackedTy = 0;
+            if (result != null) {
+                List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
+                if (fiducials != null && !fiducials.isEmpty()) {
+                    trackedId = fiducials.get(0).getFiducialId();
+                    trackedTy = fiducials.get(0).getTargetYDegrees();
+                }
+            }
+            telemetry.addData("ID", trackedId);
+            telemetry.addData("tY", trackedTy);
+            telemetry.addData("Invert Turn", TAG_INVERT_TURN);
+
+            if (result != null && result.getBotpose_MT2() != null) {
+                TelemetryPacket packet = new TelemetryPacket();
+                packet.put("Drive x", drivetrain.getPose().getX(DistanceUnit.INCH));
+                packet.put("Drive y", drivetrain.getPose().getY(DistanceUnit.INCH));
+                packet.put("Drive heading (deg)", drivetrain.getPose().getHeading(AngleUnit.DEGREES));
+                packet.put("Limelight x", result.getBotpose_MT2().getPosition().toUnit(DistanceUnit.INCH).x);
+                packet.put("Limelight y", result.getBotpose_MT2().getPosition().toUnit(DistanceUnit.INCH).y);
+                packet.put("Limelight heading (deg)", result.getBotpose_MT2().getOrientation().getYaw(AngleUnit.DEGREES));
+                dash.sendTelemetryPacket(packet);
+            }
+        } else {
+            telemetry.addData("Is result valid", false);
+            telemetry.addData("ID", 0);
+            telemetry.addData("tY", 0);
+            telemetry.addLine("Limelight is not running");
+        }
 
         telemetry.addData("IMU Heading", drivetrain.getOdometryHeading());
-
         telemetry.addData("Shooter Power", shooter.getPower());
-
-        TelemetryPacket packet = new TelemetryPacket();
-        packet.put("Drive x", drivetrain.getPose().getX(DistanceUnit.INCH));
-        packet.put("Drive y", drivetrain.getPose().getY(DistanceUnit.INCH));
-        packet.put("Drive heading (deg)", drivetrain.getPose().getHeading(AngleUnit.DEGREES));
-
-        packet.put("Limelight x", limelight.getLatestResult().getBotpose_MT2().getPosition().toUnit(DistanceUnit.INCH).x);
-        packet.put("Limelight y", limelight.getLatestResult().getBotpose_MT2().getPosition().toUnit(DistanceUnit.INCH).y);
-        packet.put("Limelight heading (deg)", limelight.getLatestResult().getBotpose_MT2().getOrientation().getYaw(AngleUnit.DEGREES));
-
-        dash.sendTelemetryPacket(packet);
     }
 }
