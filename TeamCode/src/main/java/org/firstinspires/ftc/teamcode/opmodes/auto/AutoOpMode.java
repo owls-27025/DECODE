@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes.auto;
 
+import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.ftc.Actions;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -30,6 +31,7 @@ public class AutoOpMode extends OwlsOpMode {
     public AutoParams autoParams;
     public AutoConfig autoConfig;
     public AutoPath path;
+    public Action action;
 
     @Override
     public void initLoop() {
@@ -56,6 +58,13 @@ public class AutoOpMode extends OwlsOpMode {
             return;
         }
 
+        if (!built) {
+            rr = new RRActions(robot, telemetry);
+            path = new AutoPath(rr);
+            action = path.build(autoParams, robot, hardwareMap);
+            built = true;
+        }
+
         limelight.getMotif(autoParams);
 
         telemetry.addData("Alliance", autoParams.alliance);
@@ -77,16 +86,7 @@ public class AutoOpMode extends OwlsOpMode {
             while (delayTimer.time(TimeUnit.SECONDS) < autoParams.delay);
         }
 
-        telemetry.addData("Before RRActions", runtime.time());
-        rr = new RRActions(robot, telemetry);
-        telemetry.addData("After RRActions", runtime.time());
-
-        path = new AutoPath(rr);
-
-        telemetry.addData("Before Sequential Action", runtime.time());
-        SequentialAction sequentialAction = (SequentialAction) path.build(autoParams, robot, hardwareMap);
-        telemetry.addData("After Sequential Action", runtime.time());
-        Actions.runBlocking(rr.withSubsystems(sequentialAction));
+        Actions.runBlocking(rr.withSubsystems(action));
 
         shooter.shoot(0);
         spindexer.shootPosition();
