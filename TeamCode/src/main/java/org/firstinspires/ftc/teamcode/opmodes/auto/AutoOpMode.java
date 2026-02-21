@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.opmodes.OwlsOpMode;
 import org.firstinspires.ftc.teamcode.shared.mechanisms.drivetrain.roadrunner.MecanumDrive;
 import org.firstinspires.ftc.teamcode.shared.helpers.options.libraries.MenuHostImpl;
 import org.firstinspires.ftc.teamcode.shared.helpers.options.menus.opmodes.AutoConfig;
+import com.acmerobotics.roadrunner.SequentialAction;
 
 import java.util.concurrent.TimeUnit;
 
@@ -68,6 +69,7 @@ public class AutoOpMode extends OwlsOpMode {
 
     @Override
     public void onStart() {
+        ElapsedTime runtime = new ElapsedTime();
         delayTimer.reset();
 
         if (autoParams.delay != 0) {
@@ -75,9 +77,16 @@ public class AutoOpMode extends OwlsOpMode {
             while (delayTimer.time(TimeUnit.SECONDS) < autoParams.delay);
         }
 
+        telemetry.addData("Before RRActions", runtime.time());
         rr = new RRActions(robot, telemetry);
+        telemetry.addData("After RRActions", runtime.time());
+
         path = new AutoPath(rr);
-        Actions.runBlocking(rr.withSubsystems(path.build(autoParams, robot, hardwareMap)));
+
+        telemetry.addData("Before Sequential Action", runtime.time());
+        SequentialAction sequentialAction = (SequentialAction) path.build(autoParams, robot, hardwareMap);
+        telemetry.addData("After Sequential Action", runtime.time());
+        Actions.runBlocking(rr.withSubsystems(sequentialAction));
 
         shooter.shoot(0);
         spindexer.shootPosition();

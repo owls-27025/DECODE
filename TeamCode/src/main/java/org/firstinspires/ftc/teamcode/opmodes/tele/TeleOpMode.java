@@ -40,7 +40,7 @@ public class TeleOpMode extends OwlsOpMode {
     public enum PreviousIntakeState { STOPPED, FORWARD, NA }
 
     @Override
-    public void onInit() {
+    protected void onInit() {
         actionManager = new ActionManager();
     }
 

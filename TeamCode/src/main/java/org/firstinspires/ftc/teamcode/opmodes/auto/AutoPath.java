@@ -14,6 +14,7 @@ import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.VelConstraint;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.shared.mechanisms.drivetrain.roadrunner.MecanumDrive;
@@ -88,8 +89,8 @@ public class AutoPath {
 
     // ===================== BUILD =====================
     public Action build(AutoParams params, Robot robot, HardwareMap hardwareMap) {
-        Path path = null;
 
+        Path path = null;
         Pose2d initialPose;
         switch (params.strategy) {
             case FRONT:
