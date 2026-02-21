@@ -76,6 +76,8 @@ public class AutoPath {
 
     public Path frontNineGate;
 
+    public Path frontTwelve;
+
     // ===================== BACK =====================
     // BACK ACTIONS LIBRARY
     public Map<String, Function<TrajectoryActionBuilder, TrajectoryActionBuilder>> backActions;
@@ -135,6 +137,9 @@ public class AutoPath {
                                 .setTangent(Math.toRadians(270))
                                 .splineToLinearHeading(new Pose2d(11.5, 25, Math.toRadians(90)), Math.toRadians(90),
                                         (pose2dDual, posePath, v) -> 90),
+                "SPIKE_THREE", (TrajectoryActionBuilder  trajectory) ->
+                        trajectory
+                                .splineToLinearHeading(new Pose2d(32, 25, Math.toRadians(90)), Math.toRadians(90), (pose2dDual, posePath, v) -> 90),
                 "GATE", (TrajectoryActionBuilder trajectory) ->
                         trajectory
                                 .turnTo(Math.toRadians(180))
@@ -259,7 +264,7 @@ public class AutoPath {
                                 actions.intake()
                         ),
                         fn7.build(),
-//                        actions.shoot(3, 1100, Robot.Globals.Colors.PPG, 0),
+                        actions.shoot(3, 1100, Robot.Globals.Colors.PPG, 0),
                         actions.stop()
                 )
         );
@@ -293,12 +298,52 @@ public class AutoPath {
                                 actions.intake()
                         ),
                         fng8.build(),
-//                        actions.shoot(3, 1100, Robot.Globals.Colors.PPG, 0),
+                        actions.shoot(3, 1100, Robot.Globals.Colors.PPG, 0),
                         actions.stop()
                 )
         );
 
+        TrajectoryActionBuilder ftw1 = action(frontActions, "SHOOT", makeBuilder(drive.localizer.getPose(), params));
+        TrajectoryActionBuilder ftw2 = action(frontActions, "SPIKE_ONE", ftw1.endTrajectory().fresh());
+        TrajectoryActionBuilder ftw3 = action(frontActions, "INTAKE", ftw2.endTrajectory().fresh());
+        TrajectoryActionBuilder ftw4 = action(frontActions, "SHOOT", ftw3.endTrajectory().fresh());
+        TrajectoryActionBuilder ftw5 = action(frontActions, "SPIKE_TWO", ftw4.endTrajectory().fresh());
+        TrajectoryActionBuilder ftw6 = action(frontActions, "INTAKE", ftw5.endTrajectory().fresh());
+        TrajectoryActionBuilder ftw7 = action(frontActions, "SHOOT", ftw6.endTrajectory().fresh());
+        TrajectoryActionBuilder ftw8 = action(frontActions, "SPIKE_THREE", ftw7.endTrajectory().fresh());
+        TrajectoryActionBuilder ftw9 = action(frontActions, "INTAKE", ftw8.endTrajectory().fresh());
+        TrajectoryActionBuilder ftw10 = action(frontActions, "SHOOT_LEAVE", ftw9.endTrajectory().fresh());
 
+        frontTwelve = new Path(
+                initialPose,
+                new SequentialAction(
+                        actions.stop(),
+                        ftw1.build(),
+                        actions.shoot(3, 1050, Robot.Globals.Colors.GPP, 0),
+                        ftw2.build(),
+                        new ParallelAction(
+                                ftw3.build(),
+                                actions.intake()
+                        ),
+                        ftw4.build(),
+                        actions.shoot(3, 1050, Robot.Globals.Colors.PPG, 0),
+                        ftw5.build(),
+                        new ParallelAction(
+                                ftw6.build(),
+                                actions.intake()
+                        ),
+                        ftw7.build(),
+                        actions.shoot(3, 1100, Robot.Globals.Colors.PPG, 0),
+                        ftw8.build(),
+                        new ParallelAction(
+                                ftw9.build(),
+                                actions.intake()
+                        ),
+                        ftw10.build(),
+                        actions.shoot(3, 1100, Robot.Globals.Colors.PPG, 0),
+                        actions.stop()
+                )
+        );
 
         TrajectoryActionBuilder bt1 = action(backActions, "SHOOT", makeBuilder(drive.localizer.getPose(), params));
         TrajectoryActionBuilder bt2 = action(backActions, "LEAVE", bt1.endTrajectory().fresh());
@@ -383,6 +428,9 @@ public class AutoPath {
                             path = frontNineGate;
                             break;
                         }
+                    case 3:
+                        path = frontTwelve;
+                        break;
                 }
                 break;
             case BACK:

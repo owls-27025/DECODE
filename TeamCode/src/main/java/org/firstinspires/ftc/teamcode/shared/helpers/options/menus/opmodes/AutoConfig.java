@@ -37,7 +37,7 @@ public class AutoConfig extends MenuLib.Menu {
         addOption(MenuLib.Option.value(
                 () -> "Spikes: " + params.spikes,
                 () -> params.spikes = Math.max(params.spikes - 1, 0),
-                () -> params.spikes= Math.min(params.spikes + 1, 2)
+                () -> params.spikes= Math.min(params.spikes + 1, 3)
         ));
 
         addOption(MenuLib.Option.value(

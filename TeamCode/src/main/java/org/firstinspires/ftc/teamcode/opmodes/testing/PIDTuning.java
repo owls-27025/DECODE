@@ -9,6 +9,8 @@ import org.firstinspires.ftc.teamcode.shared.helpers.OwlsGamepad;
 
 public class PIDTuning extends OwlsOpMode {
     PIDFController pidf;
+    PIDFController pidf1;
+    PIDFController pidf2;
     int selected;
     double velocity;
     double[] increments = {0.0001, 0.001, 0.01, 0.1, 1, 10};
@@ -16,7 +18,9 @@ public class PIDTuning extends OwlsOpMode {
 
     @Override
     protected void onStart() {
-        pidf = new PIDFController(0.001, 0, 0, 0.0004);
+        pidf1 = new PIDFController(0.001, 0, 0, 0.0004);
+        pidf2 = new PIDFController(0.001, 0, 0, 0.0004);
+        pidf = pidf1;
         selected = 0;
         velocity = 0;
         selectedIncrement = 0;
@@ -24,6 +28,9 @@ public class PIDTuning extends OwlsOpMode {
 
     @Override
     protected void runLoop() {
+        if (p1.pressed(OwlsGamepad.Button.X) && pidf == pidf1) pidf = pidf2;
+        else if (p1.pressed(OwlsGamepad.Button.X) && pidf == pidf2) pidf = pidf1;
+
         if (p1.pressed(OwlsGamepad.Button.A) && selected == 0) selected = 1;
         else if (p1.pressed(OwlsGamepad.Button.A) && selected == 1) selected = 2;
         else if (p1.pressed(OwlsGamepad.Button.A) && selected == 2) selected = 3;
@@ -49,12 +56,15 @@ public class PIDTuning extends OwlsOpMode {
         if (p1.pressed(OwlsGamepad.Button.B) && velocity == 0) velocity = 1500;
         else if (p1.pressed(OwlsGamepad.Button.B) && velocity != 0) velocity = 0;
 
-        double output = pidf.calculate(shooter.getVelocity(), velocity);
-        shooter.shoot(output);
+        double output = pidf.calculate(shooter.getVelocity(pidf == pidf1 ? 1 : 2), velocity);
+        shooter.shoot(output, pidf == pidf1 ? 1 : 2);
     }
 
     @Override
     protected void telemetry() {
+        if (pidf == pidf1) telemetry.addLine("Tuning motor 1");
+        if (pidf == pidf2) telemetry.addLine("Tuning motor 2");
+
         if (selected == 0) telemetry.addLine("Tuning P");
         if (selected == 1) telemetry.addLine("Tuning I");
         if (selected == 2) telemetry.addLine("Tuning D");
@@ -65,9 +75,9 @@ public class PIDTuning extends OwlsOpMode {
         telemetry.addData("D", pidf.getD());
         telemetry.addData("F", pidf.getF());
 
-        telemetry.addData("Real Velocity", shooter.getVelocity());
+        telemetry.addData("Real Velocity", shooter.getVelocity(pidf == pidf1 ? 1 : 2));
         telemetry.addData("Target Velocity", velocity);
-        telemetry.addData("Power", shooter.getPower());
+        telemetry.addData("Power", shooter.getPower(pidf == pidf1? 1 : 2));
 
         telemetry.addData("Increment", increments[selectedIncrement]);
     }

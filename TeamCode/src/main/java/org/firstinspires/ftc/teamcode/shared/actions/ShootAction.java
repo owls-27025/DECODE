@@ -10,8 +10,10 @@ import org.firstinspires.ftc.teamcode.Robot;
 public class ShootAction extends BaseAction {
     private State state;
     private final ElapsedTime timer = new ElapsedTime();
-    private PIDFController pidf = new PIDFController(0.001, 0, 0, 0.0004);
-    private double output;
+    private PIDFController pidf1 = new PIDFController(0.0009, 0, 0, 0.0004);
+    private PIDFController pidf2 = new PIDFController(0.0006, 0, 0, 0.0004);
+    private double output1;
+    private double output2;
 
     private enum State {
         SPIN_UP,
@@ -44,8 +46,11 @@ public class ShootAction extends BaseAction {
             case SPIN_UP:
                 robot.shooterReady = false;
 
-                output = pidf.calculate(shooter.getVelocity(), Robot.Globals.shooterVelocity);
-                shooter.shoot(output);
+                output1 = pidf1.calculate(shooter.getVelocity(1), Robot.Globals.shooterVelocity);
+                shooter.shoot(output1, 1);
+
+                output2 = pidf2.calculate(shooter.getVelocity(2), Robot.Globals.shooterVelocity);
+                shooter.shoot(output2, 2);
 
                 if (shooter.getVelocity() - Robot.Globals.shooterVelocity < 0) {
                     if (Math.abs(shooter.getVelocity() - Robot.Globals.shooterVelocity) <= Robot.Globals.shooterLowTolerance) {
@@ -65,8 +70,11 @@ public class ShootAction extends BaseAction {
             case READY:
                 robot.shooterReady = true;
 
-                output = pidf.calculate(shooter.getVelocity(), Robot.Globals.shooterVelocity);
-                shooter.shoot(output);
+                output1 = pidf1.calculate(shooter.getVelocity(1), Robot.Globals.shooterVelocity);
+                shooter.shoot(output1, 1);
+
+                output2 = pidf2.calculate(shooter.getVelocity(2), Robot.Globals.shooterVelocity);
+                shooter.shoot(output2, 2);
 
                 if (shooter.getVelocity() - Robot.Globals.shooterVelocity < 0) {
                     if (Math.abs(shooter.getVelocity() - Robot.Globals.shooterVelocity) > Robot.Globals.shooterLowTolerance) {

@@ -11,25 +11,35 @@ public class TeleOpMenu extends MenuLib.Menu {
         super(host, gamepad1, gamepad2, telemetry, "TELEOP");
 
         addOption(MenuLib.Option.value(
-            () -> String.format("Drive Speed: %.2f", Robot.Globals.driveSpeed),
+            () -> "Drive Speed: " + Robot.Globals.driveSpeed,
             () -> Robot.Globals.driveSpeed = Math.max(0.0, Robot.Globals.driveSpeed - 0.05),
             () -> Robot.Globals.driveSpeed = Math.min(1.0, Robot.Globals.driveSpeed + 0.05)
         ));
 
 
         addOption(MenuLib.Option.value(
-                () -> String.format("Slow Drive Speed: %.2f", Robot.Globals.slowDriveSpeed),
+                () -> "Slow Drive Speed: " + Robot.Globals.slowDriveSpeed,
                 () -> Robot.Globals.slowDriveSpeed = Math.max(0.0, Robot.Globals.slowDriveSpeed - 0.05),
                 () -> Robot.Globals.slowDriveSpeed = Math.min(1.0, Robot.Globals.slowDriveSpeed + 0.05)
         ));
 
         addOption(MenuLib.Option.value(
-                () -> String.format("Spindexer Speed: %.2f", Robot.Globals.spindexerSpeed),
+                () -> "Spindexer Speed: " + Robot.Globals.spindexerSpeed,
                 () -> Robot.Globals.spindexerSpeed = Math.max(0.0, Robot.Globals.spindexerSpeed - 0.05),
                 () -> Robot.Globals.spindexerSpeed = Math.min(1.0, Robot.Globals.spindexerSpeed + 0.05)
         ));
 
+        addOption(MenuLib.Option.value(
+                () -> "High Flywheel Tolerance: " + Robot.Globals.shooterHighTolerance,
+                () -> Robot.Globals.shooterHighTolerance -= 1,
+                () -> Robot.Globals.shooterHighTolerance += 1
+        ));
 
+        addOption(MenuLib.Option.value(
+                () -> "Low Flywheel Tolerance: " + Robot.Globals.shooterLowTolerance,
+                () -> Robot.Globals.shooterLowTolerance -= 1,
+                () -> Robot.Globals.shooterLowTolerance += 1
+        ));
 
         addOption(MenuLib.Option.action(
                 () -> "Right Stick Driving: " + Robot.Globals.isRightStick,
@@ -38,12 +48,6 @@ public class TeleOpMenu extends MenuLib.Menu {
         addOption(MenuLib.Option.action(() ->
                 "Field Centric: " + Robot.Globals.isFieldCentric,
                 Robot.Globals::flipFieldCentric));
-
-        addOption(MenuLib.Option.value(
-                () -> "Shooter Tolerance: " + Robot.Globals.shooterLowTolerance,
-                () -> Robot.Globals.shooterLowTolerance = Math.max(0, Robot.Globals.shooterLowTolerance - 1),
-                () -> Robot.Globals.shooterLowTolerance =  Math.min(50, Robot.Globals.shooterLowTolerance + 1)
-        ));
 
         addOption(MenuLib.Option.info(() -> ""));
 

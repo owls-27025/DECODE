@@ -153,13 +153,13 @@ public class Robot {
         public static double slowDriveSpeed = 0.30;
 
         public static int shooterVelocity = 1050;
-        public static int shooterLowTolerance = 20;
-        public static int shooterHighTolerance = 250;
+        public static int shooterLowTolerance = 100;
+        public static int shooterHighTolerance = 150;
 
         public static int forcedArtifacts = 1;
 
-        public static boolean isFieldCentric = true;
-        public static boolean isRightStick = true;
+        public static boolean isFieldCentric = false;
+        public static boolean isRightStick = false;
 
         public static int humanWaitMs = 750;
         public static int spindexerShootTimeTicks = 15;

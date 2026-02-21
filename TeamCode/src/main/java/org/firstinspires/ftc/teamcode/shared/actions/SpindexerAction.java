@@ -225,7 +225,7 @@ public class SpindexerAction extends BaseAction {
                                 dbgLine("Flap Up");
                             }
 
-                            if (spindexerTimer.time(TimeUnit.MILLISECONDS) >= 200) {
+                            if (spindexerTimer.time(TimeUnit.MILLISECONDS) >= 100) {
                                 if (!flapTimerStarted) {
                                     flapTimerStarted = true;
                                     flapDownTimer.reset();

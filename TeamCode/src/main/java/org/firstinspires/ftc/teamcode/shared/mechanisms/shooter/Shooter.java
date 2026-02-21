@@ -1,12 +1,8 @@
 package org.firstinspires.ftc.teamcode.shared.mechanisms.shooter;
 
-import com.arcrobotics.ftclib.controller.PController;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
-
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import org.firstinspires.ftc.teamcode.Robot;
 
 public class Shooter {
@@ -31,6 +27,11 @@ public class Shooter {
         shooter1.setPower(power);
     }
 
+    public void shoot(double power, int motor) {
+        if (motor == 1) shooter.setPower(power);
+        else if (motor == 2) shooter1.setPower(power);
+    }
+
     public int calculateMotifOffset(Robot.Globals.Colors target) {
         int diff = Robot.Globals.motif.index - target.index;
         if (diff == 2) diff = -1;
@@ -39,7 +40,11 @@ public class Shooter {
     }
 
     public double getVelocity() {
-        return shooter.getVelocity() + shooter1.getVelocity() / 2;
+        return shooter.getVelocity();
+    }
+
+    public double getVelocity(int motor) {
+        return motor == 1 ? shooter.getVelocity() : shooter1.getVelocity();
     }
 
     public void setHood(double pos) { hood.setPosition(pos); }
@@ -49,4 +54,5 @@ public class Shooter {
     public double getPower() {
         return shooter.getPower() + shooter1.getPower() / 2;
     }
+    public double getPower(int motor) { return motor == 1 ? shooter.getPower() : shooter1.getPower(); }
 }
